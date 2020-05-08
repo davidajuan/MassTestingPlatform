@@ -20,7 +20,7 @@ Software that is needed to get started:
 1) Clone the repository to your local machine
     * `git clone https://github.com/QuickenLoans/MassTestingPlatform`
 2) Enter the newly created directory
-    * `cd mass-testing-platform`
+    * `cd MassTestingPlatform`
 3) Setup environment file
     * `cp .sample.env .env`
     * Edit `.env` with appropriate values
