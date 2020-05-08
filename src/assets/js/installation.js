@@ -24,6 +24,8 @@ $(function () {
         $('#loading').addClass('hidden');
     });
 
+    var originalText = $('#install').text();
+
     /**
      * Event: Install Easy!Appointments Button "Click"
      */
@@ -32,7 +34,7 @@ $(function () {
             return;
         }
 
-        var url = GlobalVariables.baseUrl + '/index.php/installation/ajax_install';
+        var url = GlobalVariables.baseUrl + '/installation/ajax_install';
         var data = {
             csrfToken: GlobalVariables.csrfToken,
             admin: getAdminData(),
@@ -43,23 +45,32 @@ $(function () {
             url: url,
             type: 'POST',
             data: data,
-            dataType: 'json'
+            dataType: 'json',
+            beforeSend: function (){
+                $('#install').prop('disabled', true);
+                $('#install').text('Processing...');
+            }
         })
-            .done(function (response) {
-                if (!GeneralFunctions.handleAjaxExceptions(response)) {
-                    return;
-                }
+        .done(function (response) {
+            if (!GeneralFunctions.handleAjaxExceptions(response)) {
+                return;
+            }
 
-                $alert
-                    .text('Easy!Appointments has been successfully installed!')
-                    .addClass('alert-success')
-                    .show();
+            $('#install').text('Success!');
+            $alert
+                .text('Easy!Appointments has been successfully installed!')
+                .addClass('alert-success')
+                .show();
 
-                setTimeout(function () {
-                    window.location.href = GlobalVariables.baseUrl + '/index.php/backend';
-                }, 1000);
-            })
-            .fail(GeneralFunctions.ajaxFailureHandler);
+            setTimeout(function () {
+                window.location.href = GlobalVariables.baseUrl + '/backend';
+            }, 3 * 1000);
+        })
+        .fail(function (jqxhr, textStatus, errorThrown) {
+            $('#install').prop('disabled', false);
+            $('#install').text(originalText);
+            GeneralFunctions.ajaxFailureHandler(jqxhr, textStatus, errorThrown);
+        });
     });
 
     /**

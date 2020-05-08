@@ -1,0 +1,28 @@
+/* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen
+readers do not read off random characters that represent icons */
+
+.#{$fa-css-prefix}-calendar-alt:before { content: fa-content($fa-var-calendar-alt); }
+.#{$fa-css-prefix}-calendar-check:before { content: fa-content($fa-var-calendar-check); }
+.#{$fa-css-prefix}-calendar-plus:before { content: fa-content($fa-var-calendar-plus); }
+.#{$fa-css-prefix}-plus:before { content: fa-content($fa-var-plus); }
+.#{$fa-css-prefix}-minus:before { content: fa-content($fa-var-minus); }
+.#{$fa-css-prefix}-long-arrow-alt-down:before { content: fa-content($fa-var-long-arrow-alt-down); }
+.#{$fa-css-prefix}-long-arrow-alt-left:before { content: fa-content($fa-var-long-arrow-alt-left); }
+.#{$fa-css-prefix}-long-arrow-alt-right:before { content: fa-content($fa-var-long-arrow-alt-right); }
+.#{$fa-css-prefix}-check-circle:before { content: fa-content($fa-var-check-circle); }
+.#{$fa-css-prefix}-check:before { content: fa-content($fa-var-check); }
+.#{$fa-css-prefix}-redo-alt:before { content: fa-content($fa-var-redo-alt); }
+.#{$fa-css-prefix}-sync-alt:before { content: fa-content($fa-var-sync-alt); }
+.#{$fa-css-prefix}-compress:before { content: fa-content($fa-var-compress); }
+.#{$fa-css-prefix}-trash-alt:before { content: fa-content($fa-var-trash-alt); }
+.#{$fa-css-prefix}-edit:before { content: fa-content($fa-var-edit); }
+.#{$fa-css-prefix}-save:before { content: fa-content($fa-var-save); }
+.#{$fa-css-prefix}-times:before { content: fa-content($fa-var-times); }
+.#{$fa-css-prefix}-search:before { content: fa-content($fa-var-search); }
+.#{$fa-css-prefix}-ban:before { content: fa-content($fa-var-ban); }
+.#{$fa-css-prefix}-lock:before { content: fa-content($fa-var-lock); }
+.#{$fa-css-prefix}-envelope:before { content: fa-content($fa-var-envelope); }
+.#{$fa-css-prefix}-wrench:before { content: fa-content($fa-var-wrench); }
+.#{$fa-css-prefix}-file-upload:before { content: fa-content($fa-var-file-upload); }
+.#{$fa-css-prefix}-clipboard-check:before { content: fa-content($fa-var-clipboard-check); }
+.#{$fa-css-prefix}-filter:before { content: fa-content($fa-var-filter); }

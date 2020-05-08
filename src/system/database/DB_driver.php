@@ -233,6 +233,14 @@ abstract class CI_DB_driver {
 	public $data_cache		= array();
 
 	/**
+	 * Data cache enabled flag
+	 *
+	 *
+	 * @var	bool
+	 */
+	protected $data_cache_enabled = TRUE;
+
+	/**
 	 * Transaction enabled flag
 	 *
 	 * @var	bool
@@ -563,7 +571,7 @@ abstract class CI_DB_driver {
 	 */
 	public function version()
 	{
-		if (isset($this->data_cache['version']))
+		if ($this->data_cache_enabled && isset($this->data_cache['version']))
 		{
 			return $this->data_cache['version'];
 		}
@@ -573,8 +581,12 @@ abstract class CI_DB_driver {
 			return ($this->db_debug) ? $this->display_error('db_unsupported_function') : FALSE;
 		}
 
-		$query = $this->query($sql)->row();
-		return $this->data_cache['version'] = $query->ver;
+        $query = $this->query($sql)->row();
+
+        if ($this->data_cache_enabled) {
+            $this->data_cache['version'] = $query->ver;
+        }
+		return $query->ver;
 	}
 
 	// --------------------------------------------------------------------
@@ -587,6 +599,28 @@ abstract class CI_DB_driver {
 	protected function _version()
 	{
 		return 'SELECT VERSION() AS ver';
+	}
+
+	/**
+	 * Control the data cache
+     * This affects runtime caching of database table and field names
+     * Not helpful for migrations and databases transactions
+	 */
+	public function data_cache_enable(bool $enable): void
+	{
+        $this->data_cache_enabled = $enable;
+        if (!$this->data_cache_enabled) {
+            // Clear cache
+            $this->data_cache = [];
+        }
+    }
+
+    /**
+	 * Get the data cache value
+	 */
+    public function is_data_cache_enabled(): bool
+	{
+        return $this->data_cache_enabled;
 	}
 
 	// --------------------------------------------------------------------
@@ -1241,7 +1275,7 @@ abstract class CI_DB_driver {
 	public function list_tables($constrain_by_prefix = FALSE)
 	{
 		// Is there a cached result?
-		if (isset($this->data_cache['table_names']))
+		if ($this->data_cache_enabled && isset($this->data_cache['table_names']))
 		{
 			return $this->data_cache['table_names'];
 		}
@@ -1251,7 +1285,7 @@ abstract class CI_DB_driver {
 			return ($this->db_debug) ? $this->display_error('db_unsupported_function') : FALSE;
 		}
 
-		$this->data_cache['table_names'] = array();
+		$table_names = array();
 		$query = $this->query($sql);
 
 		foreach ($query->result_array() as $row)
@@ -1279,10 +1313,14 @@ abstract class CI_DB_driver {
 				}
 			}
 
-			$this->data_cache['table_names'][] = $row[$key];
+			$table_names[] = $row[$key];
 		}
 
-		return $this->data_cache['table_names'];
+
+        if ($this->data_cache_enabled) {
+            $this->data_cache['table_names'] = $table_names;
+		}
+		return $table_names;
 	}
 
 	// --------------------------------------------------------------------
@@ -1309,7 +1347,7 @@ abstract class CI_DB_driver {
 	public function list_fields($table)
 	{
 		// Is there a cached result?
-		if (isset($this->data_cache['field_names'][$table]))
+		if ($this->data_cache_enabled && isset($this->data_cache['field_names'][$table]))
 		{
 			return $this->data_cache['field_names'][$table];
 		}
@@ -1320,7 +1358,7 @@ abstract class CI_DB_driver {
 		}
 
 		$query = $this->query($sql);
-		$this->data_cache['field_names'][$table] = array();
+		$field_names = array();
 
 		foreach ($query->result_array() as $row)
 		{
@@ -1341,11 +1379,13 @@ abstract class CI_DB_driver {
 					$key = key($row);
 				}
 			}
-
-			$this->data_cache['field_names'][$table][] = $row[$key];
+			$field_names[] = $row[$key];
 		}
 
-		return $this->data_cache['field_names'][$table];
+        if ($this->data_cache_enabled) {
+            $this->data_cache['field_names'][$table] = $field_names;
+		}
+		return $field_names;
 	}
 
 	// --------------------------------------------------------------------

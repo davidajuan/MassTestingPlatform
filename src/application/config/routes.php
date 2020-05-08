@@ -20,6 +20,10 @@
 |
 |	http://codeigniter.com/user_guide/general/routing.html
 |
+| Route Array Structure
+|   Key = Route in URL
+|   Val = Path to Controller and Action
+|
 | -------------------------------------------------------------------------
 | RESERVED ROUTES
 | -------------------------------------------------------------------------
@@ -42,26 +46,32 @@
 $route['default_controller'] = "appointments";
 $route['404_override'] = 'errors/error404';
 
+$route['health-check']['get'] = 'Healthcheck';
+
 
 /*
 | -------------------------------------------------------------------------
 | REST API ROUTING
 | -------------------------------------------------------------------------
 | The following routes will point the API calls into the correct controller
-| callback methods. This routes also define the HTTP verbs that they are 
+| callback methods. This routes also define the HTTP verbs that they are
 | used for each operation.
 |
 */
 
+
+// Uncomment the APIs you want to expose
 $resources = [
-    'appointments',
-    'unavailabilities',
-    'customers',
-    'services',
-    'categories',
-    'admins',
-    'providers',
-    'secretaries'
+    // 'appointments',
+    // 'unavailabilities',
+    // 'customers',
+    // 'services',
+    // 'categories',
+    // 'admins',
+    // 'providers',
+    // 'secretaries',
+    // 'cityadmin',
+    // 'citybusiness'
 ];
 
 foreach ($resources as $resource)
@@ -73,12 +83,17 @@ foreach ($resources as $resource)
     $route['api/v1/' . $resource . '/(:num)']['get'] = 'api/v1/' . $resource . '/get/$1';
 }
 
-$route['api/v1/settings']['get'] = 'api/v1/settings/get';
-$route['api/v1/settings/(:any)']['get'] = 'api/v1/settings/get/$1';
-$route['api/v1/settings/(:any)']['put'] = 'api/v1/settings/put/$1';
-$route['api/v1/settings/(:any)']['delete'] = 'api/v1/settings/delete/$1';
+// $route['api/v1/settings']['get'] = 'api/v1/settings/get';
+// $route['api/v1/settings/(:any)']['get'] = 'api/v1/settings/get/$1';
+// $route['api/v1/settings/(:any)']['put'] = 'api/v1/settings/put/$1';
+// $route['api/v1/settings/(:any)']['delete'] = 'api/v1/settings/delete/$1';
+// $route['api/v1/availabilities']['get'] = 'api/v1/availabilities/get';
 
-$route['api/v1/availabilities']['get'] = 'api/v1/availabilities/get';
+// API Endpoints used by external partners
+$route['api/v1/totals/remainingappointments']['get'] = 'api/v1/totals/remainingappointments/get';
+$route['api/v1/metrics']['get'] = 'api/v1/metrics/get';
+$route['api/v1/appointmentsanon']['get'] = 'api/v1/appointmentsAnon/get';
+$route['api/v1/business/list']['get'] = 'api/v1/Business/list';
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

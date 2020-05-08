@@ -205,7 +205,7 @@
      * then the update operation is going to be executed.
      */
     SecretariesHelper.prototype.save = function (secretary) {
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_secretary';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_save_secretary';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             secretary: JSON.stringify(secretary)
@@ -228,7 +228,7 @@
      * @param {Number} id Record id to be deleted.
      */
     SecretariesHelper.prototype.delete = function (id) {
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_secretary';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_delete_secretary';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             secretary_id: id
@@ -258,7 +258,7 @@
             var missingRequired = false;
             $('#secretaries .required').each(function () {
                 if ($(this).val() == '' || $(this).val() == undefined) {
-                    $(this).closest('.form-group').addClass('has-error');
+                    $(this).closest('.formGroup').addClass('has-error');
                     missingRequired = true;
                 }
             });
@@ -268,26 +268,26 @@
 
             // Validate passwords.
             if ($('#secretary-password').val() != $('#secretary-password-confirm').val()) {
-                $('#secretary-password, #secretary-password-confirm').closest('.form-group').addClass('has-error');
+                $('#secretary-password, #secretary-password-confirm').closest('.formGroup').addClass('has-error');
                 throw 'Passwords mismatch!';
             }
 
             if ($('#secretary-password').val().length < BackendUsers.MIN_PASSWORD_LENGTH
                 && $('#secretary-password').val() != '') {
-                $('#secretary-password, #secretary-password-confirm').closest('.form-group').addClass('has-error');
+                $('#secretary-password, #secretary-password-confirm').closest('.formGroup').addClass('has-error');
                 throw 'Password must be at least ' + BackendUsers.MIN_PASSWORD_LENGTH
                 + ' characters long.';
             }
 
             // Validate user email.
             if (!GeneralFunctions.validateEmail($('#secretary-email').val())) {
-                $('#secretary-email').closest('.form-group').addClass('has-error');
+                $('#secretary-email').closest('.formGroup').addClass('has-error');
                 throw 'Invalid email address!';
             }
 
             // Check if username exists
             if ($('#secretary-username').attr('already-exists') == 'true') {
-                $('#secretary-username').closest('.form-group').addClass('has-error');
+                $('#secretary-username').closest('.formGroup').addClass('has-error');
                 throw 'Username already exists.';
             }
 
@@ -370,7 +370,7 @@
     SecretariesHelper.prototype.filter = function (key, selectId, display) {
         display = display || false;
 
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_secretaries';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_filter_secretaries';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             key: key

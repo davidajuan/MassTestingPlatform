@@ -98,3 +98,14 @@ function generate_random_string($length = 10)
     }
     return $random_string;
 }
+
+/**
+ * Persists absolute url if one is passed
+ *
+ * @param	string
+ * @return	string
+ */
+function getURL($url)
+{
+    return !empty(parse_url($url, PHP_URL_HOST)) ? $url : base_url($url);
+}

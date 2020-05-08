@@ -12,6 +12,7 @@
 
     <link rel="icon" type="image/x-icon" href="<?= asset_url('assets/img/favicon.ico') ?>">
     <link rel="icon" sizes="192x192" href="<?= asset_url('assets/img/logo.png') ?>">
+    <script src="https://kit.fontawesome.com/bdcbd8a000.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div id="main" class="container">
@@ -30,16 +31,16 @@
                         echo '
                             <h3>' . lang('appointment_registered') . '</h3>
                             <p>' . lang('appointment_details_was_sent_to_you') . '</p>
-                            <a href="' . site_url() . '" class="btn btn-success btn-large">
-                                <span class="glyphicon glyphicon-calendar"></span> ' .
-                                lang('go_to_booking_page') . '
+                            <a href="' . site_url('backend') . '" class="btn btn-success btn-large">
+                                <i class="far fa-calendar-alt"></i> ' .
+                                'Next Appointment' . '
                             </a>
                         ';
 
                         if ($this->config->item('google_sync_feature')) {
                             echo '
                                 <button id="add-to-google-calendar" class="btn btn-primary">
-                                    <span class="glyphicon glyphicon-plus"></span>
+                                    <i class="fas fa-plus"></i>
                                     ' . lang('add_to_google_calendar') . '
                                 </button>';
                         }
@@ -60,7 +61,7 @@
     </div>
 
     <script src="<?= base_url('assets/ext/jquery/jquery.min.js') ?>"></script>
-    <script src="<?= base_url('assets/ext/bootstrap/js/bootstrap.min.js') ?>"></script>
+    <script src="<?= base_url('assets/ext/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
     <script src="<?= base_url('assets/ext/datejs/date.js') ?>"></script>
     <script src="https://apis.google.com/js/client.js"></script>
 

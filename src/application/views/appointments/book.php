@@ -17,6 +17,7 @@
 
     <link rel="icon" type="image/x-icon" href="<?= asset_url('assets/img/favicon.ico') ?>">
     <link rel="icon" sizes="192x192" href="<?= asset_url('assets/img/logo.png') ?>">
+    <script src="https://kit.fontawesome.com/bdcbd8a000.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -164,7 +165,7 @@
                         <button type="button" id="button-next-1" class="btn button-next btn-primary"
                                 data-step_index="1">
                             <?= lang('next') ?>
-                            <span class="glyphicon glyphicon-forward"></span>
+                            <i class="fas fa-long-arrow-alt-right"></i>
                         </button>
                     </div>
                 </div>
@@ -190,13 +191,13 @@
                     <div class="command-buttons">
                         <button type="button" id="button-back-2" class="btn button-back btn-default"
                                 data-step_index="2">
-                            <span class="glyphicon glyphicon-backward"></span>
+                            <i class="fas fa-long-arrow-alt-left"></i>
                             <?= lang('back') ?>
                         </button>
                         <button type="button" id="button-next-2" class="btn button-next btn-primary"
                                 data-step_index="2">
                             <?= lang('next') ?>
-                            <span class="glyphicon glyphicon-forward"></span>
+                            <i class="fas fa-long-arrow-alt-right"></i>
                         </button>
                     </div>
                 </div>
@@ -279,13 +280,13 @@
 
                     <div class="command-buttons">
                         <button type="button" id="button-back-3" class="btn button-back btn-default"
-                                data-step_index="3"><span class="glyphicon glyphicon-backward"></span>
+                                data-step_index="3"><i class="fas fa-long-arrow-alt-left"></i>
                             <?= lang('back') ?>
                         </button>
                         <button type="button" id="button-next-3" class="btn button-next btn-primary"
                                 data-step_index="3">
                             <?= lang('next') ?>
-                            <span class="glyphicon glyphicon-forward"></span>
+                            <i class="fas fa-long-arrow-alt-right"></i>
                         </button>
                     </div>
                 </div>
@@ -304,7 +305,7 @@
                             <div class="col-xs-12 col-sm-6">
                                 <h4 class="captcha-title">
                                     CAPTCHA
-                                    <small class="glyphicon glyphicon-refresh"></small>
+                                    <i class="fas fa-sync-alt"></i>
                                 </h4>
                                 <img class="captcha-image" src="<?= site_url('captcha') ?>">
                                 <input class="captcha-text" type="text" value="" />
@@ -317,12 +318,12 @@
                     <div class="command-buttons">
                         <button type="button" id="button-back-4" class="btn button-back btn-default"
                                 data-step_index="4">
-                            <span class="glyphicon glyphicon-backward"></span>
+                                <i class="fas fa-long-arrow-alt-left"></i>
                             <?= lang('back') ?>
                         </button>
                         <form id="book-appointment-form" style="display:inline-block" method="post">
                             <button id="book-appointment-submit" type="button" class="btn btn-success">
-                                <span class="glyphicon glyphicon-ok"></span>
+                                <i class="far fa-check-circle"></i>
                                 <?= !$manage_mode ? lang('confirm') : lang('update') ?>
                             </button>
                             <input type="hidden" name="csrfToken" />
@@ -386,7 +387,7 @@
     <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/jquery-qtip/jquery.qtip.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/cookieconsent/cookieconsent.min.js') ?>"></script>
-    <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.min.js') ?>"></script>
+    <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/datejs/date.js') ?>"></script>
     <script src="<?= asset_url('assets/js/frontend_book_api.js') ?>"></script>
     <script src="<?= asset_url('assets/js/frontend_book.js') ?>"></script>

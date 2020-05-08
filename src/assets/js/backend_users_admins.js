@@ -192,7 +192,7 @@
      * then the update operation is going to be executed.
      */
     AdminsHelper.prototype.save = function (admin) {
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_admin';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_save_admin';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             admin: JSON.stringify(admin)
@@ -215,7 +215,7 @@
      * @param {Number} id Record id to be deleted.
      */
     AdminsHelper.prototype.delete = function (id) {
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_admin';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_delete_admin';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             admin_id: id
@@ -245,7 +245,7 @@
 
             $('#admins .required').each(function () {
                 if ($(this).val() == '' || $(this).val() == undefined) {
-                    $(this).closest('.form-group').addClass('has-error');
+                    $(this).closest('.formGroup').addClass('has-error');
                     missingRequired = true;
                 }
             });
@@ -256,25 +256,25 @@
 
             // Validate passwords.
             if ($('#admin-password').val() != $('#admin-password-confirm').val()) {
-                $('#admin-password, #admin-password-confirm').closest('.form-group').addClass('has-error');
+                $('#admin-password, #admin-password-confirm').closest('.formGroup').addClass('has-error');
                 throw EALang.passwords_mismatch;
             }
 
             if ($('#admin-password').val().length < BackendUsers.MIN_PASSWORD_LENGTH
                 && $('#admin-password').val() != '') {
-                $('#admin-password, #admin-password-confirm').closest('.form-group').addClass('has-error');
+                $('#admin-password, #admin-password-confirm').closest('.formGroup').addClass('has-error');
                 throw EALang.password_length_notice.replace('$number', BackendUsers.MIN_PASSWORD_LENGTH);
             }
 
             // Validate user email.
             if (!GeneralFunctions.validateEmail($('#admin-email').val())) {
-                $('#admin-email').closest('.form-group').addClass('has-error');
+                $('#admin-email').closest('.formGroup').addClass('has-error');
                 throw EALang.invalid_email;
             }
 
             // Check if username exists
             if ($('#admin-username').attr('already-exists') == 'true') {
-                $('#admin-username').closest('.form-group').addClass('has-error');
+                $('#admin-username').closest('.formGroup').addClass('has-error');
                 throw EALang.username_already_exists;
             }
 
@@ -346,7 +346,7 @@
     AdminsHelper.prototype.filter = function (key, selectId, display) {
         display = display || false;
 
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_admins';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_filter_admins';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             key: key

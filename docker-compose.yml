@@ -1,8 +1,11 @@
-version: '2'
+version: '3.7'
 services:
   database:
     image: mysql
     command: mysqld --default-authentication-plugin=mysql_native_password
+    container_name: mtp_database
+    ports:
+        - ${APP_HOST}:3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=veryhardpassword
       - MYSQL_DATABASE=easyapp
@@ -14,8 +17,13 @@ services:
     build:
       context: .
     volumes:
-      - ./src:/var/www/html
+        - ./:/var/mass-testing-platform # this is the source directory mounted in the docker container
+        - ./src:/var/www/html
+        - ./vendor:/var/www/vendor
+        - ./data:/var/www/data
+        - ./log:/var/www/log
     command: dev
+    container_name: mtp_app
     ports:
       - ${APP_HOST}:80:80
     environment:
@@ -26,3 +34,9 @@ services:
     env_file:
       - .env
     restart: always
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

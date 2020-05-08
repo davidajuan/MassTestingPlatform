@@ -149,4 +149,9 @@ class Response {
 
         return $this;
     }
+
+    public function getResponse()
+    {
+        return $this->response;
+    }
 }

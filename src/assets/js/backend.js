@@ -29,18 +29,12 @@ window.Backend = window.Backend || {};
         window.console = window.console || function () {
         }; // IE compatibility
 
-        $(window)
-            .on('resize', function () {
-                Backend.placeFooterToBottom();
-            })
-            .trigger('resize');
-
         $(document).ajaxStart(function () {
-            $('#loading').show();
+            // $('#loading').show();
         });
 
         $(document).ajaxStop(function () {
-            $('#loading').hide();
+            // $('#loading').hide();
         });
 
         $('.menu-item').qtip({
@@ -77,25 +71,6 @@ window.Backend = window.Backend || {};
     exports.PRIV_USER_SETTINGS = 'user_settings';
 
     /**
-     * Place the backend footer always on the bottom of the page.
-     */
-    exports.placeFooterToBottom = function () {
-        var $footer = $('#footer');
-
-        if (window.innerHeight > $('body').height()) {
-            $footer.css({
-                'position': 'absolute',
-                'width': '100%',
-                'bottom': '0px'
-            });
-        } else {
-            $footer.css({
-                'position': 'static'
-            });
-        }
-    };
-
-    /**
      * Display backend notifications to user.
      *
      * Using this method you can display notifications to the use with custom messages. If the
@@ -105,8 +80,10 @@ window.Backend = window.Backend || {};
      * @param {Array} actions An array with custom actions that will be available to the user. Every
      * array item is an object that contains the 'label' and 'function' key values.
      */
-    exports.displayNotification = function (message, actions) {
+    exports.displayNotification = function (message, actions, type) {
         message = message || 'NO MESSAGE PROVIDED FOR THIS NOTIFICATION';
+
+        type = type || 'success';
 
         if (actions === undefined) {
             actions = [];
@@ -127,7 +104,7 @@ window.Backend = window.Backend || {};
         });
 
         var notificationHtml =
-            '<div class="notification alert">' +
+            '<div class="alert alert-' + type + ' mx-3">' +
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
             '<span aria-hidden="true">&times;</span>' +
             '</button>' +

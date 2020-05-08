@@ -1,0 +1,1 @@
+The Covid Community Care Network has approved your request for $slots_approved testing appointments.  Each employee must call $phone to schedule their own appointment using the code $business_code. A City of Detroit Business Liaison or District Manager will be contacting you shortly to walk you through the next steps.

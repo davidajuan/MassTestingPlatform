@@ -11,6 +11,9 @@
 $config['version'] = '1.3.2'; // This must be changed manually.
 $config['release_label'] = ''; // Leave empty for no title or add Alpha, Beta etc ...
 $config['google_sync_feature'] = Config::GOOGLE_SYNC_FEATURE;
+// FIXME: Users without composer will have a bad time. Need development docker container
+// Auto load the 'ROOT' vendor dir, instead of the 'APPLICATION' vendor dir
+$config['composer_autoload'] = FCPATH .'../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -18,15 +21,15 @@ $config['google_sync_feature'] = Config::GOOGLE_SYNC_FEATURE;
 |--------------------------------------------------------------------------
 |
 | URL to your CodeIgniter root. Typically this will be your base URL,
-| WITH a trailing slash:
+| WITHOUT a trailing slash:
 |
-|	http://example.com/
+|	http://example.com
 |
 | If this is not set then CodeIgniter will guess the protocol, domain and
-| path to your installation.
+| path to your installation. Logic is found in: src/system/core/Config.php
 |
 */
-$config['base_url'] = Config::BASE_URL;
+// $config['base_url'] = Config::BASE_URL;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +41,7 @@ $config['base_url'] = Config::BASE_URL;
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -296,21 +299,33 @@ $config['encryption_key'] = Config::BASE_URL;
 |   by default sessions last 7200 seconds (two hours).  Set to zero for no expiration.
 | 'sess_expire_on_close'	= Whether to cause the session to expire automatically
 |   when the browser window is closed
-| 'sess_encrypt_cookie'		= Whether to encrypt the cookie
+| 'sess_encrypt_cookie'		= Whether to encrypt the cookie  // NOT FOUND ANYWWHERE IN CI???
 | 'sess_use_database'		= Whether to save the session data to a database
 | 'sess_table_name'			= The name of the session database table
 | 'sess_match_ip'			= Whether to match the user's IP address when reading the session data
 | 'sess_match_useragent'	= Whether to match the User Agent when reading the session data
 | 'sess_time_to_update'		= how many seconds between CI refreshing Session Information
 |
+| Documentation to have a database driven session:
+| https://avenir.ro/codeigniter-tutorials/sessions-with-database-in-codeigniter/
+|
 */
-$config['sess_driver'] = 'files';
-$config['sess_cookie_name'] = 'ea_session';
-$config['sess_expiration'] = 7200;
-$config['sess_save_path'] = __DIR__ . '/../../storage/sessions';
+$config['sess_driver'] = 'database';
+$config['sess_cookie_name'] = 'ci_sessions';
+$config['sess_expiration'] = 14400; // 4 hours
+$config['sess_use_database'] = true;
+$config['sess_table_name'] = 'ci_sessions';
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
-$config['sess_regenerate_destroy'] = FALSE;
+
+// Initial Project Setup Override (Database does not exist yet, so we need to fallback to file based sessions)
+// Need access to these routes to complete install:
+// /installation/index
+// /installation/ajax_install
+if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/installation/') === 0) {
+    $config['sess_driver'] = 'files';
+    $config['sess_save_path'] = __DIR__ . '/../../storage/sessions';
+}
 
 /*
 |--------------------------------------------------------------------------

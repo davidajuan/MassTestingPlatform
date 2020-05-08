@@ -225,7 +225,7 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
         $('#filter-existing-customers').keyup(function () {
             var key = $(this).val().toLowerCase();
             var $list = $('#existing-customers-list');
-            var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_customers';
+            var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_filter_customers';
             var postData = {
                 csrfToken: GlobalVariables.csrfToken,
                 key: key
@@ -477,7 +477,7 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
 
             $dialog.find('.required').each(function () {
                 if ($(this).val() == '' || $(this).val() == null) {
-                    $(this).closest('.form-group').addClass('has-error');
+                    $(this).closest('.formGroup').addClass('has-error');
                     missingRequiredField = true;
                 }
             });
@@ -488,7 +488,7 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
 
             // Check email address.
             if (!GeneralFunctions.validateEmail($dialog.find('#email').val())) {
-                $dialog.find('#email').closest('.form-group').addClass('has-error');
+                $dialog.find('#email').closest('.formGroup').addClass('has-error');
                 throw EALang.invalid_email;
             }
 
@@ -496,7 +496,7 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
             var start = $('#start-datetime').datetimepicker('getDate');
             var end = $('#end-datetime').datetimepicker('getDate');
             if (start > end) {
-                $dialog.find('#start-datetime, #end-datetime').closest('.form-group').addClass('has-error');
+                $dialog.find('#start-datetime, #end-datetime').closest('.formGroup').addClass('has-error');
                 throw EALang.start_date_before_end_error;
             }
 

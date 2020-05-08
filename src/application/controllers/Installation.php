@@ -73,7 +73,7 @@ class Installation extends CI_Controller {
                 return;
             }
 
-            // Create E!A database structure.
+            // Create E!A database structure. - Version 12
             $file_contents = file_get_contents(dirname(BASEPATH) . '/assets/sql/structure.sql');
             $sql_queries = explode(';', $file_contents);
             array_pop($sql_queries);
@@ -82,7 +82,7 @@ class Installation extends CI_Controller {
                 $this->db->query($query);
             }
 
-            // Insert default E!A entries into the database.
+            // Insert default E!A entries into the database. - Version 12
             $file_contents = file_get_contents(dirname(BASEPATH) . '/assets/sql/data.sql');
             $sql_queries = explode(';', $file_contents);
             array_pop($sql_queries);
@@ -123,6 +123,23 @@ class Installation extends CI_Controller {
             $sample_provider['services'][] = $sample_service['id'];
             $this->providers_model->add($sample_provider);
 
+            // Database migration
+            // Set ini state - Version 12
+            // Check for existing version for a race condition
+            $versionQuery = $this->db->query('SELECT * FROM `ea_migrations` LIMIT 1');
+            if ($versionQuery->num_rows() >= 1) {
+                // UPDATE
+                $this->db->query("UPDATE `ea_migrations` SET `version` = '12'");
+            }
+            else {
+                // INSERT
+                $this->db->query("INSERT INTO `ea_migrations` VALUES ('12')");
+            }
+            // Migrate database to latest
+            $this->load->library('migration');
+            $this->migration->current();
+
+            // Output
             $this->output
                 ->set_content_type('application/json')
                 ->set_output(json_encode(AJAX_SUCCESS));

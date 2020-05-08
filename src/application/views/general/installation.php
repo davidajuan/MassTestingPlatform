@@ -48,9 +48,6 @@
     </style>
 </head>
 <body>
-    <div id="loading" class="hidden">
-        <img src="<?= base_url('assets/img/loading.gif') ?>">
-    </div>
 
     <header>
         <a href="http://easyappointments.org" target="_blank">
@@ -68,9 +65,9 @@
                 system. Remember to use the <strong class="text-primary"><?= site_url('backend') ?></strong>
                 url to connect to the backend section of Easy!Appointments.
 
-                If you face any problems during the usage of Easy!Appointments you can always check the 
+                If you face any problems during the usage of Easy!Appointments you can always check the
                 <a href="http://easyappointments.org/docs.html">Documentation</a>
-                and <a href="http://groups.google.com/group/easy-appointments">Support Group</a> for getting help. You 
+                and <a href="http://groups.google.com/group/easy-appointments">Support Group</a> for getting help. You
                 may also submit new issues on
                 <a href="https://github.com/alextselegidis/easyappointments/issues">GitHub Issues</a>
                 in order to help our development process.
@@ -162,7 +159,8 @@
 
         <button type="button" id="install" class="btn btn-success btn-large">
             <i class="icon-white icon-ok"></i>
-            Install Easy!Appointments</button>
+            Install Easy!Appointments
+        </button>
     </div>
 
     <footer>
@@ -180,7 +178,7 @@
 
     <script src="<?= asset_url('assets/ext/jquery/jquery.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui.min.js') ?>"></script>
-    <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.min.js') ?>"></script>
+    <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
     <script src="<?= asset_url('assets/js/general_functions.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/datejs/date.js') ?>"></script>
     <script src="<?= asset_url('assets/js/installation.js') ?>"></script>

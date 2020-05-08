@@ -2,11 +2,11 @@
 
 /* ----------------------------------------------------------------------------
  * Easy!Appointments - Open Source Web Scheduler
- * 
+ *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
  * @copyright   Copyright (c) 2013 - 2018, Alex Tselegidis
- * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3 
+ * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
  * ---------------------------------------------------------------------------- */
@@ -120,7 +120,7 @@ class Admins_Model extends CI_Model {
         $settings['salt'] = generate_salt();
         $settings['password'] = hash_password($settings['salt'], $settings['password']);
 
-        // Insert admin settings. 
+        // Insert admin settings.
         if ( ! $this->db->insert('ea_user_settings', $settings))
         {
             $this->db->trans_rollback();
@@ -261,7 +261,7 @@ class Admins_Model extends CI_Model {
             }
         }
 
-        // Validate calendar view mode. 
+        // Validate calendar view mode.
         if (isset($admin['settings']['calendar_view']) && ($admin['settings']['calendar_view'] !== CALENDAR_VIEW_DEFAULT
                 && $admin['settings']['calendar_view'] !== CALENDAR_VIEW_TABLE))
         {
@@ -305,7 +305,7 @@ class Admins_Model extends CI_Model {
     {
         if ( ! is_numeric($admin_id))
         {
-            throw new Exception('Invalid argument type $admin_id: ' . $admin_id);
+            throw new Exception('Invalid argument type admin_id');
         }
 
         // There must be always at least one admin user. If this is the only admin
@@ -340,7 +340,7 @@ class Admins_Model extends CI_Model {
     {
         if ( ! is_numeric($admin_id))
         {
-            throw new Exception('$admin_id argument is not a valid numeric value: ' . $admin_id);
+            throw new Exception('Invalid value in admin_id');
         }
 
         // Check if record exists
@@ -354,6 +354,8 @@ class Admins_Model extends CI_Model {
         $admin['settings'] = $this->db->get_where('ea_user_settings',
             ['id_users' => $admin_id])->row_array();
         unset($admin['settings']['id_users']);
+        unset($admin['settings']['password']);
+        unset($admin['settings']['salt']);
 
 
         return $admin;
@@ -376,15 +378,15 @@ class Admins_Model extends CI_Model {
     {
         if ( ! is_string($field_name))
         {
-            throw new Exception('$field_name argument is not a string: ' . $field_name);
+            throw new Exception('Invalid value in field_name');
         }
 
         if ( ! is_numeric($admin_id))
         {
-            throw new Exception('$admin_id argument is not a valid numeric value: ' . $admin_id);
+            throw new Exception('Invalid value in admin_id');
         }
 
-        // Check whether the admin record exists. 
+        // Check whether the admin record exists.
         $result = $this->db->get_where('ea_users', ['id' => $admin_id]);
         if ($result->num_rows() == 0)
         {
@@ -409,9 +411,10 @@ class Admins_Model extends CI_Model {
      * @param string|array $where_clause (OPTIONAL) The WHERE clause of the query to be executed. Use this to get
      * specific admin records.
      *
+     * @param array $search
      * @return array Returns an array with admin records.
      */
-    public function get_batch($where_clause = '')
+    public function get_batch($where_clause = '', $search = [])
     {
         $role_id = $this->get_admin_role_id();
 
@@ -420,14 +423,21 @@ class Admins_Model extends CI_Model {
             $this->db->where($where_clause);
         }
 
+        if (!empty($search)) {
+            $this->db->group_start()
+                ->or_like($search)
+                ->group_end();
+        }
+
         $batch = $this->db->get_where('ea_users', ['id_roles' => $role_id])->result_array();
 
-        // Get every admin settings.
         foreach ($batch as &$admin)
         {
             $admin['settings'] = $this->db->get_where('ea_user_settings',
                 ['id_users' => $admin['id']])->row_array();
             unset($admin['settings']['id_users']);
+            unset($admin['settings']['password']);
+            unset($admin['settings']['salt']);
         }
 
         return $batch;

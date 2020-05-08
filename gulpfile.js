@@ -4,6 +4,21 @@ const del = require('del');
 const fs = require('fs-extra');
 const path = require('path');
 const zip = require('zip-dir');
+const sass = require('gulp-sass');
+
+sass.compiler = require('node-sass');
+
+// Compile SCSS
+gulp.task('sass', function () {
+  return gulp.src('./src/assets/scss/**/*.scss')
+    .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+    .pipe(gulp.dest('./src/assets/css'));
+});
+
+// Watch for SCSS changes
+gulp.task('sass:watch', function () {
+  gulp.watch('./src/assets/scss/**/*.scss', ['sass']);
+});
 
 /**
  * Install and copy the required files from the "composer_modules" directory.

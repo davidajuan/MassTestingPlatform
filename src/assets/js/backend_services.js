@@ -23,6 +23,13 @@ window.BackendServices = window.BackendServices || {};
     'use strict';
 
     /**
+     * Use this class instance for performing actions on the attendant override.
+     *
+     * @type {AttendantOverride}
+     */
+    exports.ao = {};
+
+    /**
      * Contains the basic record methods for the page.
      *
      * @type {ServicesHelper|CategoriesHelper}
@@ -40,12 +47,19 @@ window.BackendServices = window.BackendServices || {};
     exports.initialize = function (bindEventHandlers) {
         bindEventHandlers = bindEventHandlers || true;
 
+        exports.ao = new AttendantOverride();
+        exports.ao.bindEventHandlers();
+
+
         // Fill available service categories listbox.
         $.each(GlobalVariables.categories, function (index, category) {
             var option = new Option(category.name, category.id);
             $('#service-category').append(option);
         });
         $('#service-category').append(new Option('- ' + EALang.no_category + ' -', null)).val('null');
+
+        // disable the overrides until they select a service
+        $('.display-overrides').prop('disabled', true);
 
         // Instantiate helper object (service helper by default).
         helper = servicesHelper;
@@ -91,7 +105,7 @@ window.BackendServices = window.BackendServices || {};
      * Use this method every time a change is made to the service categories db table.
      */
     exports.updateAvailableCategories = function () {
-        var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_service_categories';
+        var url = GlobalVariables.baseUrl + '/backend_api/ajax_filter_service_categories';
         var data = {
             csrfToken: GlobalVariables.csrfToken,
             key: ''

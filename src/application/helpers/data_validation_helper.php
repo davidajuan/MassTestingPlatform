@@ -25,3 +25,21 @@ function validate_mysql_datetime($datetime)
     $dt = DateTime::createFromFormat('Y-m-d H:i:s', $datetime);
     return ($dt) ? TRUE : FALSE;
 }
+
+/**
+ * Trim all whitesplace in front and back of a string or multi-dem array
+ * Any other value types are not touched
+ *
+ * @param mixed $value value/array to trim
+ * @return mixed Returns the trimmed result
+ */
+function trim_whitespace($value) {
+    if (is_array($value)) {
+        return array_map('trim_whitespace', $value);
+    }
+    elseif (is_string($value)) {
+        return trim($value);
+    }
+
+    return $value;
+}

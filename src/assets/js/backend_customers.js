@@ -44,7 +44,8 @@ window.BackendCustomers = window.BackendCustomers || {};
 
         helper = new CustomersHelper();
         helper.resetForm();
-        helper.filter('');
+        // dont call for all patients
+        // helper.filter('');
 
         if (defaultEventHandlers) {
             _bindEventHandlers();

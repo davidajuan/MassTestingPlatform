@@ -41,7 +41,7 @@ window.BackendCalendarUnavailabilitiesModal = window.BackendCalendarUnavailabili
                     .addClass('alert-danger')
                     .removeClass('hidden');
 
-                $dialog.find('#unavailable-start, #unavailable-end').closest('.form-group').addClass('has-error');
+                $dialog.find('#unavailable-start, #unavailable-end').closest('.formGroup').addClass('has-error');
                 return;
             }
 
@@ -141,7 +141,7 @@ window.BackendCalendarUnavailabilitiesModal = window.BackendCalendarUnavailabili
             if ($('.calendar-view').length === 0) {
                 $dialog.find('#unavailable-provider')
                     .val($('#select-filter-item').val())
-                    .closest('.form-group')
+                    .closest('.formGroup')
                     .hide();
             }
 

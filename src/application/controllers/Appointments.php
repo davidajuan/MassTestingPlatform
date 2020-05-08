@@ -13,7 +13,6 @@
 
 use \EA\Engine\Types\Text;
 use \EA\Engine\Types\Email;
-use \EA\Engine\Types\Url;
 
 /**
  * Appointments Controller
@@ -62,6 +61,9 @@ class Appointments extends CI_Controller {
             redirect('installation/index');
             return;
         }
+
+        // A public page isn't a thing right now.. send em to the backend
+        redirect('backend');
 
         $this->load->model('appointments_model');
         $this->load->model('providers_model');
@@ -393,33 +395,13 @@ class Appointments extends CI_Controller {
                 filter_var($this->input->post('manage_mode'), FILTER_VALIDATE_BOOLEAN),
                 $service['availabilities_type']);
 
-            if ($service['attendants_number'] > 1)
-            {
-                $available_hours = $this->_get_multiple_attendants_hours($this->input->post('selected_date'), $service,
-                    $provider);
-            }
+            $available_hours = $this->_get_multiple_attendants_hours($this->input->post('selected_date'), $service,
+                $provider);
 
-            // If the selected date is today, remove past hours. It is important  include the timeout before
-            // booking that is set in the back-office the system. Normally we might want the customer to book
-            // an appointment that is at least half or one hour from now. The setting is stored in minutes.
-            if (date('Y-m-d', strtotime($this->input->post('selected_date'))) === date('Y-m-d'))
-            {
-                $book_advance_timeout = $this->settings_model->get_setting('book_advance_timeout');
-
-                foreach ($available_hours as $index => $value)
-                {
-                    $available_hour = strtotime($value);
-                    $current_hour = strtotime('+' . $book_advance_timeout . ' minutes', strtotime('now'));
-                    if ($available_hour <= $current_hour)
-                    {
-                        unset($available_hours[$index]);
-                    }
-                }
-            }
-
-            $available_hours = array_values($available_hours);
-            sort($available_hours, SORT_STRING);
-            $available_hours = array_values($available_hours);
+            // array structure changed.. dont sort for now
+            // $available_hours = array_values($available_hours);
+            // sort($available_hours, SORT_STRING);
+            // $available_hours = array_values($available_hours);
 
             $this->output
                 ->set_content_type('application/json')
@@ -446,10 +428,10 @@ class Appointments extends CI_Controller {
         {
             $post_data = $this->input->post('post_data'); // alias
             $post_data['manage_mode'] = filter_var($post_data['manage_mode'], FILTER_VALIDATE_BOOLEAN);
-
             $this->load->model('appointments_model');
             $this->load->model('providers_model');
             $this->load->model('services_model');
+            $this->load->model('user_model');
             $this->load->model('customers_model');
             $this->load->model('settings_model');
 
@@ -465,25 +447,57 @@ class Appointments extends CI_Controller {
                 return;
             }
 
+            // Handle appointment data
+            $appointment = $_POST['post_data']['appointment'];
+
             // Check appointment availability.
-            if ( ! $this->_check_datetime_availability())
+            if ($this->shouldAddUpdateTime($appointment) && !$this->_check_datetime_availability())
             {
                 throw new Exception($this->lang->line('requested_hour_is_unavailable'));
             }
-
+            // Reload potentially changed data
             $appointment = $_POST['post_data']['appointment'];
-            $customer = $_POST['post_data']['customer'];
 
-            if ($this->customers_model->exists($customer))
-            {
-                $customer['id'] = $this->customers_model->find_record_id($customer);
+            // if it is an editted appointment, and the appointment date hasnt changed, dont notify
+            $shouldTrySendNotifications = true;
+            if ($post_data['manage_mode']) {
+                $old_appointment = $this->appointments_model->get_row($appointment['id']);
+
+                if ($old_appointment['start_datetime'] === $appointment['start_datetime']) {
+                    $shouldTrySendNotifications = false;
+                }
             }
 
-            $customer_id = $this->customers_model->add($customer);
-            $appointment['id_users_customer'] = $customer_id;
-            $appointment['is_unavailable'] = (int)$appointment['is_unavailable']; // needs to be type casted
-            $appointment['id'] = $this->appointments_model->add($appointment);
-            $appointment['hash'] = $this->appointments_model->get_value('hash', $appointment['id']);
+            // Handle customer data
+            $customer = $_POST['post_data']['customer'];
+
+            // Check to override CoD business code
+            // if city work, give them a business code
+            $appointment['business_code'] = $customer['city_worker'] ? Config::BUSINESS_CODE_CITY_WORKER : $appointment['business_code'];
+
+            // only if creating new record
+            if (!isset($customer['id'])) {
+                // Generate unique PatientId,
+                $customer['patient_id'] = $this->customers_model->generate_unique_patient_id($appointment['start_datetime']);
+            }
+
+            // Transaction Start
+            $this->db->trans_begin();
+
+            // If customer array has 'id', then it's treated as an UPDATE/EDIT
+            $customer_id = $this->customers_model->add($customer, true, $appointment);
+
+            if ($this->shouldAddUpdateTime($appointment)) {
+                unset($appointment['updateTime']);
+                $initials = $this->customers_model->parseNameInitials($customer['first_name'], $customer['last_name']);
+                $appointment['id_users_customer'] = $customer_id;
+                $appointment['is_unavailable'] = (int)$appointment['is_unavailable']; // needs to be type casted
+                $appointment['id'] = $this->appointments_model->add($appointment, $initials);
+                $appointment['hash'] = $this->appointments_model->get_value('hash', $appointment['id']);
+            }
+
+            // Transaction Commit
+            $this->db->trans_commit();
 
             $provider = $this->providers_model->get_row($appointment['id_users_provider']);
             $service = $this->services_model->get_row($appointment['id_services']);
@@ -512,6 +526,7 @@ class Appointments extends CI_Controller {
                     $this->load->library('google_sync');
                     $this->google_sync->refresh_token($google_token->refresh_token);
 
+                    // TODO: What does manage_mode do?
                     if ($post_data['manage_mode'] === FALSE)
                     {
                         // Add appointment to Google Calendar.
@@ -533,62 +548,72 @@ class Appointments extends CI_Controller {
             }
             catch (Exception $exc)
             {
-                log_message('error', $exc->getMessage());
-                log_message('error', $exc->getTraceAsString());
+                $this->logger->error($exc->getMessage());
+                $this->logger->error($exc->getTraceAsString());
             }
 
-            // :: SEND NOTIFICATION EMAILS TO BOTH CUSTOMER AND PROVIDER
-            try
-            {
-                $this->config->load('email');
-                $email = new \EA\Engine\Notifications\Email($this, $this->config->config);
+            $blnUpdate = $post_data['manage_mode'] ? true : false;
 
-                if ($post_data['manage_mode'] == FALSE)
+            if ($shouldTrySendNotifications) {
+                // :: Send email notification to patient
+                try
                 {
-                    $customer_title = new Text($this->lang->line('appointment_booked'));
-                    $customer_message = new Text($this->lang->line('thank_you_for_appointment'));
-                    $provider_title = new Text($this->lang->line('appointment_added_to_your_plan'));
-                    $provider_message = new Text($this->lang->line('appointment_link_description'));
-
+                    $this->load->library('ses_email');
+                    $email = new \EA\Engine\Notifications\Email($this, $this->config->config, $this->ses_email, $blnUpdate);
+                    $email->sendAppointmentDetails($customer, $appointment, Config::SES_EMAIL_ADDRESS, Config::SES_EMAIL_NAME);
                 }
-                else
+                catch (Exception $exc)
                 {
-                    $customer_title = new Text($this->lang->line('appointment_changes_saved'));
-                    $customer_message = new Text('');
-                    $provider_title = new Text($this->lang->line('appointment_details_changed'));
-                    $provider_message = new Text('');
+                    log_message('error', $exc->getMessage());
+                    log_message('error', $exc->getTraceAsString());
                 }
 
-                $customer_link = new Url(site_url('appointments/index/' . $appointment['hash']));
-                $provider_link = new Url(site_url('backend/index/' . $appointment['hash']));
-
-                $send_customer = filter_var($this->settings_model->get_setting('customer_notifications'),
-                    FILTER_VALIDATE_BOOLEAN);
-
-                $this->load->library('ics_file');
-                $ics_stream = $this->ics_file->get_stream($appointment, $service, $provider, $customer);
-
-                if ($send_customer === TRUE)
+                // :: Send SMS notification to patient
+                try
                 {
-                    $email->sendAppointmentDetails($appointment, $provider,
-                        $service, $customer, $company_settings, $customer_title,
-                        $customer_message, $customer_link, new Email($customer['email']), new Text($ics_stream));
+                    $this->load->library('sns_sms');
+                    $sms = new \EA\Engine\Notifications\Sms($this, $this->config->config, $this->sns_sms);
+                    $sms->sendAppointmentDetails($customer, $appointment, $blnUpdate);
                 }
-
-                $send_provider = filter_var($this->providers_model->get_setting('notifications', $provider['id']),
-                    FILTER_VALIDATE_BOOLEAN);
-
-                if ($send_provider === TRUE)
+                catch (Exception $exc)
                 {
-                    $email->sendAppointmentDetails($appointment, $provider,
-                        $service, $customer, $company_settings, $provider_title,
-                        $provider_message, $provider_link, new Email($provider['email']), new Text($ics_stream));
+                    log_message('error', $exc->getMessage());
+                    log_message('error', $exc->getTraceAsString());
                 }
             }
-            catch (Exception $exc)
-            {
-                log_message('error', $exc->getMessage());
-                log_message('error', $exc->getTraceAsString());
+
+            // Rock Connections Dashboard Hook
+            try {
+                // Only run this in production
+                if (ENVIRONMENT === 'production' && defined("Config::METRICS_WEBHOOK_URL") && Config::METRICS_WEBHOOK_URL) {
+                    $this->load->library('Rc_dashboard');
+                    $dateCurr = new DateTime();
+                    $apptRange = $this->rc_dashboard->generateScheduledTotalRange();
+
+                    $user = $this->user_model->get_settings($appointment['id_users_provider']);
+                    $business_service_id = $user['settings']['business_service_id'] ?? null;
+
+                    $data = [
+                        'start_datetime' => $appointment['start_datetime'],
+                        'zip_code' => $customer['zip_code'],
+                        'city' => $customer['city'],
+                        'dob' => $customer['dob'],
+                        'caller' => $customer['caller'],
+                        'availableToday' => $this->appointments_model->get_available_appointments_longrange($dateCurr->format('Y-m-d'), $service, $provider, 1, false)['appointments_remaining'] ?? null,
+                        'availableTotal' => $this->appointments_model->get_available_appointments_longrange($dateCurr->format('Y-m-d'), $service, $provider, 7, false)['appointments_remaining'] ?? null,
+                        'scheduledToday' => $this->appointments_model->count_created_appointments($dateCurr, [$service['id'], $business_service_id]),
+                        'scheduledTotal' => $this->appointments_model->count_scheduled_appointments($apptRange[0], $apptRange[1], [$service['id'], $business_service_id]),
+                    ];
+
+                    $req = $this->rc_dashboard->buildBody($data);
+                    $success = $this->rc_dashboard->pushToWebhook($req);
+                }
+                else {
+                    // We don't have a NonProd endpoint to test with
+                    $this->logger->debug(sprintf('Skipping webhook to RC dashboard'));
+                }
+            } catch (Exception $e) {
+                $this->logger->error(sprintf('Error trying to call RC Dashboard webhook, Exception: %s', $e));
             }
 
             $this->output
@@ -658,7 +683,7 @@ class Appointments extends CI_Controller {
                 {
                     // Get the provider record.
                     $curr_provider = $this->providers_model->get_row($curr_provider_id);
-                    
+
                     $empty_periods = $this->_get_provider_available_time_periods($curr_provider_id,
                         $service_id,
                         $current_date->format('Y-m-d'), $exclude_appointments);
@@ -666,13 +691,10 @@ class Appointments extends CI_Controller {
                     $available_hours = $this->_calculate_available_hours($empty_periods, $current_date->format('Y-m-d'),
                         $service['duration'], $manage_mode, $service['availabilities_type']);
                     if (! empty($available_hours)) break;
-                    
-                    if ($service['attendants_number'] > 1)
-                    {
-                        $available_hours = $this->_get_multiple_attendants_hours($current_date->format('Y-m-d'), $service,
-                            $curr_provider);
-                        if (! empty($available_hours)) break;
-                    }
+
+                    $available_hours = $this->_get_multiple_attendants_hours($current_date->format('Y-m-d'), $service,
+                        $curr_provider);
+                    if (! empty($available_hours)) break;
                 }
 
                 // No availability amongst all the provider
@@ -707,7 +729,7 @@ class Appointments extends CI_Controller {
      *
      * @return bool Returns whether the selected datetime is still available.
      */
-    protected function _check_datetime_availability()
+    protected function _check_datetime_availability(): bool
     {
         $this->load->model('services_model');
         $this->load->model('appointments_model');
@@ -741,7 +763,9 @@ class Appointments extends CI_Controller {
         {
             $appointment['id_users_provider'] = $this->_search_any_provider($appointment['id_services'],
                 date('Y-m-d', strtotime($appointment['start_datetime'])));
+            // Raw POST gets modified here, which is needed downstream.
             $_POST['post_data']['appointment']['id_users_provider'] = $appointment['id_users_provider'];
+            $this->logger->debug('_check_datetime_availability(): selected provider is always available');
             return TRUE; // The selected provider is always available.
         }
 
@@ -750,16 +774,22 @@ class Appointments extends CI_Controller {
             date('Y-m-d', strtotime($appointment['start_datetime'])),
             $exclude_appointments);
 
+        // Set up appointment times
+        $appt_start = new DateTime($appointment['start_datetime']);
+        $appt_start = $appt_start->format('H:i');
+
+        $appt_end = new DateTime($appointment['start_datetime']);
+        $appt_end->add(new DateInterval('PT' . $service_duration . 'M'));
+        $appt_end = $appt_end->format('H:i');
+        $this->logger->debug("_check_datetime_availability(): appointment: {$appt_start}, {$appt_end}");
+
+        // Flag to check if avail
         $is_still_available = FALSE;
 
+        $this->logger->debug('_check_datetime_availability(): checking available periods: ' . count($available_periods));
         foreach ($available_periods as $period)
         {
-            $appt_start = new DateTime($appointment['start_datetime']);
-            $appt_start = $appt_start->format('H:i');
-
-            $appt_end = new DateTime($appointment['start_datetime']);
-            $appt_end->add(new DateInterval('PT' . $service_duration . 'M'));
-            $appt_end = $appt_end->format('H:i');
+            $this->logger->debug("_check_datetime_availability(): period: {$period['start']}, {$period['end']}");
 
             $period_start = date('H:i', strtotime($period['start']));
             $period_end = date('H:i', strtotime($period['end']));
@@ -770,6 +800,7 @@ class Appointments extends CI_Controller {
                 break;
             }
         }
+        $this->logger->debug("_check_datetime_availability(): result: $is_still_available");
 
         return $is_still_available;
     }
@@ -802,8 +833,13 @@ class Appointments extends CI_Controller {
         // Get the service, provider's working plan and provider appointments.
         $working_plan = json_decode($this->providers_model->get_setting('working_plan', $provider_id), TRUE);
 
+
+        // TODO: Figure out why `id_services` was not present in this lookup
+        // Without it, only the last appointment slot was returned, instead
+        // of the expected list of slots for the specific service.
         $provider_appointments = $this->appointments_model->get_batch([
             'id_users_provider' => $provider_id,
+            'id_services' => $service_id, // TODO:
         ]);
 
         // Sometimes it might be necessary to not take into account some appointment records in order to display what
@@ -1004,11 +1040,8 @@ class Appointments extends CI_Controller {
                     $available_hours = $this->_calculate_available_hours($empty_periods, $selected_date,
                         $service['duration'], FALSE, $service['availabilities_type']);
 
-                    if ($service['attendants_number'] > 1)
-                    {
-                        $available_hours = $this->_get_multiple_attendants_hours($selected_date, $service,
-                            $provider);
-                    }
+                    $available_hours = $this->_get_multiple_attendants_hours($selected_date, $service,
+                        $provider);
 
                     if (count($available_hours) > $max_hours_count)
                     {
@@ -1056,7 +1089,7 @@ class Appointments extends CI_Controller {
      * Calculate the available appointment hours.
      *
      * Calculate the available appointment hours for the given date. The empty spaces
-     * are broken down to 15 min and if the service fit in each quarter then a new
+     * are broken down to 60 min and if the service fit in each quarter then a new
      * available hour is added to the "$available_hours" array.
      *
      * @param array $empty_periods Contains the empty periods as generated by the "_get_provider_available_time_periods"
@@ -1083,7 +1116,7 @@ class Appointments extends CI_Controller {
         {
             $start_hour = new DateTime($selected_date . ' ' . $period['start']);
             $end_hour = new DateTime($selected_date . ' ' . $period['end']);
-            $interval = $availabilities_type === AVAILABILITIES_TYPE_FIXED ? (int)$service_duration : 15;
+            $interval = $availabilities_type === AVAILABILITIES_TYPE_FIXED ? (int)$service_duration : 60;
 
             $current_hour = $start_hour;
             $diff = $current_hour->diff($end_hour);
@@ -1100,6 +1133,54 @@ class Appointments extends CI_Controller {
     }
 
     /**
+     * [AJAX] Public function for _get_available_appointments_longrange
+     *
+     * @return int number of appointments left
+     */
+    public function get_available_appointments_longrange() {
+        $service_id  = $_POST['service_id'] ?? $_GET['service_id'];
+        $provider_id  = $_POST['provider_id'] ?? $_GET['provider_id'];
+        $selected_date  = $_POST['selected_date'] ?? date('Y-m-d', strtotime("+1 day"));
+        $days = $_GET['days'] ?? 7;
+
+        $this->load->model('providers_model');
+        $this->load->model('services_model');
+        $this->load->model('appointments_model');
+
+        $service = $this->services_model->get_row($service_id);
+        $provider = $this->providers_model->get_row($provider_id);
+
+        $available_hours = $this->appointments_model->get_available_appointments_longrange($selected_date, $service, $provider, $days);;
+
+        $this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode($available_hours));
+    }
+
+    /**
+     * [AJAX] Public function for _get_multiple_attendants
+     *
+     * @param string $selected_date The selected appointment date.
+     * @param array $service Selected service data.
+     * @param array $provider Selected provider data.
+     *
+     * @return array Returns the available hours array and available slots in that hour array.
+     */
+    public function ajax_get_multiple_attendants_hours() {
+        $this->load->model('providers_model');
+        $this->load->model('services_model');
+        $service = $this->services_model->get_row($_POST['service_id']);
+        $provider = $this->providers_model->get_row($_POST['provider_id']);
+
+        $available_hours = $this->_get_multiple_attendants_hours($_POST['selected_date'], $service, $provider);
+
+
+        $this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode($available_hours));
+    }
+
+    /**
      * Get multiple attendants hours.
      *
      * This method will add the extra appointment hours whenever a service accepts multiple attendants.
@@ -1108,7 +1189,7 @@ class Appointments extends CI_Controller {
      * @param array $service Selected service data.
      * @param array $provider Selected provider data.
      *
-     * @return array Returns the available hours array.
+     * @return array Returns the available hours array and available slots in that hour array.
      */
     protected function _get_multiple_attendants_hours(
         $selected_date,
@@ -1118,6 +1199,7 @@ class Appointments extends CI_Controller {
         $this->load->model('appointments_model');
         $this->load->model('services_model');
         $this->load->model('providers_model');
+        $selected_date = date("Y-m-d", strtotime($selected_date));
 
         $unavailabilities = $this->appointments_model->get_batch([
             'is_unavailable' => TRUE,
@@ -1129,6 +1211,10 @@ class Appointments extends CI_Controller {
         $working_day = strtolower(date('l', strtotime($selected_date)));
         $working_hours = $working_plan[$working_day];
 
+        if ($working_hours === null) {
+            return [];
+        }
+
         $periods = [
             [
                 'start' => new DateTime($selected_date . ' ' . $working_hours['start']),
@@ -1136,12 +1222,12 @@ class Appointments extends CI_Controller {
             ]
         ];
 
-        $periods = $this->remove_breaks($selected_date, $periods, $working_hours['breaks']);
-        $periods = $this->remove_unavailabilities($periods, $unavailabilities);
+        $periods = $this->appointments_model->remove_breaks($selected_date, $periods, $working_hours['breaks']);
+        $periods = $this->appointments_model->remove_unavailabilities($periods, $unavailabilities);
 
         $hours = [];
 
-        $interval_value = $service['availabilities_type'] == AVAILABILITIES_TYPE_FIXED ? $service['duration'] : '15';
+        $interval_value = $service['availabilities_type'] == AVAILABILITIES_TYPE_FIXED ? $service['duration'] : '60';
         $interval = new DateInterval('PT' . (int)$interval_value . 'M');
         $duration = new DateInterval('PT' . (int)$service['duration'] . 'M');
 
@@ -1157,9 +1243,23 @@ class Appointments extends CI_Controller {
                 $appointment_attendants_number = $this->appointments_model->get_attendants_number_for_period($slot_start,
                     $slot_end, $service['id']);
 
-                if ($appointment_attendants_number < $service['attendants_number'])
+                $appointment_override_number = $this->appointments_model->get_attendants_override($slot_start,
+                $slot_end, $service['id']);
+
+                // If there is an override in the database, use that instead
+                if ($appointment_override_number !== false) {
+                    $service_attendants_number = $appointment_override_number;
+                } else {
+                    $service_attendants_number = $service['attendants_number'];
+                }
+
+                if ($appointment_attendants_number < $service_attendants_number)
                 {
-                    $hours[] = $slot_start->format('H:i');
+                    $hours[] = [
+                        "available_hours" => $slot_start->format('H:i'),
+                        "avail_per_slot"  => $service_attendants_number - $appointment_attendants_number
+                    ];
+
                 }
 
                 $slot_start->add($interval);
@@ -1171,122 +1271,13 @@ class Appointments extends CI_Controller {
     }
 
     /**
-     * Remove breaks from available time periods.
+     * Checks if we should add/update an appointment
      *
-     * @param string $selected_date Selected data (Y-m-d format).
-     * @param array $periods Time periods of the current date.
-     * @param array $breaks Breaks array for the current date.
-     *
-     * @return array Returns the available time periods without the breaks.
+     * @param array $appointment The appointment.
+     * @return bool Returns boolean if we should add/update the appointment
      */
-    public function remove_breaks($selected_date, $periods, $breaks)
-    {
-        if ( ! $breaks)
-        {
-            return $periods;
-        }
-
-        foreach ($breaks as $break)
-        {
-            $break_start = new DateTime($selected_date . ' ' . $break['start']);
-            $break_end = new DateTime($selected_date . ' ' . $break['end']);
-
-            foreach ($periods as &$period)
-            {
-                $period_start = $period['start'];
-                $period_end = $period['end'];
-
-                if ($break_start <= $period_start && $break_end >= $period_start && $break_end <= $period_end)
-                {
-                    // left
-                    $period['start'] = $break_end;
-                    continue;
-                }
-
-                if ($break_start >= $period_start && $break_start <= $period_end && $break_end >= $period_start && $break_end <= $period_end)
-                {
-                    // middle
-                    $period['end'] = $break_start;
-                    $periods[] = [
-                        'start' => $break_end,
-                        'end' => $period_end
-                    ];
-                    continue;
-                }
-
-                if ($break_start >= $period_start && $break_start <= $period_end && $break_end >= $period_end)
-                {
-                    // right
-                    $period['end'] = $break_start;
-                    continue;
-                }
-
-                if ($break_start <= $period_start && $break_end >= $period_end)
-                {
-                    // break contains period
-                    $period['start'] = $break_end;
-                    continue;
-                }
-            }
-        }
-
-        return $periods;
-    }
-
-    /**
-     * Remove the unavailabilities from the available time periods of the selected date.
-     *
-     * @param array $periods Available time periods.
-     * @param array $unavailabilities Unavailabilities of the current date.
-     *
-     * @return array Returns the available time periods without the unavailabilities.
-     */
-    public function remove_unavailabilities($periods, $unavailabilities)
-    {
-        foreach ($unavailabilities as $unavailability)
-        {
-            $unavailability_start = new DateTime($unavailability['start_datetime']);
-            $unavailability_end = new DateTime($unavailability['end_datetime']);
-
-            foreach ($periods as &$period)
-            {
-                $period_start = $period['start'];
-                $period_end = $period['end'];
-
-                if ($unavailability_start <= $period_start && $unavailability_end >= $period_start && $unavailability_end <= $period_end)
-                {
-                    // left
-                    $period['start'] = $unavailability_end;
-                    continue;
-                }
-
-                if ($unavailability_start >= $period_start && $unavailability_start <= $period_end && $unavailability_end >= $period_start && $unavailability_end <= $period_end)
-                {
-                    // middle
-                    $period['end'] = $unavailability_start;
-                    $periods[] = [
-                        'start' => $unavailability_end,
-                        'end' => $period_end
-                    ];
-                    continue;
-                }
-
-                if ($unavailability_start >= $period_start && $unavailability_start <= $period_end && $unavailability_end >= $period_end)
-                {
-                    // right
-                    $period['end'] = $unavailability_start;
-                    continue;
-                }
-
-                if ($unavailability_start <= $period_start && $unavailability_end >= $period_end)
-                {
-                    // Unavaibility contains period
-                    $period['start'] = $unavailability_end;
-                    continue;
-                }
-            }
-        }
-
-        return $periods;
+    protected function shouldAddUpdateTime($appointment): bool {
+        // skip if frontend doesn't want to update time
+        return filter_var($appointment['updateTime'] ?? true, FILTER_VALIDATE_BOOLEAN);
     }
 }

@@ -34,7 +34,7 @@ window.BackendCalendarApi = window.BackendCalendarApi || {};
      * @param {Function} errorCallback Optional, if defined, this function is going to be executed on post failure.
      */
     exports.saveAppointment = function (appointment, customer, successCallback, errorCallback) {
-        var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_appointment';
+        var url = GlobalVariables.baseUrl + '/backend_api/ajax_save_appointment';
         var data = {
             csrfToken: GlobalVariables.csrfToken,
             appointment_data: JSON.stringify(appointment)
@@ -70,7 +70,7 @@ window.BackendCalendarApi = window.BackendCalendarApi || {};
      * @param {Function} errorCallback The ajax failure callback function.
      */
     exports.saveUnavailable = function (unavailable, successCallback, errorCallback) {
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_unavailable';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_save_unavailable';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             unavailable: JSON.stringify(unavailable)

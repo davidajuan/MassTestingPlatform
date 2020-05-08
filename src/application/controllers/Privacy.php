@@ -32,8 +32,7 @@ class Privacy extends CI_Controller {
             }
 
             $this->load->driver('cache', ['adapter' => 'file']);
-
-            $customer_id = $this->cache->get('customer-token-' . $customer_token);
+            $customer_id = $this->session->tempdata('customer-token-' . $customer_token);
 
             if (empty($customer_id))
             {

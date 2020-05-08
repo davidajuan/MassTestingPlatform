@@ -500,6 +500,15 @@ if ( ! is_php('5.4'))
 		$params = array_slice($URI->rsegments, 2);
 	}
 
+    // Function to revert url encoding done in URI::_parse_argv()
+    // This allows for forward slashes in CLI arguments
+    if (is_cli() && is_array($params)) {
+        $params = array_map(
+            function($arg) { return str_replace('%2F', '/', $arg); },
+            $params
+        );
+    }
+
 /*
  * ------------------------------------------------------
  *  Is there a "pre_controller" hook?

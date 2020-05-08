@@ -167,12 +167,29 @@ class CI_Migration {
 		if ( ! $this->db->table_exists($this->_migration_table))
 		{
 			$this->dbforge->add_field(array(
-				'version' => array('type' => 'BIGINT', 'constraint' => 20),
+                // Matches current SQL install scripts
+				'version' => array('type' => 'INT', 'constraint' => 11),
 			));
 
 			$this->dbforge->create_table($this->_migration_table, TRUE);
 
 			$this->db->insert($this->_migration_table, array('version' => 0));
+		}
+
+		// Sessions table needs to be created before installation, maybe there is a better spot for this
+		if ( ! $this->db->table_exists('ci_sessions'))
+		{
+			// https://stackoverflow.com/a/30087774
+			$q = 'CREATE TABLE IF NOT EXISTS `ci_sessions` (
+				`id` varchar(40) NOT NULL,
+				`ip_address` varchar(45) NOT NULL,
+				`timestamp` int(10) unsigned DEFAULT 0 NOT NULL,
+				`data` blob NOT NULL,
+				PRIMARY KEY (id),
+				KEY `ci_sessions_timestamp` (`timestamp`)
+			);';
+
+			$this->db->query($q);
 		}
 
 		// Do we auto migrate to the latest migration?
@@ -297,10 +314,17 @@ class CI_Migration {
 			$pending[$number] = array($class, $method);
 		}
 
+        // Start transaction
+        $this->db->data_cache_enable(false);
+        $this->db->cache_off();
+        $this->db->trans_strict(true);
+        $this->db->cache_autodel = true;
+        $this->db->trans_start();
+
 		// Now just run the necessary migrations
 		foreach ($pending as $number => $migration)
 		{
-			log_message('debug', 'Migrating '.$method.' from version '.$current_version.' to version '.$number);
+            $this->logger->notice('Migrating '.$method.' from version '.$current_version.' to version '.$number);
 
 			$migration[0] = new $migration[0];
 			call_user_func($migration);
@@ -316,7 +340,20 @@ class CI_Migration {
 			$this->_update_version($current_version);
 		}
 
-		log_message('debug', 'Finished migrating to '.$current_version);
+        // Commit the transaction if we didn't die by errors
+        $result = $this->db->trans_complete();
+        // $this->db->trans_rollback();
+
+        // var_dump('QUERY DUMP----------------------');
+        // foreach ($this->db->queries as $q) {
+        //     var_dump($q);
+        // }
+        // var_dump('QUERY DUMP----------------------');
+
+        $this->db->data_cache_enable(true);
+        $this->db->cache_on();
+
+        $this->logger->notice('Finished migrating to '.$current_version);
 		return $current_version;
 	}
 
@@ -356,6 +393,30 @@ class CI_Migration {
 		return $this->version($this->_migration_version);
 	}
 
+    // --------------------------------------------------------------------
+
+	/**
+	 * Get the expected migration version
+	 *
+	 * @return	mixed	int value of the expected version
+	 */
+	public function getExpectedVersion()
+	{
+		return $this->_migration_version;
+	}
+
+    // --------------------------------------------------------------------
+
+	/**
+	 * Get the actual migration version
+	 *
+	 * @return	mixed	int value of the actual version
+	 */
+	public function getActualVersion()
+	{
+        return $this->_get_version();
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -369,6 +430,137 @@ class CI_Migration {
 	}
 
 	// --------------------------------------------------------------------
+
+	/**
+	 * Check if an index exists in a table
+	 *
+	 * @param string $tableName
+	 * @param string $indexName
+	 * @return bool true if it exists
+	 */
+	protected function indexExists(string $tableName, string $indexName): bool
+	{
+		$row = $this->db->query('SELECT COUNT(1) IndexIsThere FROM INFORMATION_SCHEMA.STATISTICS '
+			.'WHERE table_schema=DATABASE() AND table_name="' . $tableName . '" AND index_name="' . $indexName . '"')->row();
+		if ($row) {
+			return ($row->IndexIsThere == '0' ? false : true );
+		}
+		return false;
+    }
+
+	/**
+	 * Add fields
+     *
+     * Array structure:
+     *   [
+     *       'table1' => [
+     *           'fieldName1' => 'VARCHAR(32) NULL',
+     *       ],
+     *       'table2' => [
+     *           'fieldName1' => 'VARCHAR(2) NOT NULL DEFAULT "0"',
+     *           'fieldName2' => 'VARCHAR(255) NULL AFTER `fieldName1`',
+     *       ],
+     *   ]
+	 *
+	 * @param array $struct
+	 * @return void
+	 */
+	protected function addFields(array $struct): void
+	{
+        foreach ($struct as $tableName => $fields) {
+            foreach ($fields as $fieldName => $fieldAttr) {
+                if (!$this->db->field_exists($fieldName, $tableName)) {
+                    $this->db->query('ALTER TABLE `' . $tableName . '` ADD COLUMN `' . $fieldName . '` ' . $fieldAttr);
+                }
+            }
+        }
+	}
+
+	/**
+	 * Remove fields
+     * Note: You can use the same exact structure as the addFields array
+     *
+     * Array structure:
+     *   [
+     *       'table1' => [
+     *           'fieldName1' => '',
+     *       ],
+     *       'table2' => [
+     *           'fieldName1' => '',
+     *           'fieldName2' => '',
+     *       ],
+     *   ]
+	 *
+	 * @param array $struct
+	 * @return void
+	 */
+	protected function removeFields(array $struct): void
+	{
+        foreach ($struct as $tableName => $fields) {
+            foreach ($fields as $fieldName => $fieldAttr) {
+                if ($this->db->field_exists($fieldName, $tableName)) {
+                    $this->db->query('ALTER TABLE `' . $tableName . '` DROP COLUMN `' . $fieldName . '`');
+                }
+            }
+        }
+	}
+
+	/**
+	 * Add indexes
+     *
+     * Array structure:
+     *   [
+     *       'table1' => [
+     *           'indexName1' => '(`patient_id` ASC) VISIBLE',
+     *       ],
+     *       'table2' => [
+     *           'indexName1' => '(`hash` ASC) VISIBLE',
+     *           'indexName2' => '(`hash` ASC) VISIBLE',
+     *       ],
+     *   ]
+	 *
+	 * @param array $struct
+     * @param string $indexType Can be 'UNIQUE', 'FULLTEXT', 'SPATIAL'
+	 * @return void
+	 */
+	protected function addIndexes(array $struct, string $indexType = ''): void
+	{
+        foreach ($struct as $tableName => $indexes) {
+            foreach ($indexes as $indexName => $indexAttr) {
+                if (!$this->indexExists($tableName, $indexName)) {
+                    $this->db->query('ALTER TABLE `'. $tableName .'` ADD ' . $indexType . ' INDEX `' . $indexName . '` ' . $indexAttr);
+                }
+            }
+        }
+	}
+
+	/**
+	 * Remove indexes
+     *
+     * Array structure:
+     *   [
+     *       'table1' => [
+     *           'indexName1' => '',
+     *       ],
+     *       'table2' => [
+     *           'indexName1' => '',
+     *           'indexName2' => '',
+     *       ],
+     *   ]
+	 *
+	 * @param array $struct
+	 * @return void
+	 */
+	protected function removeIndexes(array $struct): void
+	{
+        foreach ($struct as $tableName => $indexes) {
+            foreach ($indexes as $indexName => $indexAttr) {
+                if ($this->indexExists($tableName, $indexName)) {
+                    $this->db->query('ALTER TABLE `'. $tableName .'` DROP INDEX `' . $indexName . '`');
+                }
+            }
+        }
+	}
 
 	/**
 	 * Retrieves list of available migration scripts

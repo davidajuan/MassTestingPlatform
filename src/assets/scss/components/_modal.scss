@@ -1,0 +1,27 @@
+.modal-title {
+  color:$modal-title-color;
+}
+
+.modal-header {
+  padding: $modal-header-padding;
+  background: $modal-header-bg-color;
+}
+
+.modal-header .close {
+  color: $modal-close-icon-color;
+  margin: $modal-close-icon-margin;
+  padding: $modal-close-icon-padding;
+  opacity: 1;
+}
+
+
+// Spinner that sits in the center of the modal and takes up the whole space
+.modalSpinner {
+  align-items: center;
+  background-color: $modal-spinner-bg-color;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+}

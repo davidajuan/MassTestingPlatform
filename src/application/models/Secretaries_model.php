@@ -46,6 +46,9 @@ class Secretaries_Model extends CI_Model {
      */
     public function add($secretary)
     {
+        // Sanitize Data
+        $secretary = $this->security->xss_clean($secretary);
+
         $this->validate($secretary);
 
         if ($this->exists($secretary) && ! isset($secretary['id']))
@@ -261,7 +264,7 @@ class Secretaries_Model extends CI_Model {
             }
         }
 
-        // Validate calendar view mode. 
+        // Validate calendar view mode.
         if (isset($secretary['settings']['calendar_view']) && ($secretary['settings']['calendar_view'] !== CALENDAR_VIEW_DEFAULT
                 && $secretary['settings']['calendar_view'] !== CALENDAR_VIEW_TABLE))
         {
@@ -330,7 +333,7 @@ class Secretaries_Model extends CI_Model {
     {
         if ( ! is_numeric($secretary_id))
         {
-            throw new Exception('$secretary_id argument is not a valid numeric value: ' . $secretary_id);
+            throw new Exception('Invalid value in secretary_id');
         }
 
         // Check if record exists
@@ -351,8 +354,9 @@ class Secretaries_Model extends CI_Model {
 
         $secretary['settings'] = $this->db->get_where('ea_user_settings',
             ['id_users' => $secretary['id']])->row_array();
-        unset($secretary['settings']['id_users'], $secretary['settings']['salt']);
-
+        unset($secretary['settings']['id_users']);
+        unset($secretary['settings']['password']);
+        unset($secretary['settings']['salt']);
         return $secretary;
     }
 
@@ -373,12 +377,12 @@ class Secretaries_Model extends CI_Model {
     {
         if ( ! is_string($field_name))
         {
-            throw new Exception('$field_name argument is not a string: ' . $field_name);
+            throw new Exception('Invalid value in field_name');
         }
 
         if ( ! is_numeric($secretary_id))
         {
-            throw new Exception('$secretary_id argument is not a valid numeric value: ' . $secretary_id);
+            throw new Exception('Invalid value in secretary_id');
         }
 
         // Check whether the secretary record exists.
@@ -406,15 +410,22 @@ class Secretaries_Model extends CI_Model {
      * @param string|array $where_clause (OPTIONAL) The WHERE clause of the query to be executed. Use this to get
      * specific secretary records.
      *
+     * @param array $search
      * @return array Returns an array with secretary records.
      */
-    public function get_batch($where_clause = '')
+    public function get_batch($where_clause = '', $search = [])
     {
         $role_id = $this->get_secretary_role_id();
 
         if ($where_clause != '')
         {
             $this->db->where($where_clause);
+        }
+
+        if (!empty($search)) {
+            $this->db->group_start()
+                ->or_like($search)
+                ->group_end();
         }
 
         $this->db->where('id_roles', $role_id);
@@ -435,6 +446,8 @@ class Secretaries_Model extends CI_Model {
             $secretary['settings'] = $this->db->get_where('ea_user_settings',
                 ['id_users' => $secretary['id']])->row_array();
             unset($secretary['settings']['id_users']);
+            unset($secretary['settings']['password']);
+            unset($secretary['settings']['salt']);
         }
 
         return $batch;
@@ -462,7 +475,7 @@ class Secretaries_Model extends CI_Model {
     {
         if ( ! is_array($providers))
         {
-            throw new Exception('Invalid argument given $providers: ' . print_r($providers, TRUE));
+            throw new Exception('Invalid value in providers');
         }
 
         // Delete old connections
@@ -493,12 +506,12 @@ class Secretaries_Model extends CI_Model {
     {
         if ( ! is_numeric($secretary_id))
         {
-            throw new Exception('Invalid $secretary_id argument given:' . $secretary_id);
+            throw new Exception('Invalid value in secretary_id');
         }
 
         if (count($settings) == 0 || ! is_array($settings))
         {
-            throw new Exception('Invalid $settings argument given:' . print_r($settings, TRUE));
+            throw new Exception('Invalid value in settings');
         }
 
         // Check if the setting record exists in db.

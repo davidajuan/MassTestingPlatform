@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `ea_consents` (
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8;
 
-CREATE TABLE `ea_migrations` (
+CREATE TABLE IF NOT EXISTS `ea_migrations` (
     `version` INT(11) NOT NULL
 )
     ENGINE = InnoDB
@@ -151,6 +151,20 @@ CREATE TABLE IF NOT EXISTS `ea_user_settings` (
     `sync_future_days` INT(11) DEFAULT '5',
     `calendar_view` VARCHAR(32) DEFAULT 'default',
     PRIMARY KEY (`id_users`)
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
+
+/*
+    Adding Session Database Table
+*/
+CREATE TABLE IF NOT EXISTS `ci_sessions` (
+    `id` varchar(40) NOT NULL,
+    `ip_address` varchar(45) NOT NULL,
+    `timestamp` int(10) unsigned DEFAULT 0 NOT NULL,
+    `data` blob NOT NULL,
+    PRIMARY KEY (id),
+    KEY `ci_sessions_timestamp` (`timestamp`)
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8;

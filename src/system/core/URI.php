@@ -283,8 +283,47 @@ class CI_URI {
 	 */
 	protected function _parse_argv()
 	{
-		$args = array_slice($_SERVER['argv'], 1);
-		return $args ? implode('/', $args) : '';
+        $args = array_slice($_SERVER['argv'], 1);
+        // die(print_r($args, true) . "\n"  . "\n");
+        // root@a10756e8d424:/var/mass-testing-platform# php src/index.php importbusiness 'test' 'folder_name/file_name.csv'
+        // Array
+        // (
+        //     [0] => importbusiness
+        //     [1] => test
+        //     [2] => folder_name/file_name.csv
+        // )
+
+        // Maintain paths in the arguments
+        // The revert is done in: src/system/core/CodeIgniter.php
+        // Without this, the paths would be all merged together losing it's context
+        // View the outputs below
+        if ($args) {
+            $args = array_map(
+                function($arg) { return str_replace('/', '%2F', $arg); },
+                $args
+            );
+        }
+        // die(print_r($args, true) . "\n"  . "\n");
+        // root@a10756e8d424:/var/mass-testing-platform# php src/index.php importbusiness 'test' 'folder_name/file_name.csv'
+        // Array
+        // (
+        //     [0] => importbusiness
+        //     [1] => test
+        //     [2] => folder_name%2Ffile_name.csv
+        // )
+
+        $ret = ($args ? implode('/', $args) : '');
+        // WITH the / replace to url encoding
+        // die("$ret" . "\n"  . "\n");
+        // root@a10756e8d424:/var/mass-testing-platform# php src/index.php importbusiness 'test' 'folder_name/file_name.csv'
+        // importbusiness/test/folder_name%2Ffile_name.csv
+
+        // WITHOUT the / replace to url encoding
+        // die("$ret" . "\n"  . "\n");
+        // root@a10756e8d424:/var/mass-testing-platform# php src/index.php importbusiness 'test' 'folder_name/file_name.csv'
+        // importbusiness/test/folder_name/file_name.csv
+
+        return $ret;
 	}
 
 	// --------------------------------------------------------------------

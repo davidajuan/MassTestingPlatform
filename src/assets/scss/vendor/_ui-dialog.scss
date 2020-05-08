@@ -1,0 +1,47 @@
+// This file overrides jQuery UI styles.
+// Modal that is also draggable.
+// Example: delete attendant override on services page.
+.ui-widget {
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+}
+
+.ui-widget-overlay {
+  background: $black 50% 50% repeat-x;
+  opacity: .5;
+  filter: Alpha(Opacity=50);
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+    display: none;
+}
+
+.ui-draggable .ui-dialog-titlebar {
+  background: $dialog-titlebar-bg-color;
+  color: $dialog-titlebar-color;
+  font-size: $dialog-titlebar-font-size;
+  font-weight: $dialog-titlebar-font-weight;
+  padding: 12px 10px;
+  border: none;
+  margin-bottom: 10px;
+}
+
+.ui-dialog {
+  padding: 0;
+  z-index: 2000;
+  border: none !important;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+  padding: .3em 1em .3em .4em;
+  border: none;
+}
+
+.ui-button .ui-icon,
+.ui-button:hover .ui-icon {
+  background-image: url('../ext/jquery-ui/images/ui-icons_222222_256x240.png');
+}
+
+.ui-dialog #error-technical {
+  max-width: 500px;
+}

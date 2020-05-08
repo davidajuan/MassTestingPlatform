@@ -223,6 +223,38 @@ window.GeneralFunctions = window.GeneralFunctions || {};
     };
 
     /**
+     * Formats a patient id for easy display: YYMM-DDXX-XXXX
+     * If an improper id is given, it is returned as-is
+     *
+     * @param {String} id patient id
+     * @return {String} Returns formatted patient id
+     */
+    exports.formatPatientId = function (id) {
+        var formattedId = id
+
+        // Get grouped nums
+        var myRegexp = /^(\d{4})(\d{4})(\d{4})$/i;
+        var matches = myRegexp.exec(id);
+
+        // See if we found a valid id
+        if (matches) {
+            formattedId = `${matches[1]}-${matches[2]}-${matches[3]}`;
+        }
+
+        return formattedId;
+    };
+
+    /**
+     * Remove any invalid characters from id to check against or insert into the database
+     *
+     * @param {String} id patient id
+     * @return {String} Returns clean patient id
+     */
+    exports.sanitizePatientId = function (id) {
+        return id.replace(/\D/g, '');
+    };
+
+    /**
      * Convert AJAX exceptions to HTML.
      *
      * This method returns the exception HTML display for javascript ajax calls. It uses the Bootstrap collapse
@@ -277,18 +309,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
         return parsedExceptions;
     };
 
-    /**
-     * Makes the first letter of the string upper case.
-     *
-     * @param {String} str The string to be converted.
-     *
-     * @return {String} Returns the capitalized string.
-     */
-    exports.ucaseFirstLetter = function (str) {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    };
-
-    /**
+     /**
      * Handle AJAX Exceptions Callback
      *
      * All backend js code has the same way of dislaying exceptions that are raised on the
@@ -331,7 +352,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
         var html = '<ul id="language-list">';
         $.each(availableLanguages, function () {
             html += '<li class="language" data-language="' + this + '">'
-                + GeneralFunctions.ucaseFirstLetter(this) + '</li>';
+                + GeneralFunctions.formatString(this, 'capitalizeFirstLetter') + '</li>';
         });
         html += '</ul>';
 
@@ -356,7 +377,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
 
         $(document).on('click', 'li.language', function () {
             // Change language with ajax call and refresh page.
-            var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_change_language';
+            var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_change_language';
             var postData = {
                 csrfToken: GlobalVariables.csrfToken,
                 language: $(this).attr('data-language')
@@ -430,5 +451,118 @@ window.GeneralFunctions = window.GeneralFunctions || {};
 
         return result;
     };
+
+     /**
+     * Calculate Age
+     *
+     * @param {String} birthday
+     *
+     */
+    exports.getCalculatedAge = function (birthday) {
+        // https://stackoverflow.com/questions/4060004/calculate-age-given-the-birth-date-in-the-format-yyyymmdd/21984136#21984136
+        var ageDifMs = Date.now() - Date.parse(birthday).getTime();
+        var ageDate = new Date(ageDifMs); // milliseconds from epoch
+        var age = ageDate.getUTCFullYear() - 1970;
+        if(age < 0) age = '';
+        return age;
+    };
+
+    /**
+     * Check for radios groups selected
+     *
+     * @param {String} groupName
+    */
+    exports.checkRadiosForSelection = function (groupName) {
+        var radios = document.getElementsByName(groupName);
+
+        for (var i = 0, len = radios.length; i < len; i++) {
+             if (radios[i].checked) {
+                 return true;
+            }
+        }
+        return false;
+    };
+
+    /**
+     * Show Submit error message
+     *
+     * @param {Boolean} showMessage
+     * @param {String} errorMessage
+    */
+    exports.showSubmitError = function (showMessage, errorMessage = null) {
+        let submitErrorMessage = $('.submitErrorMessage');
+        if(showMessage) {
+            submitErrorMessage.html(errorMessage);
+            submitErrorMessage.removeClass('hide');
+        }
+        else {
+            submitErrorMessage.addClass('hide');
+        }
+    };
+
+
+
+    /**
+     * Formats strings to the desired outcome
+     *
+     * @param {String} stringToFormat
+     * @param {String} format
+     */
+    exports.formatString = function (stringToFormat, format) {
+        let formattedString;
+
+        switch (format) {
+            case 'uppercase':
+                formattedString = stringToFormat.toUpperCase();
+                break;
+            case 'lowercase':
+                formattedString = stringToFormat.toLowerCase();
+                break;
+            case 'capitalizeFirstLetter':
+                formattedString = stringToFormat.charAt(0).toUpperCase() + stringToFormat.slice(1);
+            break;
+            case 'titleCase':
+                formattedString = stringToFormat.replace(/\w\S*/g, function(txt){
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                });
+            break;
+            case 'camel':
+            formattedString = stringToFormat.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
+                return index === 0 ? word.toLowerCase() : word.toUpperCase();
+              }).replace(/\s+/g, '');
+        }
+
+        return formattedString;
+    };
+
+    exports.updateQueryStringParameter = function (uri, key, value) {
+        var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+        var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+        if (uri.match(re)) {
+          return uri.replace(re, '$1' + key + "=" + value + '$2');
+        }
+        else {
+          return uri + separator + key + "=" + value;
+        }
+    }
+
+    exports.removeURLParameter = function (url, parameter) {
+        var urlparts = url.split('?');
+        if (urlparts.length >= 2) {
+
+            var prefix = encodeURIComponent(parameter) + '=';
+            var pars = urlparts[1].split(/[&;]/g);
+
+            for (var i = pars.length; i-- > 0;) {
+                if (pars[i].lastIndexOf(prefix, 0) !== -1) {
+                    pars.splice(i, 1);
+                }
+            }
+
+            return urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : '');
+        }
+        return url;
+    }
+
 
 })(window.GeneralFunctions);

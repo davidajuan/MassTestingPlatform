@@ -1,0 +1,159 @@
+.formGroup {
+  margin-bottom: $form-group-margin-bottom;
+}
+
+.textInput,
+.selectInput {
+  display: block;
+  border: $input-border-width solid $input-border;
+  border-radius: $input-border-radius;
+  background-color: $white;
+  padding: $input-padding;
+  height: $input-height;
+  width: $input-width;
+
+  &:focus,
+  &:active {
+    border-color: $input-border-active;
+    outline: 0;
+  }
+}
+
+.textInput--simple {
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;
+  border-radius: 0;
+  width: auto;
+}
+
+.textInput:read-only,
+.textInput:disabled,
+.selectInput:disabled {
+  color: $input-disabled-text-color;
+  cursor: not-allowed;
+  pointer-events: none;
+
+  &:focus,
+  &:active {
+    border-color: $input-disabled-border-color;
+    outline: 0;
+  }
+}
+
+.textInput--text-area {
+  height: auto;
+}
+
+.textInput--small {
+  width: $input-small-width;
+}
+
+.timePeriod {
+  margin-top: 1.9rem;
+}
+
+.has-error .textInput,
+.has-error .selectInput {
+  border-color: $input-border-warning;
+}
+
+.inlineGroup\@lg {
+  @media all and (min-width: $inline-group-breakpoint-lg) {
+    display: flex;
+
+    .formGroup {
+      margin-right: $inline-group-margin-right-lg;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .formGroup--equal {
+    flex: 1;
+  }
+}
+
+.inlineGroup\@md {
+  @media all and (min-width: $inline-group-breakpoint-md) {
+    display: flex;
+
+    .formGroup {
+      margin-right: $inline-group-margin-right-md;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+label {
+  font-size: $label-font-size;
+}
+
+// Radio Input
+.radioInput {
+  position: absolute;
+  opacity: 0;
+}
+
+.radioInput:checked +.radioLabel {
+  background-color: $radio-input-checked-bg-color;
+  border-color: $radio-input-checked-border-color;
+  color: $radio-input-checked-color;
+}
+
+.radioLabel {
+  align-items: center;
+  background-color: $radio-input-bg-color;
+  color: $radio-input-color;
+  cursor: pointer;
+  display: flex;
+  padding: $radio-input-padding;
+  border-top: $radio-input-border-width solid $radio-input-border-color;
+  border-bottom: $radio-input-border-width solid $radio-input-border-color;
+  border-right: $radio-input-border-width solid $radio-input-border-color;
+  border-left: $radio-input-border-width solid $radio-input-border-color;
+
+    &:last-child {
+      border-left: 0 solid $radio-input-border-color;
+      border-top-right-radius: $radio-input-border-radius-right;
+      border-bottom-right-radius: $radio-input-border-radius-right;
+    }
+
+    &:first-of-type {
+      border-bottom-left-radius: $radio-input-border-radius-left;
+      border-top-left-radius: $radio-input-border-radius-left;
+      border-right: 0 solid $radio-input-border-color;
+    }
+}
+
+.radioInput:disabled + .radioLabel {
+  background-color: $gray-light;
+  color: $white;
+  cursor: not-allowed;
+}
+
+.errorMessage,
+.submitErrorMessage,
+.deleteErrorMessage,
+.errorMessage--email {
+    color: $error-message-color;
+    display: block;
+    font-size: $error-message-font-size;
+    margin-top: $error-message-margin-top;
+}
+
+// Input/icon group
+.inputIconGroup {
+  position: relative;
+}
+
+.inputIconGroup__icon {
+  position: absolute;
+  top: $input-icon-top;
+  right: $input-icon-right;
+}

@@ -58,8 +58,7 @@ class Consents_model extends CI_Model {
             || ! isset($consent['ip'])
             || ! isset($consent['type']))
         {
-            throw new Exception('Not all required fields are provided: '
-                . print_r($consent, TRUE));
+            throw new Exception('Invalid value in consent');
         }
     }
 

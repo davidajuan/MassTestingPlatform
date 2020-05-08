@@ -1,0 +1,580 @@
+// This is where you want to change the value of the
+// variables below to customize the UI.
+// Note: These do not alter layout or grids.
+
+//
+// _alert.scss
+///
+
+// Sets the margin around the whole alert.
+$alert-margin: 1rem;
+// Font size of the close icon.
+$alert-close-icon-size: 1.5rem;
+// Color of success alert text.
+$alert-success-color: $white;
+// Background color of success alert.
+$alert-success-bg-color: $green;
+// Border color of success alert.
+$alert-success-border-color: $green;
+// Color of success alert close icon.
+$alert-success-close-icon-color: $white;
+// Color of danger alert text.
+$alert-danger-color: $black;
+// Background color of danger alert.
+$alert-danger-bg-color: $yellow;
+// Border color of danger alert.
+$alert-danger-border-color: $yellow;
+// Color of danger alert close icon.
+$alert-danger-close-icon-color: $black;
+// Color of fatal alert text.
+$alert-fatal-color: $white;
+// Background color of fatal alert.
+$alert-fatal-bg-color: $red;
+// Border color of fatal alert.
+$alert-fatal-border-color: $red;
+// Color of fatal alert close icon.
+$alert-fatal-close-icon-color: $white;
+
+//
+// _buttons.scss
+///
+
+// Primary Button
+// Background color of the primary button.
+$button-primary-bg-color: $white;
+// Text color of the primary button.
+$button-primary-color: $green;
+// Border color of the primary button.
+$button-primary-border-color: $green;
+// Border width of the primary button.
+$button-primary-border-width: 2px;
+// Background color of the primary button on hover
+// and focus.
+$button-primary-hover-bg-color: $green;
+// Text color of the primary button on hover
+// and focus.
+$button-primary-hover-color: $white;
+// Border color of the primary button on hover
+// and focus.
+$button-primary-hover-border-color: $green;
+// Box shadow of the primary button on hover
+// and focus.
+$button-primary-hover-box-shadow: none;
+// Background color of disabled primary button.
+$button-primary-disabled-bg-color: $green;
+// Border color of disabled primary button.
+$button-primary-disabled-border-color: $green;
+
+// Simple Button
+// Text color of the simple button.
+$button-simple-color: $black;
+// Text color of the simple button on hover
+// and focus.
+$button-simple-hover-color: $green;
+// Text color of disabled simple button.
+$button-simple-disabled-color: $gray-dark;
+// Text color of disabled simple button on hover
+// and focus.
+$button-simple-disabled-hover-color: $gray-dark;
+
+// Danger Button
+// Background color of the danger button.
+$button-danger-bg-color: $red;
+// Text color of the danger button.
+$button-danger-color: $white;
+// Background color of the danger button on hover
+// and focus.
+$button-danger-hover-bg-color: $white;
+// Border color of the danger button.
+$button-danger-hover-border-color: $red; 
+// Text color of the danger button on hover
+// and focus.
+$button-danger-hover-color: $red;
+// Box shadow of the danger button on hover
+// and focus.
+$button-danger-hover-box-shadow: none;
+
+// Spinner Button
+// Background color of the spinner button.
+$button-spinner-bg-color: $white;
+// Text color of the spinner button.
+$button-spinner-color: $green;
+
+//
+// _card.scss
+///
+
+// Border around the card.
+$card-border: 0;
+// Margin bottom on the card.
+$card-margin-bottom: 1rem;
+// Padding inside the card.
+$card-padding: 0.5rem;
+// Background color of the odd card.
+$card-odd-bg-color: $gray-light;
+// Text color of the odd card.
+$card-odd-color: $black;
+// Margin bottom on card title.
+$card-title-margin-bottom: 0.75rem;
+// Font size of card title.
+$card-title-font-size: 1.25rem;
+// Font weight of card title.
+$card-title-font-weight: bold;
+
+//
+// _form.scss
+///
+
+// Margin under the form group which consists
+// of label and input.
+$form-group-margin-bottom: 1rem;
+// Height of the inputs.
+$input-height: 2.5rem;
+// Width of the inputs.
+$input-width: 100%;
+// Padding of the inputs.
+$input-padding: 0.25rem 0.5rem;
+// Border color around the inputs.
+$input-border: $gray;
+// Border width around the inputs.
+$input-border-width: 2px;
+// Border radius of input.
+$input-border-radius: 3px;
+// Border color of input when focused or active.
+$input-border-active: $green-dark;
+// Border color of input when field has a warning.
+$input-border-warning: $yellow;
+// Border color of input when field has an error.
+$input-border-error: $red;
+// Width of small input.
+$input-small-width: 4rem;
+// Text color of disabled input.
+$input-disabled-text-color: $gray-dark;
+// Border of disabled input.
+$input-disabled-border-color: $gray;
+// Font size of label.
+$label-font-size: 0.95rem;
+
+// Inline group breakpoint at large screen.
+$inline-group-breakpoint-lg: $lg-breakpoint;
+// Margin right on the large inline group.
+$inline-group-margin-right-lg: 0.5rem;
+// Inline group breakpoint at medium screen.
+$inline-group-breakpoint-md: $md-breakpoint;
+// Margin right on the medium inline group.
+$inline-group-margin-right-md: 0.5rem;
+
+// Radio input border width.
+$radio-input-border-width: 2px;
+// Radio input border color.
+$radio-input-border-color: $gray;
+// Radio input border radius right.
+$radio-input-border-radius-right: 4px;
+// Radio input border radius left.
+$radio-input-border-radius-left: 4px;
+// Radio input text color.
+$radio-input-color: $black;
+// Radio input padding.
+$radio-input-padding: 0.75rem;
+// Radio input background color.
+$radio-input-bg-color: $white;
+// Radio input background color when checked.
+$radio-input-checked-bg-color: $green;
+// Radio input border color when checked.
+$radio-input-checked-border-color: $green;
+// Radio input text color when checked.
+$radio-input-checked-color: $white;
+
+// Text color of error message.
+$error-message-color: $red;
+// Font size of error message.
+$error-message-font-size: 12px;
+// Margin top of error message.
+$error-message-margin-top: 0.25rem;
+
+// When there is an icon inside of on input.
+// Top spacing above icon.
+$input-icon-top: 0.75rem;
+// Right spacing next to icon.
+$input-icon-right: 0.5rem;
+
+//
+// _header.scss
+///
+
+// Background color of the header.
+$header-background-color: $green-dark;
+// Color of the header text such as the site name,
+// next to the logo.
+$header-text-color: $white;
+
+//
+// _modal.scss
+///
+
+// Text color of the modal title.
+$modal-title-color: $white;
+// Background color of the modal header.
+$modal-header-bg-color: $green-dark;
+// Padding on the modal header.
+$modal-header-padding: 12px 15px;
+// Color of the close icon in the modal header.
+$modal-close-icon-color: $white;
+// Margin of the close icon in the modal header.
+$modal-close-icon-margin: 0;
+// Padding of the close icon in the modal header.
+$modal-close-icon-padding: 0;
+// Background color of the modal spinner.
+$modal-spinner-bg-color: #8080806b;
+
+//
+// _nav-pills.scss
+///
+
+// Background color of the nav pills.
+$nav-pill-bg-color: $gray-light;
+// Margin bottom of the nav pills.
+$nav-pill-margin-bottom: 1rem;
+// Text color of the nav link.
+$nav-pill-link-color: $green-dark;
+// Background color of the nav link that is active.
+$nav-pill-link-bg-color: $green-dark;
+
+//
+// _nav.scss
+///
+
+// The breakpoint where the navigation expands.
+$navigation-breakpoint: $xl-breakpoint;
+// Default color of the nav links.
+$navigation-link: $white;
+// Color of the nav link on hover and focus.
+$navigation-link-hover-color: $white;
+// Color of the underline on the nav links on hover and focus.
+$navigation-link-hover-underline-color: $white;
+// Color of active nav link.
+$navigation-link-active: $green;
+
+//
+// _pagination.scss
+///
+
+// Text color of pagination link.
+$pagination-link-color: $green;
+// Text color of pagination link on hover.
+$pagination-link-hover-color: $green-dark;
+// Background color of active pagination link.
+$pagination-link-active-bg-color: $green;
+// Border color of active pagination link.
+$pagination-link-active-border-color: $green;
+
+//
+// _records.scss
+///
+
+// Margin under the filter records column.
+$filter-records-margin-bottom: 1.5rem;
+// Background color of filter entry.
+$filter-entry-bg-color: $gray-light;
+// Background color of selected filter entry.
+$filter-entry-selected-bg-color: $gray-light;
+// Border right color of selected filter entry.
+$filter-entry-selected-border-right-color: $green-dark;
+// Border right width of selected filter entry.
+$filter-entry-selected-border-right-width: 5px;
+
+//
+// _search.scss
+///
+
+// Breakpoint at medium screen size.
+$search-md-breakpoint: $md-breakpoint;
+// Breakpoint at large screen size.
+$search-lg-breakpoint: 900px;
+// Padding around search container.
+$search-padding: 0 1.5rem;
+// Margin around search container.
+$search-margin: 1.25rem auto;
+// Height of search container at wide screen
+// when a result shows.
+$search-active-height-at-wide: 8rem;
+// Border bottom color of search input.
+$search-input-container-border-bottom-color: $gray;
+// Border bottom width of search input.
+$search-input-container-border-bottom-width: 2px;
+// Search input container width at wide screen.
+$search-input-container-width-at-wide: 27rem;
+// Background color of search input.
+$search-input-bg-color: transparent;
+// Font size of search input.
+$search-input-font-size: 1.25rem;
+// Height of search input.
+$search-input-height: 3rem;
+// Border of search input.
+$search-input-border: 0;
+// Border width of search results.
+$search-results-border-width: 2px;
+// Border color of search results.
+$search-results-border-color: $gray;
+// Margin bottom of search results.
+$search-results-margin-bottom: 1rem;
+// Background color of search results.
+$search-results-bg-color: $white;
+// Width of search results at wide screen.
+$search-results-width-at-wide: 27rem;
+// Max height of result item.
+$search-results-item-max-height: 200px;
+// Heading color of resuts details.
+$search-results-details-heading-color: $green;
+// Heading padding of resuts details at wide screen.
+$search-results-details-heading-padding-at-wide: 0 1.5rem;
+// Max height of results details.
+$search-results-details-max-height: 13rem;
+// Height of results details.
+$search-results-details-height: 13rem;
+// Value of top position of results details at
+// wide screen.
+$search-results-details-top-at-wide: 2.5rem;
+// Width of results details at wide screen.
+$search-results-details-width-at-wide: 18rem;
+// Border bottom width of detail.
+$search-results-detail-border-bottom-width: 1px;
+// Border bottom color of detail.
+$search-results-detail-border-bottom-color: $gray;
+// Margin bottom of detail.
+$search-results-detail-margin-bottom: 1rem;
+// Padding bottom of detail.
+$search-results-detail-padding-bottom: 1rem;
+// Margin of detail at wide screen.
+$search-results-detail-margin-at-wide: 0 1.5rem 1rem;
+// Value of top position of detail at wide screen.
+$search-results-detail-top-at-wide: 3rem;
+// Padding of results item.
+$search-results-item-padding: 0.75rem 0.5rem;
+// Hover background color of results item.
+$search-results-item-hover-bg-color: $gray-light;
+// Selected background color of results item.
+$search-results-item-selected-bg-color: $gray-light;
+
+//
+// _sidepanel.scss
+///
+
+// Padding of side panel.
+$side-panel-padding: 1rem;
+// Background color of side panel.
+$side-panel-bg-color: lighten($gray-light, 2%);
+// Box shadow of side panel.
+$side-panel-box-shadow: 5px 0px 25px 1px $gray-dark;
+// Text color of side panel.
+$side-panel-color: $black;
+// Trigger text color of side panel.
+$side-panel-trigger-color: $white;
+// Trigger box shadow of side panel.
+$side-panel-trigger-box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+// Trigger background color of side panel.
+$side-panel-trigger-bg-color: $green;
+// Trigger border radius of side panel.
+$side-panel-trigger-border-radius: 15px 0px 0px 15px;
+// Active trigger background color of side panel.
+$side-panel-trigger-active-bg-color: darken($gray-light, 15%);
+// Active trigger box shadow of side panel.
+$side-panel-trigger-active-box-shadow: none;
+
+//
+// _sidepanel.scss
+///
+
+// Height of spinner.
+$spinner-height: 1.5rem;
+// Width of spinner.
+$spinner-width: 1.5rem;
+// Circle spinner border width.
+$spinner-circle-border-width: .18rem;
+// Circle spinner border color.
+$spinner-circle-border-color: $green-dark;
+// Height of large spinner.
+$spinner-large-height: 3.15rem;
+// Width of large spinner.
+$spinner-large-width: 3.15rem;
+// Border width of large spinner.
+$spinner-large-border-width: 0.5rem;
+// Border color of large spinner.
+$spinner-large-border-color: $green-dark;
+
+//
+// _table.scss
+///
+
+// Specific to attendant override table.
+// Background color of table row on hover.
+$table-row-bg-color-attendant-override: lighten($yellow, 25%);
+// Max height of fixed table.
+$table-fixed-max-height: 35rem;
+// Padding of interactive table.
+$table-interactive-padding: 0.3rem 0.5rem;
+// Background color of colored table head.
+$table-head-colored-bg-color: $green;
+// Color of colored table head.
+$table-head-colored-color: $white;
+// Background color of active table stripped row.
+$table-stripped-active-row-bg-color: rgba(0, 0, 0, 0.18);
+
+//
+// _upload.scss
+///
+
+// Background color of upload.
+$upload-bg-color: $white;
+// Padding of upload.
+$upload-padding: 3rem 1.5rem;
+// Margin of upload.
+$upload-margin: 1rem;
+// Outline width of upload.
+$upload-outline-width: 2px;
+// Outline style of upload.
+$upload-outline-style: dashed;
+// Outline color of upload.
+$upload-outline-color: $green;
+// Font size of upload.
+$upload-font-size: 1.25rem;
+// Background color when you drag over upload.
+$upload-dragover-bg-color: $gray-light;
+// Icon font size.
+$upload-icon-font-size: 5rem;
+// Icon color. 
+$upload-icon-color: lighten($gray-dark, 30%);
+// Background color of upload button.
+$upload-button-bg-color: $green;
+// Color of upload button.
+$upload-button-color: $white;
+// Border width of upload button.
+$upload-button-border-width: 2px;
+// Border color of upload button.
+$upload-button-border-color: transparent;
+// Padding of upload button.
+$upload-button-padding: 0.5rem 1rem;
+// Background color on hover of upload button.
+$upload-button-hover-bg-color: $green-dark;
+// Border color on hover of upload button.
+$upload-button-hover-border-color: $green-dark;
+// Status error color.
+$upload-status-error-color: $red;
+// Status success color.
+$upload-status-success-color: $green;
+// Font size of file information.
+$file-information-font-size: 1rem;
+// Width of line above file information.
+$file-information-before-line-width: 220px;
+// Height of line above file information.
+$file-information-before-line-height: 2px;
+// Color of line above file information.
+$file-information-before-line-color: $gray-light;
+// Value of top position of line above file information.
+$file-information-before-line-top: -15px;
+// Width of progress bar
+$progress-bar-width: 12rem;
+// Background color of progress bar
+$progress-bar-bg-color: $green;
+
+//
+// Page - Book - _book.scss
+//
+
+// Font size of heading.
+$book-heading-font-size: 1.5rem;
+// Margin of heading.
+$book-heading-margin: 0;
+// Text color of heading.
+$book-heading-color: $green-dark;
+// Border width of available hour.
+$book-available-hour-border-width: 2px;
+// Border color of available hour.
+$book-available-hour-border-color: transparent;
+// Background color on hover of available hour.
+$book-available-hour-hover-bg-color: $green;
+// Text color on hover of available hour.
+$book-available-hour-hover-color: $white;
+// Text color of selected available hour.
+$book-available-hour-selected-color: $green;
+// Border width of selected available hour.
+$book-available-hour-selected-border-width: 2px;
+// Border color of selected available hour.
+$book-available-hour-selected-border-color: $green;
+// Text color of slots remaining.
+$book-available-hour-solts-remaining-color: $gray-dark;
+// Background color of warning on slots remaining.
+$book-available-hour-solts-warning-bg-color: $red;
+// Text color of warning on slots remaining.
+$book-available-hour-solts-warning-color: $white;
+// Background color of calendar spinner.
+$book-calendar-spinner-bg-color: #8080806b;
+// Height of calendar spinner.
+$book-calendar-spinner-height: 31rem;
+// Width of calendar spinner.
+$book-calendar-spinner-width: 17rem;
+// Border radius of calendar spinner.
+$book-calendar-spinner-border-radius: 4px;
+
+//
+// Page - Customer/Patient - _customer.scss
+//
+
+// Margin bottom of customer appointments.
+$customer-appointments-margin-bottom: 20px;
+// Border bottom width of customer appointments.
+$customer-appointments-border-bottom-width: 1px;
+// Border bottom color of customer appointments.
+$customer-appointments-border-bottom-color: $gray-light;
+// Padding of customer appointments.
+$customer-appointments-padding: 1rem 0;
+
+//
+// Vendor - _ui-datepicker.scss
+//
+
+// Border width of datepicker.
+$datepicker-border-width: 1px;
+// Border color of datepicker.
+$datepicker-border-color: $green;
+// Background color of header.
+$datepicker-header-bg-color: $green;
+// Text color of title.
+$datepicker-title-color: $white;
+// Background color of datepicker thead th.
+$datepicker-thead-th-bg-color: $green;
+// Text color of datepicker thead th.
+$datepicker-thead-th-color: $white;
+// Text color of default numbers.
+$datepicker-number-default-color: $green-dark;
+// Background color of active number.
+$datepicker-number-active-bg-color: $green;
+// Text color of active number.
+$datepicker-number-active-color: $white;
+// Background color of current date.
+$datepicker-number-current-date-bg-color: lighten($green, 5%);
+// Text color of current date.
+$datepicker-number-current-date-color: $white;
+// Background color of previous and next buttons
+// on hover.
+$datepicker-prev-next-hover-bg-color: lighten($green, 5%);
+// Border color of previous and next buttons
+// on hover.
+$datepicker-prev-next-hover-border-color: lighten($green, 5%);
+// Border color of datepicker slider.
+$datepicker-slider-border-color: $green;
+// Background color of datepicker slider.
+$datepicker-slider-bg-color: $green;
+
+//
+// Vendor - _ui-dialog.scss
+//
+
+// Background color of titlebar.
+$dialog-titlebar-bg-color: $green;
+// Color of titlebar.
+$dialog-titlebar-color: $white;
+// Font size of titlebar.
+$dialog-titlebar-font-size: 1.5rem;
+// Font weight of titlebar.
+$dialog-titlebar-font-weight: lighter;

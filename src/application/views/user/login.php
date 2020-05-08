@@ -9,12 +9,13 @@
 
     <script src="<?= asset_url('assets/ext/jquery/jquery.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui.min.js') ?>"></script>
-    <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.min.js') ?>"></script>
+    <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/datejs/date.js') ?>"></script>
 
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/ext/jquery-ui/jquery-ui.min.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/ext/bootstrap/css/bootstrap.min.css') ?>">
-	<link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/general.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/general.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/main.css') ?>">
 
     <link rel="icon" type="image/x-icon" href="<?= asset_url('assets/img/favicon.ico') ?>">
 
@@ -24,7 +25,6 @@
             height: 100vh;
             display: table-cell;
             vertical-align: middle;
-            background-color: #CAEDF3;
         }
 
         #login-frame {
@@ -67,7 +67,7 @@
             $('#login-form').submit(function(event) {
                 event.preventDefault();
 
-                var postUrl = GlobalVariables.baseUrl + '/index.php/user/ajax_check_login';
+                var postUrl = GlobalVariables.baseUrl + '/user/ajax_check_login';
                 var postData = {
                     'csrfToken': GlobalVariables.csrfToken,
                     'username': $('#username').val(),
@@ -101,17 +101,17 @@
         <hr>
         <div class="alert hidden"></div>
         <form id="login-form">
-            <div class="form-group">
+            <div class="formGroup">
                 <label for="username"><?= lang('username') ?></label>
                 <input type="text" id="username"
                 		placeholder="<?= lang('enter_username_here') ?>"
-                		class="form-control" />
+                		class="textInput" />
             </div>
             <div class="form-group">
                 <label for="password"><?= lang('password') ?></label>
                 <input type="password" id="password"
                 		placeholder="<?= lang('enter_password_here') ?>"
-                		class="form-control" />
+                		class="textInput" />
             </div>
             <br>
 
@@ -119,14 +119,14 @@
             	<?= lang('login') ?>
             </button>
 
-            <br><br>
+            <!-- <br><br>
 
             <a href="<?= site_url('user/forgot_password') ?>" class="forgot-password">
             	<?= lang('forgot_your_password') ?></a>
             |
             <span id="select-language" class="label label-success">
 	        	<?= ucfirst($this->config->item('language')) ?>
-	        </span>
+	        </span> -->
         </form>
     </div>
 

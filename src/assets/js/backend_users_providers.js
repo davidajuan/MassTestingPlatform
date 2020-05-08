@@ -164,7 +164,9 @@
                     username: $('#provider-username').val(),
                     working_plan: JSON.stringify(BackendUsers.wp.get()),
                     notifications: $('#provider-notifications').hasClass('active'),
-                    calendar_view: $('#provider-calendar-view').val()
+                    calendar_view: $('#provider-calendar-view').val(),
+                    business_service_id: $('#provider-business-service-id').val(),
+                    priority_service_id: $('#provider-priority-service-id').val()
                 }
             };
 
@@ -210,8 +212,8 @@
          * Event: Display Provider Details "Click"
          */
         $('#providers').on('click', '.display-details', function () {
-            $('#providers .switch-view .current').removeClass('current');
-            $(this).addClass('current');
+            $('#providers .switch-view .active').removeClass('active');
+            $(this).addClass('active');
             $('.working-plan-view').hide('fade', function () {
                 $('.details-view').show('fade');
             });
@@ -221,8 +223,8 @@
          * Event: Display Provider Working Plan "Click"
          */
         $('#providers').on('click', '.display-working-plan', function () {
-            $('#providers .switch-view .current').removeClass('current');
-            $(this).addClass('current');
+            $('#providers .switch-view .active').removeClass('active');
+            $(this).addClass('active');
             $('.details-view').hide('fade', function () {
                 $('.working-plan-view').show('fade');
             });
@@ -246,7 +248,7 @@
      * then the update operation is going to be executed.
      */
     ProvidersHelper.prototype.save = function (provider) {
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_provider';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_save_provider';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             provider: JSON.stringify(provider)
@@ -269,7 +271,7 @@
      * @param {Number} id Record id to be deleted.
      */
     ProvidersHelper.prototype.delete = function (id) {
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_provider';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_delete_provider';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             provider_id: id
@@ -298,7 +300,7 @@
             var missingRequired = false;
             $('#providers .required').each(function () {
                 if ($(this).val() == '' || $(this).val() == undefined) {
-                    $(this).closest('.form-group').addClass('has-error');
+                    $(this).closest('.formGroup').addClass('has-error');
                     missingRequired = true;
                 }
             });
@@ -308,25 +310,25 @@
 
             // Validate passwords.
             if ($('#provider-password').val() != $('#provider-password-confirm').val()) {
-                $('#provider-password, #provider-password-confirm').closest('.form-group').addClass('has-error');
+                $('#provider-password, #provider-password-confirm').closest('.formGroup').addClass('has-error');
                 throw EALang.passwords_mismatch;
             }
 
             if ($('#provider-password').val().length < BackendUsers.MIN_PASSWORD_LENGTH
                 && $('#provider-password').val() != '') {
-                $('#provider-password, #provider-password-confirm').closest('.form-group').addClass('has-error');
+                $('#provider-password, #provider-password-confirm').closest('.formGroup').addClass('has-error');
                 throw EALang.password_length_notice.replace('$number', BackendUsers.MIN_PASSWORD_LENGTH);
             }
 
             // Validate user email.
             if (!GeneralFunctions.validateEmail($('#provider-email').val())) {
-                $('#provider-email').closest('.form-group').addClass('has-error');
+                $('#provider-email').closest('.formGroup').addClass('has-error');
                 throw EALang.invalid_email;
             }
 
             // Check if username exists
             if ($('#provider-username').attr('already-exists') == 'true') {
-                $('#provider-username').closest('.form-group').addClass('has-error');
+                $('#provider-username').closest('.formGroup').addClass('has-error');
                 throw EALang.username_already_exists;
             }
 
@@ -387,6 +389,8 @@
         $('#provider-city').val(provider.city);
         $('#provider-state').val(provider.state);
         $('#provider-zip-code').val(provider.zip_code);
+        $('#provider-business-service-id').val(provider.settings.business_service_id);
+        $('#provider-priority-service-id').val(provider.settings.priority_service_id);
         $('#provider-notes').val(provider.notes);
 
         $('#provider-username').val(provider.settings.username);
@@ -398,8 +402,8 @@
         }
 
         // Add dedicated provider link.
-        var dedicatedUrl = GlobalVariables.baseUrl + '/index.php?provider=' + encodeURIComponent(provider.id);
-        var linkHtml = '<a href="' + dedicatedUrl + '"><span class="glyphicon glyphicon-link"></span></a>';
+        var dedicatedUrl = GlobalVariables.baseUrl + '/?provider=' + encodeURIComponent(provider.id);
+        var linkHtml = '<a href="' + dedicatedUrl + '"><i class="fas fa-link"></i></a>';
         $('#providers .details-view h3')
             .find('a')
             .remove()
@@ -413,9 +417,9 @@
                 if ($(this).attr('data-id') == serviceId) {
                     $(this).prop('checked', true);
                     // Add dedicated service-provider link.
-                    dedicatedUrl = GlobalVariables.baseUrl + '/index.php?provider=' + encodeURIComponent(provider.id)
+                    dedicatedUrl = GlobalVariables.baseUrl + '/?provider=' + encodeURIComponent(provider.id)
                         + '&service=' + encodeURIComponent(serviceId);
-                    linkHtml = '<a href="' + dedicatedUrl + '"><span class="glyphicon glyphicon-link"></span></a>';
+                    linkHtml = '<a href="' + dedicatedUrl + '"><i class="fas fa-link"></i>';
                     $(this).parent().append(linkHtml);
                 }
             });
@@ -438,7 +442,7 @@
     ProvidersHelper.prototype.filter = function (key, selectId, display) {
         display = display || false;
 
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_providers';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_filter_providers';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             key: key
@@ -516,8 +520,8 @@
             data: weekDays,
             event: 'edit',
             height: '30px',
-            submit: '<button type="button" class="hidden submit-editable">Submit</button>',
-            cancel: '<button type="button" class="hidden cancel-editable">Cancel</button>',
+            submit: '<button type="button" class="hide submit-editable">Submit</button>',
+            cancel: '<button type="button" class="hide cancel-editable">Cancel</button>',
             onblur: 'ignore',
             onreset: function (settings, td) {
                 if (!BackendUsers.enableCancel) {
@@ -544,8 +548,8 @@
         }, {
             event: 'edit',
             height: '25px',
-            submit: '<button type="button" class="hidden submit-editable">Submit</button>',
-            cancel: '<button type="button" class="hidden cancel-editable">Cancel</button>',
+            submit: '<button type="button" class="hide submit-editable">Submit</button>',
+            cancel: '<button type="button" class="hide cancel-editable">Cancel</button>',
             onblur: 'ignore',
             onreset: function (settings, td) {
                 if (!BackendUsers.enableCancel) {

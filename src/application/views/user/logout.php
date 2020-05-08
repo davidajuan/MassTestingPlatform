@@ -11,7 +11,7 @@
     <link rel="icon" type="image/x-icon" href="<?= asset_url('assets/img/favicon.ico') ?>">
 
     <script src="<?= asset_url('assets/ext/jquery/jquery.min.js') ?>"></script>
-    <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.min.js') ?>"></script>
+    <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
 
     <script>
         var EALang = <?= json_encode($this->lang->language) ?>;
@@ -21,6 +21,7 @@
         rel="stylesheet"
         type="text/css"
         href="<?= asset_url('assets/ext/bootstrap/css/bootstrap.min.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/main.css') ?>">
 
     <style>
         body {
@@ -28,7 +29,6 @@
             height: 100vh;
             display: table-cell;
             vertical-align: middle;
-            background-color: #CAEDF3;
         }
 
         #logout-frame {
@@ -65,13 +65,8 @@
 
         <br>
 
-        <a href="<?= site_url() ?>" class="btn btn-success btn-large">
-            <span class="glyphicon glyphicon-calendar"></span>
-            <?= lang('book_appointment_title') ?>
-        </a>
-
-        <a href="<?= site_url('backend') ?>" class="btn btn-default btn-large">
-            <span class="glyphicon glyphicon-wrench"></span>
+        <a href="<?= site_url('backend') ?>" class="btn btn-primary btn-large">
+            <i class="fas fa-wrench"></i>
             <?= lang('backend_section') ?>
         </a>
     </div>

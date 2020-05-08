@@ -1,0 +1,28 @@
+.calendarToolbar {
+  display: flex;
+  flex-direction: column;
+  border-radius: 3px;
+  background: $gray-light;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  color: $black;
+
+  @media all and (min-width: $md-breakpoint) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.fc-left,
+.fc-right {
+  font-size: .95rem;
+}
+
+.fc-header-toolbar .fc-center {
+  margin-top: 1rem;
+}
+
+.calendar-filter .select {
+  background-color: $white;
+  min-width: 240px;
+}

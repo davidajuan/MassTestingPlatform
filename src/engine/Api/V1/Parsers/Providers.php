@@ -38,6 +38,8 @@ class Providers implements ParsersInterface {
             'state' => $response['state'],
             'zip' => $response['zip_code'],
             'notes' => $response['notes'],
+            'business_service_id' => $response['business_service_id'],
+            'priority_service_id' => $response['priority_service_id'],
         ];
 
         if (array_key_exists('services', $response))

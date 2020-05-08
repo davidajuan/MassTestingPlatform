@@ -56,7 +56,7 @@ p {
 <body>
 	<div id="container">
 		<h1><?= $heading ?></h1>
-		<?= $message ?>
+		<?= Config::DEBUG_MODE ? $message : 'There was a database issue, please contact site admin' ?>
 	</div>
 </body>
 </html>

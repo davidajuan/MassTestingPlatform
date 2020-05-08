@@ -9,7 +9,7 @@
     <title><?= lang('no_privileges') . ' - ' . $company_name ?></title>
 
     <script src="<?= asset_url('assets/ext/jquery/jquery.min.js') ?>"></script>
-    <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.min.js') ?>"></script>
+    <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
 
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/ext/bootstrap/css/bootstrap.min.css') ?>">
 
@@ -58,9 +58,10 @@
 
         <br>
 
-        <a href="<?= site_url('backend') ?>" class="btn btn-success btn-large">
+        <a href="<?= site_url('backend/customers') ?>" class="btn btn-success btn-large">
             <i class="icon-calendar icon-white"></i>
-            <?= lang('backend_calendar') ?>
+            <?= lang('backend_customers') ?>
+
         </a>
     </div>
 </body>

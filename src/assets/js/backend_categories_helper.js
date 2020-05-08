@@ -168,7 +168,7 @@
      * @param {Boolean} display Optional (false), if true then the selected record will be displayed on the form.
      */
     CategoriesHelper.prototype.filter = function (key, selectId, display) {
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_service_categories';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_filter_service_categories';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             key: key
@@ -203,7 +203,7 @@
      * @param {Object} category Contains the category data.
      */
     CategoriesHelper.prototype.save = function (category) {
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_service_category';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_save_service_category';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             category: JSON.stringify(category)
@@ -228,7 +228,7 @@
      * @param Number} id Record ID to be deleted.
      */
     CategoriesHelper.prototype.delete = function (id) {
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_service_category';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_delete_service_category';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             category_id: id
@@ -271,7 +271,7 @@
 
             $('#categories .required').each(function () {
                 if ($(this).val() === '' || $(this).val() === undefined) {
-                    $(this).closest('.form-group').addClass('has-error');
+                    $(this).closest('.formGroup').addClass('has-error');
                     missingRequired = true;
                 }
             });

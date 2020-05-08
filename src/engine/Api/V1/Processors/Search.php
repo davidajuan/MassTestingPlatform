@@ -61,7 +61,7 @@ class Search implements ProcessorsInterface {
         {
             $currentKey = $key;
 
-            if (stripos($value, $needle) !== FALSE || (is_array($value) && self::_recursiveArraySearch($value,
+            if (is_string($value) && stripos($value, $needle) !== FALSE || (is_array($value) && self::_recursiveArraySearch($value,
                         $needle) !== FALSE))
             {
                 return $currentKey;

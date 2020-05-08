@@ -33,12 +33,12 @@ class Settings_Model extends CI_Model {
     {
         if ( ! is_string($name))
         { // Check argument type.
-            throw new Exception('$name argument is not a string: ' . $name);
+            throw new Exception('Invalid value in name');
         }
 
         if ($this->db->get_where('ea_settings', ['name' => $name])->num_rows() == 0)
         { // Check if setting exists in db.
-            throw new Exception('$name setting does not exist in database: ' . $name);
+            throw new Exception('Invalid value in name');
         }
 
         $query = $this->db->get_where('ea_settings', ['name' => $name]);
@@ -63,7 +63,7 @@ class Settings_Model extends CI_Model {
     {
         if ( ! is_string($name))
         {
-            throw new Exception('$name argument is not a string: ' . $name);
+            throw new Exception('Invalid value in name');
         }
 
         $query = $this->db->get_where('ea_settings', ['name' => $name]);
@@ -106,7 +106,7 @@ class Settings_Model extends CI_Model {
     {
         if ( ! is_string($name))
         {
-            throw new Exception('$name is not a string: ' . $name);
+            throw new Exception('Invalid value in name');
         }
 
         if ($this->db->get_where('ea_settings', ['name' => $name])->num_rows() == 0)
@@ -133,7 +133,7 @@ class Settings_Model extends CI_Model {
     {
         if ( ! is_array($settings))
         {
-            throw new Exception('$settings argument is invalid: ' . print_r($settings, TRUE));
+            throw new Exception('Invalid value in settings');
         }
 
         foreach ($settings as $setting)

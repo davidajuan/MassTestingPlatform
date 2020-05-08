@@ -1,0 +1,77 @@
+// Primary buttons
+.btn-primary,
+a.btn-primary:not([href]) {
+  background: $button-primary-bg-color;
+  color: $button-primary-color;
+  border-color: $button-primary-border-color;
+  border-width: $button-primary-border-width;
+
+  &:hover,
+  &:focus {
+    background: $button-primary-hover-bg-color;
+    border-color: $button-primary-hover-border-color;
+    color: $button-primary-hover-color;
+    box-shadow: $button-primary-hover-box-shadow;
+  }
+}
+
+// Active primary button that is not disabled
+.btn-primary:not(:disabled):not(.disabled):active {
+  background: $button-primary-hover-bg-color;
+  border-color: $button-primary-hover-border-color;
+  color: $button-primary-hover-color;
+  box-shadow: $button-primary-hover-box-shadow;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+}
+
+// Disabled primary button
+.btn-primary:disabled {
+  background-color: $button-primary-disabled-bg-color;
+  border-color: $button-primary-disabled-border-color;
+}
+
+// Danger button
+.btn-danger,
+.btn-danger:not([href]) {
+  background-color: $button-danger-bg-color;
+  color: $button-danger-color;
+
+  &:hover,
+  &:focus {
+    background: $button-danger-hover-bg-color;
+    border-color: $button-danger-hover-border-color;
+    color: $button-danger-hover-color;
+    box-shadow: $button-danger-hover-box-shadow;
+  }
+}
+
+// Simple button
+.btn--simple,
+.btn--simple:not([href]) {
+  color: $button-simple-color;
+
+  &:hover,
+  &:focus {
+    color: $button-simple-hover-color;
+  }
+}
+
+// Simple disabled button
+.btn--simple:disabled {
+  color: $button-simple-disabled-color;
+
+  &:hover,
+  &:focus {
+    color: $button-simple-disabled-hover-color;
+  }
+}
+
+// Have to target this crazy like because bootstrap is doing some wild stuff.
+.btn--spinner:not(:disabled):not(.disabled):active,
+.btn--spinner:not(:disabled):not(.disabled):focus {
+  background: $button-spinner-bg-color;
+  color: $button-spinner-color;
+}

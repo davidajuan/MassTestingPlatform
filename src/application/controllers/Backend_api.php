@@ -102,7 +102,7 @@ class Backend_api extends CI_Controller {
             $userId = $this->session->userdata('user_id');
             $roleSlug = $this->session->userdata('role_slug');
 
-            // If the current user is a provider he must only see his own appointments. 
+            // If the current user is a provider he must only see his own appointments.
             if ($roleSlug === DB_SLUG_PROVIDER)
             {
                 foreach ($response['appointments'] as $index => $appointment)
@@ -200,17 +200,11 @@ class Backend_api extends CI_Controller {
 
             // Get appointments
             $record_id = $this->db->escape($_POST['record_id']);
-            $start_date = $this->db->escape($_POST['start_date']);
-            $end_date = $this->db->escape(date('Y-m-d', strtotime($_POST['end_date'] . ' +1 day')));
+            $start_date = $_POST['start_date'];
+            $end_date = date('Y-m-d', strtotime($_POST['end_date'] . ' +1 day'));
 
-            $where_clause = $where_id . ' = ' . $record_id . '
-                AND ((start_datetime > ' . $start_date . ' AND start_datetime < ' . $end_date . ') 
-                or (end_datetime > ' . $start_date . ' AND end_datetime < ' . $end_date . ') 
-                or (start_datetime <= ' . $start_date . ' AND end_datetime >= ' . $end_date . ')) 
-                AND is_unavailable = 0
-            ';
-
-            $response['appointments'] = $this->appointments_model->get_batch($where_clause);
+            $response['appointments'] = $this->appointments_model
+                ->get_batch_availabilities($where_id, $record_id, $start_date, $end_date, 0);
 
             foreach ($response['appointments'] as &$appointment)
             {
@@ -222,19 +216,109 @@ class Backend_api extends CI_Controller {
             // Get unavailable periods (only for provider).
             if ($this->input->post('filter_type') == FILTER_TYPE_PROVIDER)
             {
-                $where_clause = $where_id . ' = ' . $record_id . '
-                    AND ((start_datetime > ' . $start_date . ' AND start_datetime < ' . $end_date . ') 
-                    or (end_datetime > ' . $start_date . ' AND end_datetime < ' . $end_date . ') 
-                    or (start_datetime <= ' . $start_date . ' AND end_datetime >= ' . $end_date . ')) 
-                    AND is_unavailable = 1
-                ';
-
-                $response['unavailables'] = $this->appointments_model->get_batch($where_clause);
+                $response['unavailables'] = $this->appointments_model
+                    ->get_batch_availabilities($where_id, $record_id, $start_date, $end_date, 1);
             }
 
             $this->output
                 ->set_content_type('application/json')
                 ->set_output(json_encode($response));
+        }
+        catch (Exception $exc)
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
+        }
+    }
+
+    /**
+     * [AJAX] Update appointment from the patients screen
+     *
+     * Required POST Parameters:
+     *
+     * - array $_POST['appointment_data'] (OPTIONAL) Array with the appointment data.
+     * - array $_POST['customer_data'] (OPTIONAL) Array with the customer data.
+     */
+    public function ajax_update_appointment()
+    {
+        try
+        {
+            $this->load->model('appointments_model');
+            $this->load->model('providers_model');
+            $this->load->model('services_model');
+            $this->load->model('customers_model');
+            $this->load->model('settings_model');
+
+            // :: UPATE APPOINTMENT IN DB
+            if ($this->input->post('appointment_data'))
+            {
+                $appointment_data = json_decode($this->input->post('appointment_data'), TRUE);
+
+                $REQUIRED_PRIV = ( ! isset($appointment_data['id']))
+                    ? $this->privileges[PRIV_APPOINTMENTS]['add']
+                    : $this->privileges[PRIV_APPOINTMENTS]['edit'];
+                if ($REQUIRED_PRIV == FALSE)
+                {
+                    throw new Exception('You do not have the required privileges for this task.');
+                }
+
+                // get from db, and over
+                $appointment_db = $this->appointments_model->get_row($appointment_data['id']);
+                $appointment = array_merge($appointment_db, $appointment_data);
+
+                $service = $this->services_model->get_row($appointment['id_services']);
+
+                // adjust end time to the start time + the duration of the service
+                $appointment['end_datetime'] = date('Y-m-d H:i:s', strtotime('+' . $service['duration'] . ' minutes', strtotime($appointment['start_datetime'])));
+
+                // Note: this actually does an update if you pass in an id
+                $appointment_id = $this->appointments_model->add($appointment);
+
+                if ($appointment_id) {
+                    $customer = $this->customers_model->get_row($appointment['id_users_customer']);
+
+                    // :: Send email notification to patient
+                    try
+                    {
+                        $this->load->library('ses_email');
+                        $email = new \EA\Engine\Notifications\Email($this, $this->config->config, $this->ses_email);
+                        $email->sendAppointmentDetails($customer, $appointment, Config::SES_EMAIL_ADDRESS, Config::SES_EMAIL_NAME, true);
+                    }
+                    catch (Exception $exc)
+                    {
+                        $warnings[] = exceptionToJavaScript($exc);
+                    }
+
+                    // :: Send SMS notification to patient
+                    try
+                    {
+                        $this->load->library('sns_sms');
+                        $sms = new \EA\Engine\Notifications\Sms($this, $this->config->config, $this->sns_sms);
+                        $sms->sendAppointmentDetails($customer, $appointment, true);
+                    }
+                    catch (Exception $exc)
+                    {
+                        $warnings[] = exceptionToJavaScript($exc);
+                    }
+
+                } else {
+                    $warnings[] = ['message' => 'There was an issue updating the database.'];
+                }
+            }
+
+            if ( ! isset($warnings))
+            {
+                $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode(["message" => AJAX_SUCCESS, "new_start_datetime" => $appointment_data['start_datetime']]));
+            }
+            else
+            {
+                $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode(['warnings' => $warnings]));
+            }
         }
         catch (Exception $exc)
         {
@@ -351,49 +435,10 @@ class Backend_api extends CI_Controller {
             // :: SEND EMAIL NOTIFICATIONS TO PROVIDER AND CUSTOMER
             try
             {
-                $this->config->load('email');
-                $email = new \EA\Engine\Notifications\Email($this, $this->config->config);
-
-                $send_provider = $this->providers_model
-                    ->get_setting('notifications', $provider['id']);
-
-                if ( ! $manage_mode)
-                {
-                    $customer_title = new Text($this->lang->line('appointment_booked'));
-                    $customer_message = new Text($this->lang->line('thank_you_for_appointment'));
-                    $provider_title = new Text($this->lang->line('appointment_added_to_your_plan'));
-                    $provider_message = new Text($this->lang->line('appointment_link_description'));
-                }
-                else
-                {
-                    $customer_title = new Text($this->lang->line('appointment_changes_saved'));
-                    $customer_message = new Text('');
-                    $provider_title = new Text($this->lang->line('appointment_details_changed'));
-                    $provider_message = new Text('');
-                }
-
-                $customer_link = new Url(site_url('appointments/index/' . $appointment['hash']));
-                $provider_link = new Url(site_url('backend/index/' . $appointment['hash']));
-
-                $send_customer = $this->settings_model->get_setting('customer_notifications');
-
-                $this->load->library('ics_file');
-                $ics_stream = $this->ics_file->get_stream($appointment, $service, $provider, $customer);
-
-                if ((bool)$send_customer === TRUE)
-                {
-                    $email->sendAppointmentDetails($appointment, $provider,
-                        $service, $customer, $company_settings, $customer_title,
-                        $customer_message, $customer_link, new Email($customer['email']), new Text($ics_stream));
-                }
-
-                if ($send_provider == TRUE)
-                {
-                    $email->sendAppointmentDetails($appointment, $provider,
-                        $service, $customer, $company_settings, $provider_title,
-                        $provider_message, $provider_link, new Email($provider['email']), new Text($ics_stream));
-                }
-
+                // I believe this is for editing, update this when we have that feature
+                // $this->load->library('ses_email');
+                // $email = new \EA\Engine\Notifications\Email($this, $this->config->config, $this->ses_email);
+                // $email->sendAppointmentDetails($customer, $appointment, Config::SES_EMAIL_ADDRESS, Config::SES_EMAIL_NAME);
             }
             catch (Exception $exc)
             {
@@ -612,17 +657,19 @@ class Backend_api extends CI_Controller {
             $key = $this->db->escape_str($this->input->post('key'));
             $key = strtoupper($key);
 
-            $where_clause =
-                '(first_name LIKE upper("%' . $key . '%") OR ' .
-                'last_name  LIKE upper("%' . $key . '%") OR ' .
-                'email LIKE upper("%' . $key . '%") OR ' .
-                'phone_number LIKE upper("%' . $key . '%") OR ' .
-                'address LIKE upper("%' . $key . '%") OR ' .
-                'city LIKE upper("%' . $key . '%") OR ' .
-                'zip_code LIKE upper("%' . $key . '%") OR ' .
-                'notes LIKE upper("%' . $key . '%"))';
+            $search = [
+                'first_name' => $key,
+                'last_name' => $key,
+                'CONCAT(first_name,\' \',last_name)' => $key,
+                'email' => $key,
+                'phone_number' => $key,
+                'address' => $key,
+                'city' => $key,
+                'zip_code' => $key,
+                'notes' => $key
+            ];
 
-            $customers = $this->customers_model->get_batch($where_clause);
+            $customers = $this->customers_model->get_batch('', $search);
 
             foreach ($customers as &$customer)
             {
@@ -649,6 +696,133 @@ class Backend_api extends CI_Controller {
                 ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
         }
     }
+
+    /**
+     * [AJAX] Filter the business records with the given key string.
+     *
+     * Required POST Parameters:
+     *
+     * - string $_POST['key'] The filter key string.
+     *
+     * Outputs the search results.
+     */
+    public function ajax_filter_business()
+    {
+        try
+        {
+            // TODO: change this to other role once we have it
+            if ($this->privileges[PRIV_BUSINESS]['view'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $this->load->model('business_model');
+
+            $key = $this->db->escape_str($this->input->post('key'));
+            $key = strtoupper($key);
+
+            $search = [
+                'business_name' => $key,
+                'owner_first_name' => $key,
+                'owner_last_name' => $key,
+                'business_phone' => $key,
+                'mobile_phone' => $key,
+                'email' => $key,
+                'address' => $key,
+                'hash' => $key
+            ];
+
+            $businesses = $this->business_model->get_batch('', $search);
+
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($businesses));
+        }
+        catch (Exception $exc)
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
+        }
+    }
+
+    /**
+     * [AJAX] Business Request status change
+     *
+     * Change a business request status in the database.
+     */
+    public function ajax_business_request_status_change()
+    {
+        try
+        {
+            // TODO: change this to other role once we have it
+            if ($this->privileges[PRIV_BUSINESS_REQUEST]['view'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            // todo change this function to a generic status change
+            $business_code = $this->input->post('business_code');
+            $status = $this->input->post('status');
+            $slots_approved = $this->input->post('slots_approved');
+            $business_name = $this->input->post('business_name');
+            $priority_service = $this->input->post('priority_service');
+            $this->load->model('business_request_model');
+
+            // get business request from business_code
+            $original_request = $this->business_request_model->get_row_by_code($business_code);
+
+            // if status is delete give them no approved slots
+            $slots_approved = $status === DB_SLUG_BUSINESS_REQ_DELETED ? 0 : $slots_approved;
+            $changes = ['status' => $status, 'slots_approved' => $slots_approved, 'priority_service' => $priority_service];
+            $updated_business_request = array_merge($original_request, $changes);
+
+            // update the recored
+            $id = $this->business_request_model->add($updated_business_request, $business_name);
+
+            if ($id && $status === DB_SLUG_BUSINESS_REQ_ACTIVE) {
+
+                $business = $this->business_request_model->get_row($original_request['id']);
+
+                // :: Send email notification to business
+                try {
+                    $this->load->library('ses_email');
+                    $email = new \EA\Engine\Notifications\Email($this, $this->config->config, $this->ses_email);
+                    $email->sendBusinessActiveDetails($business, Config::SES_EMAIL_ADDRESS, Config::SES_EMAIL_NAME);
+                } catch (Exception $exc) {
+                    log_message('error', $exc->getMessage());
+                    log_message('error', $exc->getTraceAsString());
+                }
+
+                // :: Send SMS notification to business
+                try {
+                    $this->load->library('sns_sms');
+                    $sms = new \EA\Engine\Notifications\Sms($this, $this->config->config, $this->sns_sms);
+                    $sms->sendBusinessActiveDetails($business);
+                } catch (Exception $exc) {
+                    log_message('error', $exc->getMessage());
+                    log_message('error', $exc->getTraceAsString());
+                }
+            }
+
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode([
+                    'success' => 'true',
+                    'status' => $status,
+                    'slots_approved' => $slots_approved,
+                ]));
+        }
+        catch (Exception $exc)
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode([
+                    'exceptions' => [exceptionToJavaScript($exc)]
+                ]));
+        }
+    }
+
 
     /**
      * [AJAX] Insert of update unavailable time period to database.
@@ -935,6 +1109,114 @@ class Backend_api extends CI_Controller {
         }
     }
 
+
+    /**
+     * [AJAX] Save (insert or update) service capacity record.
+     *
+     * Required POST Parameters:
+     *
+     * - array $_POST['service_capacity'] Contains the service data (json encoded).
+     */
+    public function ajax_save_service_capacity()
+    {
+        try
+        {
+            $this->load->model('service_capacity_model');
+            $service_capacity = $this->input->post('service_capacity');
+
+            $start_datetime = DateTime::createFromFormat('m/d/Y g:i A', $service_capacity['date'] . ' ' . $service_capacity['start_time']);
+            $service_capacity['start_datetime'] = $start_datetime->format('Y-m-d H:i:s');
+
+            $end_datetime = DateTime::createFromFormat('m/d/Y g:i A', $service_capacity['date'] . ' ' . $service_capacity['end_time']);
+            $service_capacity['end_datetime'] = $end_datetime->format('Y-m-d H:i:s');
+
+            $REQUIRED_PRIV = ( ! isset($service_capacity['id']))
+                ? $this->privileges[PRIV_SERVICES]['add']
+                : $this->privileges[PRIV_SERVICES]['edit'];
+            if ($REQUIRED_PRIV == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $id = $this->service_capacity_model->add($service_capacity);
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode([
+                    'status' => AJAX_SUCCESS,
+                    'id' => $id
+                ]));
+        }
+        catch (Exception $exc)
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
+        }
+    }
+
+
+    /**
+     * [AJAX] Delete service capacity record from database.
+     *
+     * Required POST Parameters:
+     *
+     * - int $_POST['id'] Record id to be deleted.
+     */
+    public function ajax_delete_service_capacity()
+    {
+        try
+        {
+            if ($this->privileges[PRIV_SERVICES]['delete'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $this->load->model('service_capacity_model');
+            $result = $this->service_capacity_model->delete($this->input->post('id'));
+
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($result ? AJAX_SUCCESS : AJAX_FAILURE));
+        }
+        catch (Exception $exc)
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
+        }
+    }
+
+    /**
+     * [AJAX] Gets the service capacity for a given service
+     *
+     *
+     * Outputs a JSON encoded array back to client with the service capacity records.
+     */
+    public function ajax_get_service_capacity()
+    {
+        try
+        {
+            if ($this->privileges[PRIV_USERS]['view'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+            $today = date('Y-m-d');
+            $this->load->model('service_capacity_model');
+            $key = $this->db->escape_str($this->input->post('id_services'));
+            $where = ['id_services' => $key, 'start_datetime >=' => $today];
+            $service_capacity = $this->service_capacity_model->get_batch($where);
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($service_capacity));
+        }
+        catch (Exception $exc)
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
+        }
+    }
+
     /**
      * [AJAX] Filter service records by given key string.
      *
@@ -955,11 +1237,14 @@ class Backend_api extends CI_Controller {
 
             $this->load->model('services_model');
             $key = $this->db->escape_str($this->input->post('key'));
-            $where =
-                '(name LIKE "%' . $key . '%" OR duration LIKE "%' . $key . '%" OR ' .
-                'price LIKE "%' . $key . '%" OR currency LIKE "%' . $key . '%" OR ' .
-                'description LIKE "%' . $key . '%")';
-            $services = $this->services_model->get_batch($where);
+            $search = [
+                'name' => $key,
+                'duration' => $key,
+                'price' => $key,
+                'currency' => $key,
+                'description' => $key
+            ];
+            $services = $this->services_model->get_batch(null, $search);
             $this->output
                 ->set_content_type('application/json')
                 ->set_output(json_encode($services));
@@ -1095,13 +1380,19 @@ class Backend_api extends CI_Controller {
 
             $this->load->model('admins_model');
             $key = $this->db->escape_str($this->input->post('key'));
-            $where =
-                '(first_name LIKE "%' . $key . '%" OR last_name LIKE "%' . $key . '%" ' .
-                'OR email LIKE "%' . $key . '%" OR mobile_number LIKE "%' . $key . '%" ' .
-                'OR phone_number LIKE "%' . $key . '%" OR address LIKE "%' . $key . '%" ' .
-                'OR city LIKE "%' . $key . '%" OR state LIKE "%' . $key . '%" ' .
-                'OR zip_code LIKE "%' . $key . '%" OR notes LIKE "%' . $key . '%")';
-            $admins = $this->admins_model->get_batch($where);
+            $search = [
+                'first_name' => $key,
+                'last_name' => $key,
+                'email' => $key,
+                'mobile_number' => $key,
+                'phone_number' => $key,
+                'address' => $key,
+                'city' => $key,
+                'state' => $key,
+                'zip_code' => $key,
+                'notes' => $key
+            ];
+            $admins = $this->admins_model->get_batch('', $search);
             $this->output
                 ->set_content_type('application/json')
                 ->set_output(json_encode($admins));
@@ -1210,13 +1501,19 @@ class Backend_api extends CI_Controller {
 
             $this->load->model('providers_model');
             $key = $this->db->escape_str($this->input->post('key'));
-            $where =
-                '(first_name LIKE "%' . $key . '%" OR last_name LIKE "%' . $key . '%" ' .
-                'OR email LIKE "%' . $key . '%" OR mobile_number LIKE "%' . $key . '%" ' .
-                'OR phone_number LIKE "%' . $key . '%" OR address LIKE "%' . $key . '%" ' .
-                'OR city LIKE "%' . $key . '%" OR state LIKE "%' . $key . '%" ' .
-                'OR zip_code LIKE "%' . $key . '%" OR notes LIKE "%' . $key . '%")';
-            $providers = $this->providers_model->get_batch($where);
+            $search = [
+                'first_name' => $key,
+                'last_name' => $key,
+                'email' => $key,
+                'mobile_number' => $key,
+                'phone_number' => $key,
+                'address' => $key,
+                'city' => $key,
+                'state' => $key,
+                'zip_code' => $key,
+                'notes' => $key
+            ];
+            $providers = $this->providers_model->get_batch('',$search);
             $this->output
                 ->set_content_type('application/json')
                 ->set_output(json_encode($providers));
@@ -1331,16 +1628,196 @@ class Backend_api extends CI_Controller {
 
             $this->load->model('secretaries_model');
             $key = $this->db->escape_str($this->input->post('key'));
-            $where =
-                '(first_name LIKE "%' . $key . '%" OR last_name LIKE "%' . $key . '%" ' .
-                'OR email LIKE "%' . $key . '%" OR mobile_number LIKE "%' . $key . '%" ' .
-                'OR phone_number LIKE "%' . $key . '%" OR address LIKE "%' . $key . '%" ' .
-                'OR city LIKE "%' . $key . '%" OR state LIKE "%' . $key . '%" ' .
-                'OR zip_code LIKE "%' . $key . '%" OR notes LIKE "%' . $key . '%")';
-            $secretaries = $this->secretaries_model->get_batch($where);
+            $search = [
+                'first_name' => $key,
+                'last_name' => $key,
+                'email' => $key,
+                'mobile_number' => $key,
+                'phone_number' => $key,
+                'address' => $key,
+                'city' => $key,
+                'state' => $key,
+                'zip_code' => $key,
+                'notes' => $key
+            ];
+            $secretaries = $this->secretaries_model->get_batch('', $search);
             $this->output
                 ->set_content_type('application/json')
                 ->set_output(json_encode($secretaries));
+        }
+        catch (Exception $exc)
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
+        }
+    }
+
+    /**
+     * [AJAX] Filter city admin records with string key.
+     *
+     * Required POST Parameters:
+     *
+     * - string $_POST['key'] The key string used to filter the records.
+     *
+     * Outputs a JSON encoded array back to client with the city admin records.
+     */
+    public function ajax_filter_city_admin()
+    {
+        try
+        {
+            if ($this->privileges[PRIV_USERS]['view'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $this->load->model('cityadmin_model');
+            $key = $this->db->escape_str($this->input->post('key'));
+            $search = [
+                'first_name' => $key,
+                'last_name' => $key,
+                'email' => $key,
+                'mobile_number' => $key,
+                'phone_number' => $key,
+                'address' => $key,
+                'city' => $key,
+                'state' => $key,
+                'zip_code' => $key,
+                'notes' => $key
+            ];
+            $cityadmins = $this->cityadmin_model->get_batch('',$search);
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($cityadmins));
+        }
+        catch (Exception $exc)
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
+        }
+    }
+
+    /**
+     * [AJAX] Filter city business records with string key.
+     *
+     * Required POST Parameters:
+     *
+     * - string $_POST['key'] The key string used to filter the records.
+     *
+     * Outputs a JSON encoded array back to client with the city business records.
+     */
+    public function ajax_filter_city_business()
+    {
+        try
+        {
+            if ($this->privileges[PRIV_USERS]['view'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $this->load->model('citybusiness_model');
+            $key = $this->db->escape_str($this->input->post('key'));
+            $search = [
+                'first_name' => $key,
+                'last_name' => $key,
+                'email' => $key,
+                'mobile_number' => $key,
+                'phone_number' => $key,
+                'address' => $key,
+                'city' => $key,
+                'state' => $key,
+                'zip_code' => $key,
+                'notes' => $key
+            ];
+            $citybusinesses = $this->citybusiness_model->get_batch('', $search);
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($citybusinesses));
+        }
+        catch (Exception $exc)
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
+        }
+    }
+
+    /**
+     * [AJAX] Save (insert or update) a city admin record into database.
+     *
+     * Required POST Parameters:
+     *
+     * - array $_POST['cityadmin'] A json encoded array that contains the city admin data.
+     * If an 'id' value is provided then the record is going to be updated.
+     *
+     * Outputs the success constant 'AJAX_SUCCESS' so JavaScript knows that everything completed successfully.
+     */
+    public function ajax_save_city_admin()
+    {
+        try
+        {
+            $this->load->model('cityadmin_model');
+            $cityadmin = json_decode($this->input->post('cityadmin'), TRUE);
+
+            $REQUIRED_PRIV = ( ! isset($cityadmin['id']))
+                ? $this->privileges[PRIV_USERS]['add']
+                : $this->privileges[PRIV_USERS]['edit'];
+            if ($REQUIRED_PRIV == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $cityadmin_id = $this->cityadmin_model->add($cityadmin);
+
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode([
+                    'status' => AJAX_SUCCESS,
+                    'id' => $cityadmin_id
+                ]));
+        }
+        catch (Exception $exc)
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
+        }
+    }
+
+    /**
+     * [AJAX] Save (insert or update) a city business record into database.
+     *
+     * Required POST Parameters:
+     *
+     * - array $_POST['citybusiness'] A json encoded array that contains the city business data.
+     * If an 'id' value is provided then the record is going to be updated.
+     *
+     * Outputs the success constant 'AJAX_SUCCESS' so JavaScript knows that everything completed successfully.
+     */
+    public function ajax_save_city_business()
+    {
+        try
+        {
+            $this->load->model('citybusiness_model');
+            $citybusiness = json_decode($this->input->post('citybusiness'), TRUE);
+
+            $REQUIRED_PRIV = ( ! isset($citybusiness['id']))
+                ? $this->privileges[PRIV_USERS]['add']
+                : $this->privileges[PRIV_USERS]['edit'];
+            if ($REQUIRED_PRIV == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $citybusiness_id = $this->citybusiness_model->add($citybusiness);
+
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode([
+                    'status' => AJAX_SUCCESS,
+                    'id' => $citybusiness_id
+                ]));
         }
         catch (Exception $exc)
         {
@@ -1383,6 +1860,73 @@ class Backend_api extends CI_Controller {
                     'status' => AJAX_SUCCESS,
                     'id' => $secretary_id
                 ]));
+        }
+        catch (Exception $exc)
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
+        }
+    }
+
+
+    /**
+     * [AJAX] Delete a city admin record from the database.
+     *
+     * Required POST Parameters:
+     *
+     * - int $_POST['cityadmin_id'] The id of the record to be deleted.
+     *
+     * Outputs the operation result constant (AJAX_SUCCESS or AJAX_FAILURE).
+     */
+    public function ajax_delete_city_admin()
+    {
+        try
+        {
+            if ($this->privileges[PRIV_USERS]['delete'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $this->load->model('cityadmin_model');
+            $result = $this->cityadmin_model->delete($this->input->post('cityadmin_id'));
+
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($result ? AJAX_SUCCESS : AJAX_FAILURE));
+        }
+        catch (Exception $exc)
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
+        }
+    }
+
+    /**
+     * [AJAX] Delete a city business record from the database.
+     *
+     * Required POST Parameters:
+     *
+     * - int $_POST['citybusiness_id'] The id of the record to be deleted.
+     *
+     * Outputs the operation result constant (AJAX_SUCCESS or AJAX_FAILURE).
+     */
+    public function ajax_delete_city_business()
+    {
+        try
+        {
+            if ($this->privileges[PRIV_USERS]['delete'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $this->load->model('citybusiness_model');
+            $result = $this->citybusiness_model->delete($this->input->post('citybusiness_id'));
+
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($result ? AJAX_SUCCESS : AJAX_FAILURE));
         }
         catch (Exception $exc)
         {

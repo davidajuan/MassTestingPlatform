@@ -1,0 +1,107 @@
+.upload {
+  align-items: center;
+  background-color: $upload-bg-color;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: $upload-padding;
+  margin: $upload-margin;
+  outline: $upload-outline-width $upload-outline-style $upload-outline-color;
+}
+
+.upload,
+.upload__button,
+.upload__label {
+  font-size: $upload-font-size;
+}
+
+// Change background on dragover
+.upload.is-dragover {
+  background-color: $upload-dragover-bg-color;
+}
+
+.upload__icon {
+  margin-bottom: 40px;
+  font-size: $upload-icon-font-size;
+  color: $upload-icon-color;
+}
+
+// Hide the input field
+.upload__input {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.upload__label {
+  cursor: pointer;
+}
+
+.upload__button {
+  background-color: $upload-button-bg-color;
+  border: $upload-button-border-width solid $upload-button-border-color;
+  border-radius: 4px;
+  color: $white;
+  cursor: pointer;
+  display: block;
+  padding: $upload-button-padding;
+
+  &:hover {
+    background-color: $upload-button-hover-bg-color;
+    border-color: $upload-button-hover-border-color;
+  }
+}
+
+// File information (file name/size)
+.fileInformation {
+  position: relative;
+  margin: 1.5rem 0;
+  font-size: $file-information-font-size;
+
+  &::before {
+    content: "";
+    display: block;
+    width: $file-information-before-line-width;
+    background-color: $file-information-before-line-color;
+    height: $file-information-before-line-height;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: $file-information-before-line-top;
+    margin: auto;
+  }
+}
+
+.upload__button,
+.uploadStatus {
+  display: none;
+}
+
+.uploadStatus--error {
+  color: $upload-status-error-color;
+}
+
+.uploadStatus--success {
+  color: $upload-status-success-color;
+}
+
+// File data
+.uploadData {
+  max-width: 70rem;
+}
+
+.uploadData__item {
+  max-width: 35rem;
+}
+
+// Progress bar
+.progress {
+  width: $progress-bar-width;
+}
+
+.progress-bar {
+  background-color: $progress-bar-bg-color;
+}

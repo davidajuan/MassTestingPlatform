@@ -1,0 +1,3 @@
+car_number,start_datetime,name,dob,"Patient Type"
+1,"May 07 05:00AM","Doe, Jane",1960-05-21,"Critical Infrastructure Employee"
+2,"May 07 09:00AM","Doe, John",1961-12-11,"General Public"

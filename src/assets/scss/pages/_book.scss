@@ -1,0 +1,109 @@
+.bookAppointment {
+  position: relative;
+  overflow: hidden;
+}
+
+.bookHeading {
+  font-size: $book-heading-font-size;
+  margin: $book-heading-margin;
+  color: $book-heading-color;
+}
+
+.bookHours {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  max-width: 35rem;
+}
+
+.bookHours__item {
+  margin-right: 1rem;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  @media all and (min-width: $md-breakpoint) {
+    flex: 0 0 8rem;
+    max-width: 8rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.bookHours__item .available-hour {
+    font-size: 1rem;
+    padding: 1px;
+    display: inline-block;
+    border: $book-available-hour-border-width solid $book-available-hour-border-width;
+
+    &:hover {
+      background: $book-available-hour-hover-bg-color;
+      color: $book-available-hour-hover-color;
+      cursor: pointer;
+    }
+}
+
+.bookHours__item .selected-hour {
+  color: $book-available-hour-selected-color;
+  border: $book-available-hour-selected-border-width solid $book-available-hour-selected-border-color;
+  padding: 0 0.2rem;
+}
+
+.bookHours__item .time-slots-remaining {
+  color: $book-available-hour-solts-remaining-color;
+  font-size: .80rem;
+  margin-left: .5rem;
+}
+
+.hoursAvailableSpots--warning {
+  background-color: $book-available-hour-solts-warning-bg-color;
+  color: $book-available-hour-solts-warning-color;
+  transition: background-color 2s ease-in;
+  padding: 0.15rem;
+  border-radius: 5px;
+}
+
+.bookAppointment__calendarSpinner {
+  position: absolute;
+  z-index: 1;
+  background: $book-calendar-spinner-bg-color;
+  height: $book-calendar-spinner-height;
+  width: $book-calendar-spinner-width;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: $book-calendar-spinner-border-radius;
+}
+
+// Book page form that has essentially 4 columns
+.bookForm {
+  display: flex;
+  flex-direction: column;
+
+  @media all and (min-width: $md-breakpoint) {
+    flex-direction: row;
+  }
+
+  @media all and (min-width: $four-col-breakpoint) {
+    margin-right: 17.5rem;
+  }
+}
+
+.bookForm__column {
+  margin-bottom: 1.5rem;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media all and (min-width: $md-breakpoint) {
+    flex: 0 0 30%;
+    margin-bottom: 0;
+    margin-right: 2rem;
+    max-width: 30%;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}

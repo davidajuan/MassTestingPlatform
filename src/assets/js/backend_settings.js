@@ -209,7 +209,7 @@ window.BackendSettings = window.BackendSettings || {};
                 return;
             }
 
-            var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_validate_username';
+            var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_validate_username';
             var postData = {
                 csrfToken: GlobalVariables.csrfToken,
                 username: $input.val(),
@@ -222,11 +222,11 @@ window.BackendSettings = window.BackendSettings || {};
                 }
 
                 if (response == false) {
-                    $input.closest('.form-group').addClass('has-error');
+                    $input.closest('.formGroup').addClass('has-error');
                     Backend.displayNotification(EALang.username_already_exists);
                     $input.attr('already-exists', 'true');
                 } else {
-                    $input.closest('.form-group').removeClass('has-error');
+                    $input.closest('.formGroup').removeClass('has-error');
                     $input.attr('already-exists', 'false');
                 }
             }, 'json').fail(GeneralFunctions.ajaxFailureHandler);

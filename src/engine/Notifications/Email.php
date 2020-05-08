@@ -46,10 +46,11 @@ class Email {
      * @param \CI_Controller $framework
      * @param array $config Contains the email configuration to be used.
      */
-    public function __construct(\CI_Controller $framework, array $config)
+    public function __construct(\CI_Controller $framework, array $config, $ses_email)
     {
         $this->framework = $framework;
         $this->config = $config;
+        $this->ses_email = $ses_email;
     }
 
     /**
@@ -80,105 +81,157 @@ class Email {
      * the appointment details.
      *
      * @param array $appointment Contains the appointment data.
-     * @param array $provider Contains the provider data.
-     * @param array $service Contains the service data.
      * @param array $customer Contains the customer data.
-     * @param array $company Contains settings of the company. By the time the
-     * "company_name", "company_link" and "company_email" values are required in the array.
-     * @param \EA\Engine\Types\Text $title The email title may vary depending the receiver.
-     * @param \EA\Engine\Types\Text $message The email message may vary depending the receiver.
-     * @param \EA\Engine\Types\Url $appointmentLink This link is going to enable the receiver to make changes
-     * to the appointment record.
-     * @param \EA\Engine\Types\Email $recipientEmail The recipient email address.
-     * @param \EA\Engine\Types\Text $icsStream Stream contents of the ICS file.
      */
-    public function sendAppointmentDetails(
-        array $appointment,
-        array $provider,
-        array $service,
-        array $customer,
-        array $company,
-        Text $title,
-        Text $message,
-        Url $appointmentLink,
-        EmailAddress $recipientEmail,
-        Text $icsStream
-    ) {
-        switch ($company['date_format'])
-        {
-            case 'DMY':
-                $date_format = 'd/m/Y';
-                break;
-            case 'MDY':
-                $date_format = 'm/d/Y';
-                break;
-            case 'YMD':
-                $date_format = 'Y/m/d';
-                break;
-            default:
-                throw new \Exception('Invalid date_format value: ' . $company['date_format']);
+    public function sendAppointmentDetails($customer, $appointment, $ses_email_address, $ses_email_name, $blnUpdate = false) {
+
+        if ($customer['patient_consent'] !== "1" || !$customer['email']) {
+            return false;
         }
 
-        switch ($company['time_format'])
-        {
-            case 'military':
-                $timeFormat = 'H:i';
-                break;
-            case 'regular':
-                $timeFormat = 'g:i A';
-                break;
-            default:
-                throw new \Exception('Invalid time_format value: ' . $company['time_format']);
-        }
+        $emailSubject = ($blnUpdate ? "Appointment Updated" : "Appointment Confirmation");
+        $emailHeader = ($blnUpdate ? "Your appointment has been changed" : "Appointment Confirmation");
 
         // Prepare template replace array.
         $replaceArray = [
-            '$email_title' => $title->get(),
-            '$email_message' => $message->get(),
-            '$appointment_service' => $service['name'],
-            '$appointment_provider' => $provider['first_name'] . ' ' . $provider['last_name'],
-            '$appointment_start_date' => date($date_format . ' ' . $timeFormat, strtotime($appointment['start_datetime'])),
-            '$appointment_end_date' => date($date_format . ' ' . $timeFormat, strtotime($appointment['end_datetime'])),
-            '$appointment_link' => $appointmentLink->get(),
-            '$company_link' => $company['company_link'],
-            '$company_name' => $company['company_name'],
-            '$customer_name' => $customer['first_name'] . ' ' . $customer['last_name'],
-            '$customer_email' => $customer['email'],
-            '$customer_phone' => $customer['phone_number'],
-            '$customer_address' => $customer['address'],
-
-            // Translations
-            'Appointment Details' => $this->framework->lang->line('appointment_details_title'),
-            'Service' => $this->framework->lang->line('service'),
-            'Provider' => $this->framework->lang->line('provider'),
-            'Start' => $this->framework->lang->line('start'),
-            'End' => $this->framework->lang->line('end'),
-            'Customer Details' => $this->framework->lang->line('customer_details_title'),
-            'Name' => $this->framework->lang->line('name'),
-            'Email' => $this->framework->lang->line('email'),
-            'Phone' => $this->framework->lang->line('phone'),
-            'Address' => $this->framework->lang->line('address'),
-            'Appointment Link' => $this->framework->lang->line('appointment_link_title')
+            '$first_name' => $customer['first_name'],
+            '$last_name' => $customer['last_name'],
+            '$datetime_pretty' => date('l jS, F Y h:i A', strtotime($appointment['start_datetime'])),
+            '$emailSubject' => $emailSubject,
+            '$emailHeader' => $emailHeader,
         ];
 
-        $html = file_get_contents(__DIR__ . '/../../application/views/emails/appointment_details.php');
-        $html = $this->_replaceTemplateVariables($replaceArray, $html);
+        $emailBodyHtml = file_get_contents(__DIR__ . '/../../application/views/emails/appointment_details.php');
+        $emailBodyHtml = $this->_replaceTemplateVariables($replaceArray, $emailBodyHtml);
 
-        $mailer = $this->_createMailer();
+        $emailBodyText = file_get_contents(__DIR__ . '/../../application/views/emails/appointment_details_text.php');
+        $emailBodyText = $this->_replaceTemplateVariables($replaceArray, $emailBodyText);
 
-        $mailer->From = $company['company_email'];
-        $mailer->FromName = $company['company_name'];
-        $mailer->AddAddress($recipientEmail->get());
-        $mailer->Subject = $title->get();
-        $mailer->Body = $html;
-
-        $mailer->addStringAttachment($icsStream->get(), 'invitation.ics');
-
-        if ( ! $mailer->Send())
-        {
-            throw new \RuntimeException('Email could not been sent. Mailer Error (Line ' . __LINE__ . '): '
-                . $mailer->ErrorInfo);
+        try {
+            $messageId = $this->ses_email->sendEmail(
+                $ses_email_address,
+                $ses_email_name,
+                $customer['email'],
+                $customer['first_name'],
+                $emailSubject,
+                $emailBodyHtml,
+                $emailBodyText
+            );
+            $this->framework->logger->debug(sprintf('Confirmation email sent to patient: %s, messageId: %s', $customer['email'], $messageId));
+            return $messageId;
+        } catch (\Exception $e) {
+            $this->framework->logger->error(sprintf('Failed to send Confirmation email to: %s, Exception: %s', $customer['email'], $e));
         }
+
+        return false;
+    }
+
+    /**
+     * Send an email to business.
+     *
+     * Tells them they have a business record created and it is currently pending
+     *
+     * @param array $business Contains the business data.
+     * @param array $business_request Contains the business request data.
+     */
+    public function sendBusinessCreatedDetails($business, $business_request, $ses_email_address, $ses_email_name) {
+
+        if ($business['consent_email'] !== "1" || !$business['email']) {
+            return false;
+        }
+
+        $emailSubject = "Registration Confirmation";
+        $emailHeader = "Covid Community Care Network";
+        $intro = "Thank you for registering with the Covid Community Care Network";
+        $message = "Your business is currently being verified for eligibility. Once we have verified your information, a City of Detroit Business Liaison or District Manager will reach out to you within 24-48 hours with instructions on how to help your employees register for testing appointments.";
+
+        // Prepare template replace array.
+        $replaceArray = [
+            '$business_name' => $business['business_name'],
+            '$first_name' => $business['owner_first_name'],
+            '$last_name' => $business['owner_last_name'],
+            '$slots_requested' => $business_request['slots_requested'],
+            '$emailSubject' => $emailSubject,
+            '$emailHeader' => $emailHeader,
+            '$intro' => $intro,
+            '$message' => $message,
+        ];
+
+        $emailBodyHtml = file_get_contents(__DIR__ . '/../../application/views/emails/business_created_details.php');
+        $emailBodyHtml = $this->_replaceTemplateVariables($replaceArray, $emailBodyHtml);
+
+        $emailBodyText = file_get_contents(__DIR__ . '/../../application/views/emails/business_created_details_text.php');
+        $emailBodyText = $this->_replaceTemplateVariables($replaceArray, $emailBodyText);
+
+        try {
+            $messageId = $this->ses_email->sendEmail(
+                $ses_email_address,
+                $ses_email_name,
+                $business['email'],
+                $business['owner_first_name'],
+                $emailSubject,
+                $emailBodyHtml,
+                $emailBodyText
+            );
+            $this->framework->logger->debug(sprintf('Confirmation email sent to business: %s, messageId: %s', $business['email'], $messageId));
+            return $messageId;
+        } catch (\Exception $e) {
+            $this->framework->logger->error(sprintf('Failed to send Business email to: %s, Exception: %s', $business['email'], $e));
+        }
+
+        return false;
+    }
+
+    /**
+     * Send an email to business.
+     *
+     * Tells them their business is now active in our system
+     *
+     * @param array $business Contains the business data.
+     * @param array $business_request Contains the business request data.
+     */
+    public function sendBusinessActiveDetails($business, $ses_email_address, $ses_email_name) {
+
+        if ($business['consent_email'] !== "1" || !$business['email']) {
+            return false;
+        }
+
+        $emailSubject = "Your Business Has Been Approved";
+        $emailHeader = "Covid Community Care Network";
+
+        // Prepare template replace array.
+        $replaceArray = [
+            '$slots_approved' => $business['slots_approved'],
+            '$business_code' => $business['business_code'],
+            '$emailSubject' => $emailSubject,
+            '$emailHeader' => $emailHeader,
+            '$phone' => "(313) 230-0505"
+        ];
+
+        $emailBodyHtml = file_get_contents(__DIR__ . '/../../application/views/emails/business_approved_details.php');
+        $emailBodyHtml = $this->_replaceTemplateVariables($replaceArray, $emailBodyHtml);
+
+        $emailBodyText = file_get_contents(__DIR__ . '/../../application/views/emails/business_approved_details_text.php');
+        $emailBodyText = $this->_replaceTemplateVariables($replaceArray, $emailBodyText);
+
+        try {
+            $messageId = $this->ses_email->sendEmail(
+                $ses_email_address,
+                $ses_email_name,
+                $business['email'],
+                $business['owner_first_name'],
+                $emailSubject,
+                $emailBodyHtml,
+                $emailBodyText
+            );
+            $this->framework->logger->debug(sprintf('Confirmation email sent to business: %s, messageId: %s', $business['email'], $messageId));
+
+            return $messageId;
+        } catch (\Exception $e) {
+            $this->framework->logger->error(sprintf('Failed to send Business email to: %s, Exception: %s', $business['email'], $e));
+        }
+
+        return false;
     }
 
     /**

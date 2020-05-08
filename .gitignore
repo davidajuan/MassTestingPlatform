@@ -18,4 +18,10 @@
 !/src/storage/sessions/index.html
 /src/storage/uploads/*
 /!src/storage/uploads/index.html
-/vendor/
+/src/data/*
+/vendor
+/src/assets/css/main.css
+/.env
+/data
+/log
+.vscode/

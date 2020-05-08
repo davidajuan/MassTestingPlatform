@@ -1,0 +1,88 @@
+.navigation {
+  @media (min-width: $navigation-breakpoint) {
+    // This mimics bootstraps navbar-expand-xl
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+
+    .navbar-collapse {
+      display: flex;
+      flex-basis: auto;
+    }
+
+    .navbar-toggler {
+      display: none;
+    }
+
+    .navbar-nav {
+      flex-direction: row;
+    }
+  }
+}
+
+.nav {
+  display: flex;
+}
+
+.navMenu li {
+  margin: 0.5rem 0;
+
+  @media all and (min-width: $navigation-breakpoint) {
+    margin: 0 1.54rem 0 0;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.navMenu .active {
+  position: relative;
+  
+  @media all and (min-width: $navigation-breakpoint) {
+    &:after {
+      content: '';
+      position: absolute;
+      width: 100%; 
+      height: 3px;
+      display: block;
+      margin-top: 5px;
+      left: 0;
+      background: $navigation-link-active;
+      transition: width .2s ease;
+    }
+  }
+}
+
+.navMenu__item {
+  position: relative;
+  text-decoration: none;
+  color: $navigation-link;
+  
+  &:hover,
+  &:focus {
+    color: $navigation-link-hover-color;
+    text-decoration: none;
+  }
+  
+  &:after {
+    content: '';
+    position: absolute;
+    width: 0; 
+    height: 3px;
+    display: block;
+    margin-top: 5px;
+    right: 0;
+    background: transparent;
+    transition: width .2s ease;
+  }
+  
+  &:hover:after {
+    width: 100%;
+    left: 0;
+    background: $navigation-link-hover-underline-color;
+  }
+}
+
+.navbar-toggler {
+  border: 0;
+}

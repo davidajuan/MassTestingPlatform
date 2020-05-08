@@ -33,7 +33,7 @@ window.BackendUsers = window.BackendUsers || {};
     /**
      * Contains the current tab record methods for the page.
      *
-     * @type {AdminsHelper|ProvidersHelper|SecretariesHelper}
+     * @type {AdminsHelper|ProvidersHelper|SecretariesHelper|CityAdminHelper|CityBusinessHelper}
      */
     var helper = {};
 
@@ -67,7 +67,7 @@ window.BackendUsers = window.BackendUsers || {};
             html +=
                 '<div class="checkbox">' +
                 '<label class="checkbox">' +
-                '<input type="checkbox" data-id="' + service.id + '" />' +
+                '<input class="mr-2" type="checkbox" data-id="' + service.id + '" />' +
                 service.name +
                 '</label>' +
                 '</div>';
@@ -81,7 +81,7 @@ window.BackendUsers = window.BackendUsers || {};
             html +=
                 '<div class="checkbox">' +
                 '<label class="checkbox">' +
-                '<input type="checkbox" data-id="' + provider.id + '" />' +
+                '<input class="mr-2" type="checkbox" data-id="' + provider.id + '" />' +
                 provider.first_name + ' ' + provider.last_name +
                 '</label>' +
                 '</div>';
@@ -89,6 +89,34 @@ window.BackendUsers = window.BackendUsers || {};
         });
         html += '</div>';
         $('#secretary-providers').html(html);
+
+        html = '<div>';
+        $.each(GlobalVariables.providers, function (index, provider) {
+          html +=
+            '<div class="checkbox">' +
+            '<label class="checkbox">' +
+            '<input class="mr-2" type="checkbox" data-id="' + provider.id + '" />' +
+            provider.first_name + ' ' + provider.last_name +
+            '</label>' +
+            '</div>';
+
+        });
+        html += '</div>';
+        $('#city-admin-providers').html(html);
+
+        html = '<div>';
+        $.each(GlobalVariables.providers, function (index, provider) {
+          html +=
+            '<div class="checkbox">' +
+            '<label class="checkbox">' +
+            '<input class="mr-2" type="checkbox" data-id="' + provider.id + '" />' +
+            provider.first_name + ' ' + provider.last_name +
+            '</label>' +
+            '</div>';
+
+        });
+        html += '</div>';
+        $('#city-business-providers').html(html);
 
         $('#reset-working-plan').qtip({
             position: {
@@ -125,7 +153,7 @@ window.BackendUsers = window.BackendUsers || {};
                 helper = new SecretariesHelper();
 
                 // Update the list with the all the available providers.
-                var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_providers';
+                var url = GlobalVariables.baseUrl + '/backend_api/ajax_filter_providers';
                 var data = {
                     csrfToken: GlobalVariables.csrfToken,
                     key: ''
@@ -151,6 +179,10 @@ window.BackendUsers = window.BackendUsers || {};
                     $('#secretary-providers').html(html);
                     $('#secretary-providers input:checkbox').prop('disabled', true);
                 }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
+            } else if ($(this).attr('href') === '#city-admin') {
+                helper = new CityAdminHelper();
+            } else if ($(this).attr('href') === '#city-business') {
+                helper = new CityBusinessHelper();
             }
 
             helper.resetForm();
@@ -165,7 +197,7 @@ window.BackendUsers = window.BackendUsers || {};
          * When the user leaves the username input field we will need to check if the username
          * is not taken by another record in the system. Usernames must be unique.
          */
-        $('#admin-username, #provider-username, #secretary-username').focusout(function () {
+        $('#admin-username, #provider-username, #secretary-username, #city-admin-username').focusout(function () {
             var $input = $(this);
 
             if ($input.prop('readonly') == true || $input.val() == '') {
@@ -178,7 +210,7 @@ window.BackendUsers = window.BackendUsers || {};
                 return;
             }
 
-            var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_validate_username';
+            var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_validate_username';
             var postData = {
                 csrfToken: GlobalVariables.csrfToken,
                 username: $input.val(),
@@ -191,12 +223,12 @@ window.BackendUsers = window.BackendUsers || {};
                 }
 
                 if (response == false) {
-                    $input.closest('.form-group').addClass('has-error');
+                    $input.closest('.formGroup').addClass('has-error');
                     $input.attr('already-exists', 'true');
                     $input.parents().eq(3).find('.form-message').text(EALang.username_already_exists);
                     $input.parents().eq(3).find('.form-message').show();
                 } else {
-                    $input.closest('.form-group').removeClass('has-error');
+                    $input.closest('.formGroup').removeClass('has-error');
                     $input.attr('already-exists', 'false');
                     if ($input.parents().eq(3).find('.form-message').text() == EALang.username_already_exists) {
                         $input.parents().eq(3).find('.form-message').hide();

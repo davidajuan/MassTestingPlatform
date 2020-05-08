@@ -78,12 +78,22 @@ function exceptionToHtml($exc)
  */
 function exceptionToJavaScript($exception)
 {
-    return json_encode([
-        'code' => $exception->getCode(),
-        'file' => $exception->getFile(),
-        'line' => $exception->getLine(),
+    $exceptionList = [
         'message' => $exception->getMessage(),
-        'previous' => $exception->getPrevious(),
-        'trace' => $exception->getTraceAsString()
-    ]);
+    ];
+
+    if (Config::DEBUG_MODE) {
+        $exceptionList = array_merge($exceptionList, [
+            'code' => $exception->getCode(),
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
+            'previous' => $exception->getPrevious(),
+            'trace' => $exception->getTraceAsString(),
+        ]);
+    }
+
+    return json_encode($exceptionList);
+    // TODO: Decide how we want to print out exceptions in JSON format
+    // JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
+
 }

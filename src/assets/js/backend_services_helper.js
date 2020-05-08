@@ -28,6 +28,30 @@
         var instance = this;
 
         /**
+         * Event: Display Provider Details "Click"
+         */
+        $('#services-page').on('click', '.display-details', function () {
+            $('#services-page .switch-view .active').removeClass('active');
+            $('#services .add-edit-delete-group').show();
+            $(this).addClass('active');
+            $('.override-view').hide('fade', function () {
+                $('.details-view').show('fade');
+            });
+        });
+
+        /**
+         * Event: Display Attendant Overrides "Click"
+         */
+        $('#services-page').on('click', '.display-overrides', function () {
+            $('#services .add-edit-delete-group').hide();
+            $('#services-page .switch-view .active').removeClass('active');
+            $(this).addClass('active');
+            $('.details-view').hide('fade', function () {
+                $('.override-view').show('fade');
+            });
+        });
+
+        /**
          * Event: Filter Services Form "Submit"
          *
          * @param {jQuery.Event} event
@@ -60,6 +84,9 @@
                 return; // exit because we are on edit mode
             }
 
+            $('.display-overrides').removeClass('hide');
+            $('.display-overrides').prop('disabled', false);
+
             var serviceId = $(this).attr('data-id');
             var service = {};
             $.each(instance.filterResults, function (index, item) {
@@ -70,8 +97,8 @@
             });
 
             // Add dedicated provider link.
-            var dedicatedUrl = GlobalVariables.baseUrl + '/index.php?service=' + encodeURIComponent(service.id);
-            var linkHtml = '<a href="' + dedicatedUrl + '"><span class="glyphicon glyphicon-link"></span></a>';
+            var dedicatedUrl = GlobalVariables.baseUrl + '/?service=' + encodeURIComponent(service.id);
+            var linkHtml = '<a href="' + dedicatedUrl + '"><i class="fas fa-link"></i></a>';
             $('#services .record-details h3')
                 .find('a')
                 .remove()
@@ -93,6 +120,7 @@
             $('#services .save-cancel-group').show();
             $('#services .record-details').find('input, textarea').prop('readonly', false);
             $('#services .record-details').find('select').prop('disabled', false);
+            $('.add-override').prop('disabled', false);
 
             $('#filter-services button').prop('disabled', true);
             $('#filter-services .results').css('color', '#AAA');
@@ -122,7 +150,7 @@
                 currency: $('#service-currency').val(),
                 description: $('#service-description').val(),
                 availabilities_type: $('#service-availabilities-type').val(),
-                attendants_number: $('#service-attendants-number').val()
+                attendants_number: $('#service-attendants-number').val(),
             };
 
             if ($('#service-category').val() !== 'null') {
@@ -149,7 +177,7 @@
             $('#services .add-edit-delete-group').hide();
             $('#services .save-cancel-group').show();
             $('#services .record-details').find('input, textarea').prop('readonly', false);
-            $('#services .record-details select').prop('disabled', false);
+            $('#services .record-details select, .add-override').prop('disabled', false);
 
             $('#filter-services button').prop('disabled', true);
             $('#filter-services .results').css('color', '#AAA');
@@ -188,7 +216,7 @@
      * then the update operation is going to be executed.
      */
     ServicesHelper.prototype.save = function (service) {
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_service';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_save_service';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             service: JSON.stringify(service)
@@ -212,7 +240,7 @@
      * @param {Number} id Record ID to be deleted.
      */
     ServicesHelper.prototype.delete = function (id) {
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_service';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_delete_service';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             service_id: id
@@ -244,7 +272,7 @@
 
             $('#services .required').each(function () {
                 if ($(this).val() == '' || $(this).val() == undefined) {
-                    $(this).closest('.form-group').addClass('has-error');
+                    $(this).closest('.formGroup').addClass('has-error');
                     missingRequired = true;
                 }
             });
@@ -267,9 +295,9 @@
         $('#service-category').val('null');
         $('#services .add-edit-delete-group').show();
         $('#services .save-cancel-group').hide();
-        $('#edit-service, #delete-service').prop('disabled', true);
         $('#services .record-details').find('input, textarea').prop('readonly', true);
         $('#services .record-details').find('select').prop('disabled', true);
+        $('#start-datetime').removeClass('hasDatepicker');
 
         $('#filter-services .selected').removeClass('selected');
         $('#filter-services button').prop('disabled', false);
@@ -306,7 +334,7 @@
     ServicesHelper.prototype.filter = function (key, selectId, display) {
         display = display || false;
 
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_services';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_filter_services';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             key: key

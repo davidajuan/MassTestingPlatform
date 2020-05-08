@@ -1,0 +1,13 @@
+.nav-pills {
+  background-color: $nav-pill-bg-color;
+  margin-bottom: $nav-pill-margin-bottom;
+
+  .nav-link {
+    color: $nav-pill-link-color;
+    cursor: pointer;
+
+    &.active {
+      background-color: $nav-pill-link-bg-color;
+    }
+  }
+}

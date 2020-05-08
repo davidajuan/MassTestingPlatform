@@ -1,0 +1,59 @@
+.filter-records {
+  flex: 1;
+  max-width: 100%;
+  margin-bottom: $filter-records-margin-bottom;
+
+  @media all and (min-width: $md-breakpoint) {
+    max-width: 350px;
+  }
+}
+
+.filter-records .input-group-addon {
+  padding-top: 0;
+  padding-right: 0;
+  border-top: none;
+}
+
+.filter-records .key {
+  margin-right: 0.5rem;
+}
+
+.filter-records .results,
+.patient-records .results {
+  overflow-y: auto;
+  max-height: 650px;
+  outline: none;
+}
+
+.filter-records .results .entry,
+.patient-records .results .entry {
+  padding: 0.75rem 0.5rem;
+}
+
+.filter-records .results .entry:hover:not(.selected),
+.patient-records .results .entry:hover:not(.selected) {
+  background-color: $filter-entry-bg-color;
+  cursor: pointer;
+}
+
+.filter-records .results .entry.selected,
+.patient-records .results .entry.selected {
+  background-color: $filter-entry-selected-bg-color;
+  border-right: $filter-entry-selected-border-right-width solid $filter-entry-selected-border-right-color;
+}
+
+.filter-records .results hr,
+.patient-records .results hr {
+  margin: 0.25rem 0;
+}
+
+.record-details {
+  max-width: 800px;
+  margin-bottom: 1.5rem;
+}
+
+.record-details input:read-only,
+.record-details select:disabled,
+.record-details textarea:read-only {
+  opacity: 0.85;
+}

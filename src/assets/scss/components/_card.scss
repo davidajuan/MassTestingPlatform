@@ -1,0 +1,16 @@
+.card {
+  border: $card-border;
+  margin-bottom: $card-margin-bottom;
+  padding: $card-padding;
+
+  &:nth-of-type(odd) {
+    background-color: $card-odd-bg-color;
+    color: $card-odd-color;
+  }
+}
+
+.card-title {
+  margin-bottom: $card-title-margin-bottom;
+  font-size: $card-title-font-size;
+  font-weight: $card-title-font-weight;
+}

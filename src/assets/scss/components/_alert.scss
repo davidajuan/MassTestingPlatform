@@ -1,0 +1,39 @@
+.alert {
+  z-index: 1;
+  margin: $alert-margin;
+
+  .close {
+    font-size: $alert-close-icon-size;
+    opacity: 1; 
+  }
+}
+
+.alert-success {
+  color: $alert-success-color;
+  background-color: $alert-success-bg-color;
+  border-color: $alert-success-border-color;
+
+  .close {
+    color: $alert-success-close-icon-color;
+  }
+}
+
+.alert-danger {
+  color: $alert-danger-color;
+  background-color: $alert-danger-bg-color;
+  border-color: $alert-danger-border-color;
+
+  .close {
+    color: $alert-danger-close-icon-color;
+  } 
+}
+
+.alert-fatal {
+  color: $alert-fatal-color;
+  background-color: $alert-fatal-bg-color;
+  border-color: $alert-fatal-border-color;
+
+  .close {
+    color: $alert-fatal-close-icon-color;
+  }
+}

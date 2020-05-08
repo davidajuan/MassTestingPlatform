@@ -1,0 +1,47 @@
+.attendant-override .tableRow:hover {
+  background-color: $table-row-bg-color-attendant-override;
+}
+
+// Table with fixed height and scrollable.
+// Sticky thead th's because of scrolling.
+.tableFixedHeight {
+  max-height: $table-fixed-max-height;
+  overflow-y: auto;
+  position: relative;
+
+  thead th {
+    position: sticky;
+    top: 0;
+  }
+}
+
+// Remove all borders and align items to middle,
+// interactive so add pointer as cursor.
+.table--interactive {
+  thead th,
+  th,
+  td {
+    border: 0;
+    vertical-align: middle;
+    padding: $table-interactive-padding;
+  }
+
+  tbody tr {
+    cursor: pointer;
+  }
+}
+
+// Background color on thead th's.
+.table__head-colored tr th {
+  background-color: $table-head-colored-bg-color;
+  color: $table-head-colored-color;
+  padding: 0.5rem;
+}
+
+// On hover/active set background color.
+.table-striped .table__body tr {
+  &.is-active,
+  &:hover {
+    background-color: $table-stripped-active-row-bg-color;
+  }
+}

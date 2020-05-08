@@ -35,10 +35,10 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
         $('#enable-sync').click(function () {
             if ($('#enable-sync').hasClass('enabled') === false) {
                 // Enable synchronization for selected provider.
-                var authUrl = GlobalVariables.baseUrl + '/index.php/google/oauth/'
+                var authUrl = GlobalVariables.baseUrl + '/google/oauth/'
                     + $('#select-filter-item').val();
 
-                var redirectUrl = GlobalVariables.baseUrl + '/index.php/google/oauth_callback';
+                var redirectUrl = GlobalVariables.baseUrl + '/google/oauth_callback';
 
                 var windowHandle = window.open(authUrl, 'Authorize Easy!Appointments',
                     'width=800, height=600');
@@ -61,7 +61,7 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
                                 // Display the calendar selection dialog. First we will get a list of the available
                                 // user's calendars and then we will display a selection modal so the user can select
                                 // the sync calendar.
-                                var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_get_google_calendars';
+                                var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_get_google_calendars';
                                 var postData = {
                                     csrfToken: GlobalVariables.csrfToken,
                                     provider_id: $('#select-filter-item').val()
@@ -115,7 +115,7 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
          * Event: Select Google Calendar "Click"
          */
         $('#select-calendar').click(function () {
-            var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_select_google_calendar';
+            var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_select_google_calendar';
             var postData = {
                 csrfToken: GlobalVariables.csrfToken,
                 provider_id: $('#select-filter-item').val(),
@@ -143,7 +143,7 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
          * Trigger the synchronization algorithm.
          */
         $('#google-sync').click(function () {
-            var url = GlobalVariables.baseUrl + '/index.php/google/sync/' + $('#select-filter-item').val();
+            var url = GlobalVariables.baseUrl + '/google/sync/' + $('#select-filter-item').val();
 
             $.ajax({
                 url: url,
@@ -185,7 +185,7 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
     function _disableProviderSync(providerId) {
         // Make an ajax call to the server in order to disable the setting
         // from the database.
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_disable_provider_sync';
+        var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_disable_provider_sync';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             provider_id: providerId

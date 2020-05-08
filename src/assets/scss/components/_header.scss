@@ -1,0 +1,12 @@
+.header {
+  background: $header-background-color;
+}
+
+.header__logo {
+  height: 100px;
+  width: 100px;
+}
+
+.header .navbar-brand {
+  color: $header-text-color;
+}

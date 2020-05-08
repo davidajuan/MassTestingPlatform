@@ -26,6 +26,8 @@
  *      'city'
  *      'state'
  *      'zip_code'
+ *      'business_service_id'
+ *      'priority_service_id'
  *      'notes'
  *      'id_roles'
  *      'services' >> array that contains the ids that the provider can provide
@@ -58,6 +60,9 @@ class Providers_Model extends CI_Model {
      */
     public function add($provider)
     {
+        // Sanitize Data
+        $provider = $this->security->xss_clean($provider);
+
         $this->validate($provider);
 
         if ($this->exists($provider) && ! isset($provider['id']))
@@ -298,7 +303,7 @@ class Providers_Model extends CI_Model {
             }
         }
 
-        // Validate calendar view mode. 
+        // Validate calendar view mode.
         if (isset($provider['settings']['calendar_view']) && ($provider['settings']['calendar_view'] !== CALENDAR_VIEW_DEFAULT
                 && $provider['settings']['calendar_view'] !== CALENDAR_VIEW_TABLE))
         {
@@ -341,7 +346,7 @@ class Providers_Model extends CI_Model {
     {
         if ( ! is_numeric($provider_id))
         {
-            throw new Exception('Invalid argument type $provider_id: ' . $provider_id);
+            throw new Exception('Invalid value in provider_id');
         }
 
         $num_rows = $this->db->get_where('ea_users', ['id' => $provider_id])->num_rows();
@@ -367,7 +372,7 @@ class Providers_Model extends CI_Model {
     {
         if ( ! is_numeric($provider_id))
         {
-            throw new Exception('$provider_id argument is not a valid numeric value: ' . $provider_id);
+            throw new Exception('Invalid value in provider_id');
         }
 
         // Check if selected record exists on database.
@@ -393,6 +398,8 @@ class Providers_Model extends CI_Model {
         $provider['settings'] = $this->db->get_where('ea_user_settings',
             ['id_users' => $provider_id])->row_array();
         unset($provider['settings']['id_users']);
+        unset($provider['settings']['password']);
+        unset($provider['settings']['salt']);
 
         // Return provider data array.
         return $provider;
@@ -415,12 +422,12 @@ class Providers_Model extends CI_Model {
     {
         if ( ! is_numeric($provider_id))
         {
-            throw new Exception('Invalid argument provided as $provider_id: ' . $provider_id);
+            throw new Exception('Invalid value in provider_id');
         }
 
         if ( ! is_string($field_name))
         {
-            throw new Exception('$field_name argument is not a string: ' . $field_name);
+            throw new Exception('Invalid value in field_name');
         }
 
         // Check whether the provider record exists in database.
@@ -452,7 +459,7 @@ class Providers_Model extends CI_Model {
      *
      * @return array Returns the rows from the database.
      */
-    public function get_batch($where_clause = '')
+    public function get_batch($where_clause = '', $search = [])
     {
         // CI db class may confuse two where clauses made in the same time, so
         // get the role id first and then apply the get_batch() where clause.
@@ -463,8 +470,15 @@ class Providers_Model extends CI_Model {
             $this->db->where($where_clause);
         }
 
+        if (!empty($search)) {
+            $this->db->group_start()
+                ->or_like($search)
+                ->group_end();
+        }
+
         $batch = $this->db->get_where('ea_users',
             ['id_roles' => $role_id])->result_array();
+
 
         // Include each provider services and settings.
         foreach ($batch as &$provider)
@@ -482,6 +496,8 @@ class Providers_Model extends CI_Model {
             $provider['settings'] = $this->db->get_where('ea_user_settings',
                 ['id_users' => $provider['id']])->row_array();
             unset($provider['settings']['id_users']);
+            unset($provider['settings']['password']);
+            unset($provider['settings']['salt']);
         }
 
         // Return provider records in an array.
@@ -583,12 +599,12 @@ class Providers_Model extends CI_Model {
     {
         if ( ! is_numeric($provider_id))
         {
-            throw new Exception('Invalid $provider_id argument given:' . $provider_id);
+            throw new Exception('Invalid value in provider_id');
         }
 
         if (count($settings) == 0 || ! is_array($settings))
         {
-            throw new Exception('Invalid $settings argument given:' . print_r($settings, TRUE));
+            throw new Exception('Invalid value in settings');
         }
 
         // Check if the setting record exists in db.
@@ -618,12 +634,12 @@ class Providers_Model extends CI_Model {
         // Validate method arguments.
         if ( ! is_array($services))
         {
-            throw new Exception('Invalid argument type $services: ' . $services);
+            throw new Exception('Invalid value in services');
         }
 
         if ( ! is_numeric($provider_id))
         {
-            throw new Exception('Invalid argument type $provider_id: ' . $provider_id);
+            throw new Exception('Invalid value in provider_id');
         }
 
         // Save provider services in the database (delete old records and add new).

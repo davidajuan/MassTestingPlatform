@@ -1,0 +1,4 @@
+approved_confirm,slots_approved,slots_requested,business_name,business_code,owner_first_name,owner_last_name,business_phone,mobile_phone,email,address,city,state,zip_code,created,hash
+,,20,"Mike Gas Station",123456HN,Mike,Kime,123-123-1234,456-456-4566,mike@mike.com,"123 Test St",Southgate,MI,48195,"2020-04-18 15:38:55",123456MK
+,,30,"Mike Gas Station",456234FD,Mike,Kime,123-123-1234,456-456-4566,mike@mike.com,"123 Test St",Southgate,MI,48195,"2020-04-18 15:39:56",123456MK
+,,10,Applebees,234345DS,Jake,Level,345-345-3455,567-567-5677,asd@asd.com,"234 Boom Rd",Honolulu,HI,96819,"2020-04-18 15:42:18",345345FD

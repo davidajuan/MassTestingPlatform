@@ -49,12 +49,20 @@
 
  require_once __DIR__ . '/config.php';
 
+ if (!defined('Config::APP_CONFIG')) {
+	header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+	echo 'The application APP_CONFIG is not set correctly.';
+	exit(1); // EXIT_ERROR
+ }
+
+ define('APP_CONFIG', json_decode(Config::APP_CONFIG, true));
+
  /*
   *---------------------------------------------------------------
   * EASY!APPOINTMENTS AUTOLOAD FILE
   *---------------------------------------------------------------
   *
-  * Include Easy!Appointments autoload file so that namespace 
+  * Include Easy!Appointments autoload file so that namespace
   * classes are loaded automatically.
   *
   */
@@ -86,12 +94,22 @@
  * This can be set to anything, but default usage is:
  *
  *     development
- *     testing
  *     production
  *
- * NOTE: If you change these, also change the error_reporting() code below
  */
-	define('ENVIRONMENT', (Config::DEBUG_MODE) ? 'development' : 'production');
+switch (Config::APP_ENV) {
+    case 'test':
+        define('ENVIRONMENT', 'development');
+        break;
+    case 'prod':
+        define('ENVIRONMENT', 'production');
+        break;
+    default:
+        header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+        echo 'The application environment is not set correctly.';
+        exit(1); // EXIT_ERROR
+}
+
 
 /*
  *---------------------------------------------------------------
@@ -100,32 +118,26 @@
  *
  * Different environments will require different levels of error reporting.
  * By default development will show errors but testing and live will hide them.
+ * Resource: https://stackify.com/display-php-errors/
  */
-switch (ENVIRONMENT)
-{
-	case 'development':
-		error_reporting(-1);
-		ini_set('display_errors', 1);
-	break;
-
-	case 'testing':
-	case 'production':
-		ini_set('display_errors', 0);
-		if (version_compare(PHP_VERSION, '5.3', '>='))
-		{
-			error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
-		}
-		else
-		{
-			error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
-		}
-	break;
-
-	default:
-		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
-		echo 'The application environment is not set correctly.';
-		exit(1); // EXIT_ERROR
+if (Config::DEBUG_MODE) {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
 }
+else {
+    ini_set('display_errors', 0);
+    ini_set('display_startup_errors', 0);
+    error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
+}
+
+/*
+ *---------------------------------------------------------------
+ * CUSTOM HEADERS
+ *---------------------------------------------------------------
+ *
+ */
+	header('X-version: ' . Config::GIT_HASH);
 
 /*
  *---------------------------------------------------------------

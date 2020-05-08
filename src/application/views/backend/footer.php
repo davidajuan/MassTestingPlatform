@@ -1,5 +1,5 @@
 <div id="footer">
-    <div id="footer-content" class="col-xs-12 col-sm-8">
+    <div id="footer-content" class="col-sm-12 col-md-8">
         Powered by
         <a href="http://easyappointments.org">Easy!Appointments
             <?php
@@ -20,12 +20,16 @@
         </a>
     </div>
 
-    <div id="footer-user-display-name" class="col-xs-12 col-sm-4">
+    <div id="footer-user-display-name" class="col-sm-12 col-md-4">
         <?= lang('hello') . ', ' . $user_display_name ?>!
     </div>
 </div>
 
 <script src="<?= asset_url('assets/js/backend.js') ?>"></script>
 <script src="<?= asset_url('assets/js/general_functions.js') ?>"></script>
+<script src="<?= asset_url('assets/ext/jquery-mask/jquery.mask.min.js') ?>"></script>
+<script src="<?= asset_url('assets/ext/validator/validator.min.js') ?>"></script>
+<script src="<?= asset_url('assets/js/book-validations.js') ?>"></script>
+
 </body>
 </html>

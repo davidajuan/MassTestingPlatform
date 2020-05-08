@@ -1,0 +1,13 @@
+{
+    "Subject": {
+        "Data": "Business File Update Notification",
+        "Charset": "UTF-8"
+    },
+    "Body": {
+        "Html": {
+            "Data": 
+                "The Business File ${fileName} has errored out<br>Given below are the details of the error<br>${errorMessage}",
+            "Charset": "UTF-8"
+        }
+    }
+ }

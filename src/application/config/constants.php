@@ -49,6 +49,16 @@ define('DB_SLUG_CUSTOMER', 'customer');
 define('DB_SLUG_PROVIDER', 'provider');
 define('DB_SLUG_ADMIN', 'admin');
 define('DB_SLUG_SECRETARY', 'secretary');
+define('DB_SLUG_CITY_ADMIN', 'city_admin');
+define('DB_SLUG_CITY_BUSINESS', 'city_business');
+
+define('DB_SLUG_BUSINESS_REQ_ACTIVE', 'active');
+define('DB_SLUG_BUSINESS_REQ_PENDING', 'pending');
+define('DB_SLUG_BUSINESS_REQ_DELETED', 'deleted');
+
+define('CALLER_TYPE_PATIENT', 'patient');
+define('CALLER_TYPE_PROVIDER', 'provider');
+define('CALLER_TYPE_CIE', 'essential-worker');
 
 define('FILTER_TYPE_PROVIDER', 'provider');
 define('FILTER_TYPE_SERVICE', 'service');
@@ -64,12 +74,16 @@ define('PRIV_ADD', 2);
 define('PRIV_EDIT', 4);
 define('PRIV_DELETE', 8);
 
+define('PRIV_BOOK', 'book');
 define('PRIV_APPOINTMENTS', 'appointments');
 define('PRIV_CUSTOMERS', 'customers');
 define('PRIV_SERVICES', 'services');
 define('PRIV_USERS', 'users');
 define('PRIV_SYSTEM_SETTINGS', 'system_settings');
 define('PRIV_USER_SETTINGS', 'user_settings');
+define('PRIV_BUSINESS', 'business');
+define('PRIV_BUSINESS_REQUEST', 'business_request');
+define('PRIV_REPORTS', 'reports');
 
 define('DATE_FORMAT_DMY', 'DMY');
 define('DATE_FORMAT_MDY', 'MDY');

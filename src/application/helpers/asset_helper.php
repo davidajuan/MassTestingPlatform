@@ -11,6 +11,11 @@
  * @since       v1.3.0
  * ---------------------------------------------------------------------------- */
 
+function asset_url($uri = '', $protocol = NULL)
+{
+    $assert_url = _asset_url($uri, $protocol);
+    return str_replace('http:', '', $assert_url);
+}
 /**
  * Assets URL helper function.
  *
@@ -22,7 +27,7 @@
  *
  * @return string Returns the final asset URL.
  */
-function asset_url($uri = '', $protocol = NULL)
+function _asset_url($uri = '', $protocol = NULL)
 {
     $ci =& get_instance();
 

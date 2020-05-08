@@ -322,7 +322,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
                     {
                         text: 'OK',
                         click: function () {
-                            var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_appointment';
+                            var postUrl = GlobalVariables.baseUrl + '/backend_api/ajax_delete_appointment';
                             var postData = {
                                 csrfToken: GlobalVariables.csrfToken,
                                 appointment_id: lastFocusedEventData.id,
@@ -365,7 +365,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
                     EALang.write_appointment_removal_reason, buttons);
 
                 var $formGroup = $('<div/>', {
-                    'class': 'form-group'
+                    'class': 'formGroup'
                 })
                     .appendTo('#message_box');
 
@@ -376,7 +376,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
                     .appendTo($formGroup);
             } else {
                 // Do not display confirmation promt.
-                var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_unavailable';
+                var url = GlobalVariables.baseUrl + '/backend_api/ajax_delete_unavailable';
                 var data = {
                     csrfToken: GlobalVariables.csrfToken,
                     unavailable_id: lastFocusedEventData.id
@@ -424,11 +424,11 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
         $calendarHeader
             .html(
                 '<button class="btn btn-xs btn-default previous">' +
-                '<span class="glyphicon glyphicon-chevron-left"></span>' +
+                '<i class="fas fa-chevron-left"></i>' +
                 '</button>' +
                 '<input type="text" class="select-date" value="' + GeneralFunctions.formatDate(new Date(), GlobalVariables.dateFormat) + '" />' +
                 '<button class="btn btn-xs btn-default next">' +
-                '<span class="glyphicon glyphicon-chevron-right"></span>' +
+                '<i class="fas fa-chevron-right"></i>' +
                 '</button>'
             );
 
@@ -865,7 +865,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
      * @return {jQuery.jqXHR}
      */
     function _getCalendarEvents(startDate, endDate) {
-        var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_get_calendar_events';
+        var url = GlobalVariables.baseUrl + '/backend_api/ajax_get_calendar_events';
         var data = {
             csrfToken: GlobalVariables.csrfToken,
             startDate: startDate.toString('yyyy-MM-dd'),

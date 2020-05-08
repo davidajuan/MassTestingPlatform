@@ -38,7 +38,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
         $('#available-hours').empty();
 
         // Find the selected service duration (it is going to be send within the "postData" object).
-        var selServiceDuration = 15; // Default value of duration (in minutes).
+        var selServiceDuration = 60; // Default value of duration (in minutes).
         $.each(GlobalVariables.availableServices, function (index, service) {
             if (service.id == $('#select-service').val()) {
                 selServiceDuration = service.duration;
@@ -49,7 +49,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
         var appointmentId = FrontendBook.manageMode ? GlobalVariables.appointmentData.id : undefined;
 
         // Make ajax post request and get the available hours.
-        var postUrl = GlobalVariables.baseUrl + '/index.php/appointments/ajax_get_available_hours';
+        var postUrl = GlobalVariables.baseUrl + '/appointments/ajax_get_available_hours';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             service_id: $('#select-service').val(),
@@ -135,7 +135,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             postData.exclude_appointment_id = GlobalVariables.appointmentData.id;
         }
 
-        var postUrl = GlobalVariables.baseUrl + '/index.php/appointments/ajax_register_appointment';
+        var postUrl = GlobalVariables.baseUrl + '/appointments/ajax_register_appointment';
         var $layer = $('<div/>');
 
         $.ajax({
@@ -180,7 +180,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                 }
 
                 window.location.href = GlobalVariables.baseUrl
-                    + '/index.php/appointments/book_success/' + response.appointment_id;
+                    + '/appointments/book_success/' + response.appointment_id;
             })
             .fail(function (jqxhr, textStatus, errorThrown) {
                 $('.captcha-title small').trigger('click');
@@ -209,7 +209,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
 
         var appointmentId = FrontendBook.manageMode ? GlobalVariables.appointmentData.id : undefined;
 
-        var url = GlobalVariables.baseUrl + '/index.php/appointments/ajax_get_unavailable_dates';
+        var url = GlobalVariables.baseUrl + '/appointments/ajax_get_unavailable_dates';
         var data = {
             provider_id: providerId,
             service_id: serviceId,
@@ -279,7 +279,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
      * @param {Object} consent Contains user's consents.
      */
     exports.saveConsent = function (consent) {
-        var url = GlobalVariables.baseUrl + '/index.php/consents/ajax_save_consent';
+        var url = GlobalVariables.baseUrl + '/consents/ajax_save_consent';
         var data = {
             csrfToken: GlobalVariables.csrfToken,
             consent: consent
@@ -298,7 +298,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
      * @param {Number} customerToken Customer unique token.
      */
     exports.deletePersonalInformation = function (customerToken) {
-        var url = GlobalVariables.baseUrl + '/index.php/privacy/ajax_delete_personal_information';
+        var url = GlobalVariables.baseUrl + '/privacy/ajax_delete_personal_information';
         var data = {
             csrfToken: GlobalVariables.csrfToken,
             customer_token: customerToken

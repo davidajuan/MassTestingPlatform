@@ -38,4 +38,8 @@ function register($namespace, $path) {
     });
 }
 
-register('Engine', __DIR__ . '/engine'); 
+register('Engine', __DIR__ . '/engine');
+
+// Exposing CI_Logger to entire app
+// It's a bit hacky, but it opens up the namespace for the singleton pattern
+require __DIR__ . '/system/libraries/Logger.php';

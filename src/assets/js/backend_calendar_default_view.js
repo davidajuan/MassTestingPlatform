@@ -131,7 +131,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                     {
                         text: 'OK',
                         click: function () {
-                            var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_appointment';
+                            var url = GlobalVariables.baseUrl + '/backend_api/ajax_delete_appointment';
                             var data = {
                                 csrfToken: GlobalVariables.csrfToken,
                                 appointment_id: lastFocusedEventData.data.id,
@@ -177,7 +177,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 $('#delete-reason').css('width', '100%');
             } else {
                 // Do not display confirmation prompt.
-                var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_unavailable';
+                var url = GlobalVariables.baseUrl + '/backend_api/ajax_delete_unavailable';
                 var data = {
                     csrfToken: GlobalVariables.csrfToken,
                     unavailable_id: lastFocusedEventData.data.id
@@ -332,10 +332,10 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 '<strong>' + EALang.phone_number + '</strong> '
                 + event.data.customer.phone_number
                 + '<hr>' +
-                '<div class="text-center">' +
-                '<button class="edit-popover btn btn-primary ' + displayEdit + '">' + EALang.edit + '</button>' +
-                '<button class="delete-popover btn btn-danger ' + displayDelete + '">' + EALang.delete + '</button>' +
-                '<button class="close-popover btn btn-default" data-po=' + jsEvent.target + '>' + EALang.close + '</button>' +
+                '<div class="d-flex align-items-center">' +
+                '<a href="javascript: void(0);" class="edit-popover btn btn-primary mr-1' + displayEdit + '">' + EALang.edit + '</a>' +
+                '<a href="javascript: void(0);" class="delete-popover btn btn-danger ' + displayDelete + '">' + EALang.delete + '</a>' +
+                '<a href="javascript: void(0);" class="close-popover btn btn--simple" data-po=' + jsEvent.target + '>' + EALang.close + '</a>' +
                 '</div>';
         }
 
@@ -416,7 +416,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                         .add({days: -delta.days(), hours: -delta.hours(), minutes: -delta.minutes()})
                         .toString('yyyy-MM-dd HH:mm:ss');
 
-                    var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_appointment';
+                    var url = GlobalVariables.baseUrl + '/backend_api/ajax_save_appointment';
 
                     var data = {
                         csrfToken: GlobalVariables.csrfToken,
@@ -477,7 +477,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                         .add({minutes: -delta.minutes()})
                         .toString('yyyy-MM-dd HH:mm:ss');
 
-                    var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_unavailable';
+                    var url = GlobalVariables.baseUrl + '/backend_api/ajax_save_unavailable';
                     var data = {
                         csrfToken: GlobalVariables.csrfToken,
                         unavailable: JSON.stringify(unavailable)
@@ -601,7 +601,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                     event.data.start_datetime = appointment.start_datetime;
                     event.data.end_datetime = appointment.end_datetime;
 
-                    var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_appointment';
+                    var url = GlobalVariables.baseUrl + '/backend_api/ajax_save_appointment';
                     var data = {
                         csrfToken: GlobalVariables.csrfToken,
                         appointment_data: JSON.stringify(appointment)
@@ -662,7 +662,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                     event.data.start_datetime = unavailable.start_datetime;
                     event.data.end_datetime = unavailable.end_datetime;
 
-                    var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_unavailable';
+                    var url = GlobalVariables.baseUrl + '/backend_api/ajax_save_unavailable';
                     var data = {
                         csrfToken: GlobalVariables.csrfToken,
                         unavailable: JSON.stringify(unavailable)
@@ -749,7 +749,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
      * @param {Date} endDate Visible end date of the calendar.
      */
     function _refreshCalendarAppointments($calendar, recordId, filterType, startDate, endDate) {
-        var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_get_calendar_appointments';
+        var url = GlobalVariables.baseUrl + '/backend_api/ajax_get_calendar_appointments';
         var data = {
             csrfToken: GlobalVariables.csrfToken,
             record_id: recordId,
@@ -786,13 +786,13 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
             $calendar.fullCalendar('addEventSource', calendarEvents);
 
             var weekDays = [
-                'sunday', 
-                'monday', 
-                'tuesday', 
-                'wednesday', 
-                'thursday', 
-                'friday', 
-                'saturday' 
+                'sunday',
+                'monday',
+                'tuesday',
+                'wednesday',
+                'thursday',
+                'friday',
+                'saturday'
             ];
 
             // :: ADD PROVIDER'S UNAVAILABLE TIME PERIODS

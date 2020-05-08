@@ -85,26 +85,21 @@ class CI_Config {
 	{
 		$this->config =& get_config();
 
-		// Set the base_url automatically if none was provided
+        // Set the base_url automatically if none was provided
 		if (empty($this->config['base_url']))
 		{
-			if (isset($_SERVER['SERVER_ADDR']))
+            // Cascading search for incoming hostname
+            $server_addr = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? null;
+			if (isset($server_addr))
 			{
-				if (strpos($_SERVER['SERVER_ADDR'], ':') !== FALSE)
-				{
-					$server_addr = '['.$_SERVER['SERVER_ADDR'].']';
-				}
-				else
-				{
-					$server_addr = $_SERVER['SERVER_ADDR'];
-				}
-
 				$base_url = (is_https() ? 'https' : 'http').'://'.$server_addr
-					.substr($_SERVER['SCRIPT_NAME'], 0, strpos($_SERVER['SCRIPT_NAME'], basename($_SERVER['SCRIPT_FILENAME'])));
+                    .substr($_SERVER['SCRIPT_NAME'], 0, strpos($_SERVER['SCRIPT_NAME'], basename($_SERVER['SCRIPT_FILENAME'])));
+                // Remove trailing slash
+                $base_url = rtrim($base_url, '/');
 			}
 			else
 			{
-				$base_url = 'http://localhost/';
+				$base_url = 'http://localhost';
 			}
 
 			$this->set_item('base_url', $base_url);

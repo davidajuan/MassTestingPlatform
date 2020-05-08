@@ -1,0 +1,3 @@
+﻿first_name,last_name,DOB,previous_barcode,appt_date,appt_time,appt_type
+Johnny,Minniesota,7/6/66,123456JM,4/12/2020,9:00 AM,new
+April,Flowers,9/14/74,789012AF,4/12/2020,10:00 AM,reschedule

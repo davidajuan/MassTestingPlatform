@@ -1,0 +1,20 @@
+.spinner {
+  animation: rotate-infinite 1s linear infinite;
+  display: inline-block;
+  height: $spinner-height;
+  width: $spinner-width;
+}
+
+.spinner--circle {
+  border: $spinner-circle-border-width solid $spinner-circle-border-color;
+  border-radius: 50%;
+  border-right-color: transparent;
+}
+
+.spinner--large {
+  height: $spinner-large-height;
+  width: $spinner-large-width;
+  border: $spinner-large-border-width solid $spinner-large-border-color;
+  border-radius: 50%;
+  border-right-color: transparent;
+}

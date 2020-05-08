@@ -1,0 +1,39 @@
+.colorGreen {
+  color: $green;
+}
+
+.colorYellow {
+  color: $yellow;
+}
+
+.colorYellowDarken {
+  color: darken($yellow, 15%);
+}
+
+.colorGreenDark {
+  color: $green-dark;
+}
+
+.colorRed {
+  color: $red;
+}
+
+.bgGray {
+  background-color: $gray;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.hide {
+  display: none;
+}
+
+.pointerEventsNone {
+  pointer-events: none;
+}
+
+.lineHeight--1 {
+  line-height: 1;
+}

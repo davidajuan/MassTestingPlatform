@@ -1,3 +1,97 @@
+<div id="customers-page" class="container-fluid backend-page mt-3">
+    <div class="row">
+    	<div id="filter-customers" class="patient-records col-md-12 col-lg-3">
+    		<form>
+                <div class="input-group mb-4">
+                    <input type="text" class="col key textInput textInput--simple" placeholder="Search">
+                    <div class="input-group-addon">
+                        <div>
+                            <button class="filter btn btn--simple px-1" type="submit" title="<?= lang('filter') ?>">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button class="clear btn btn--simple px-1" type="button" title="<?= lang('clear') ?>">
+                                <i class="fas fa-redo-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+    		</form>
+            <h3><?= lang('customers') ?></h3>
+            <div class="results"><?= lang('search_above') ?></div>
+    	</div>
+
+    	<div class="col-md-12 col-lg-9">
+            <input id="customer-id" type="hidden">
+            <div class="row">
+                <div class="col-md-12 col-lg-8 my-4">
+                        <h3><?= lang('details') ?></h3>
+                        <div id="form-message" class="alert" style="display:none;"></div>
+
+                        <!--  Patient Appointment Display -->
+                        <div class="card m-1">
+                            <div class="card-body">
+                                <h5 class="card-title"><?= lang('patient_info') ?></h5>
+                                <div class="alert alert-danger hide" role="alert" data-caller-patient>
+                                    <?= lang('prescription_required') ?>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-6">
+                                        <ul class="patientRecordDisplay">
+                                            <li><?= lang('first_name') ?>: <span data-patient-detail="first-name"></span></li>
+                                            <li><?= lang('middle_initial') ?>: <span data-patient-detail="middle-initial"></span></li>
+                                            <li><?= lang('last_name') ?>: <span data-patient-detail="last-name"></span></li>
+                                            <li><?= lang('gender') ?>: <span data-patient-detail="gender"></span></li>
+                                            <li><?= lang('dob') ?>: <span data-patient-detail="dob"></span></li>
+                                            <li><?= lang('age') ?>: <span data-patient-detail="age"></span></li>
+                                            <li><?= lang('email') ?>: <a href="mailTo:<span data-patient-detail='email'></span>"><span data-patient-detail="email"></span></a></li>
+                                            <li><?= lang('patient_consent_email') ?>: <span data-patient-detail="patient-consent-email"></span></li>
+                                            <li><?= lang('mobile_number') ?>: <a href="tel:<span data-patient-detail='mobile-number'></span>"><span data-patient-detail="mobile-number"></span></a></li>
+                                            <li><?= lang('patient_consent_sms') ?>: <span data-patient-detail="patient-consent-sms"></span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <ul class="patientRecordDisplay">
+                                            <li><?= lang('phone_number') ?>: <a href="tel:<span data-patient-detail='phone-number'></span>"><span data-patient-detail="phone-number"></span></a></li>
+                                            <li><?= lang('address') ?>: <span data-patient-detail="address"></span></li>
+                                            <li><?= lang('apt') ?>: <span data-patient-detail="apt"></span></li>
+                                            <li><?= lang('city') ?>: <span data-patient-detail="city"></span></li>
+                                            <li><?= lang('state') ?>: <span data-patient-detail="state"></span></li>
+                                            <li><?= lang('zip_code') ?>: <span data-patient-detail="zip-code"></span></li>
+                                            <li><?= lang('ssn') ?>: <span data-patient-detail="ssn"></span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--  Patient Appointment Display -->
+                        <div class="card m-1">
+                            <div class="card-body">
+                                <h5 class="card-title"><?= lang('physician_info') ?></h5>
+                                <ul class="patientRecordDisplay">
+                                    <li><?= lang('provider_patient_id') ?>: <span data-patient-detail="provider-patient-id"></span></li>
+                                    <li><?= lang('doctor_npi') ?>: <span data-patient-detail="doctor-npi"></span></li>
+                                    <li><?= lang('doctor_first_name') ?>: <span data-patient-detail="doctor-first-name"></span></li>
+                                    <li><?= lang('doctor_last_name') ?>: <span data-patient-detail="doctor-last-name"></span></li>
+                                    <li><?= lang('doctor_phone_number') ?>: <a href="tel:<span data-patient-detail='doctor-phone-number'>"><span data-patient-detail="doctor-phone-number"></a></li>
+                                    <li><?= lang('doctor_address') ?>: <span data-patient-detail="doctor-address"></span></li>
+                                    <li><?= lang('doctor_city') ?>: <span data-patient-detail="doctor-city"></span></li>
+                                    <li><?= lang('doctor_state') ?>: <span data-patient-detail="doctor-state"></span></li>
+                                    <li><?= lang('doctor_zip_code') ?>: <span data-patient-detail="doctor-zip-code"></span></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <input type="hidden" id="appointment-hash" />
+                    </div>
+
+                    <div class="col-md-12 col-lg-4 my-3">
+                        <div id="customer-appointments" class="customer-appointments well"></div>
+                    </div>
+                </div>
+    	    </div>
+        </div>
+    </div>
+</div>
+
 <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui-timepicker-addon.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_customers_helper.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_customers.js') ?>"></script>
@@ -23,127 +117,3 @@
         BackendCustomers.initialize(true);
     });
 </script>
-
-<div id="customers-page" class="container-fluid backend-page">
-    <div class="row">
-    	<div id="filter-customers" class="filter-records column col-xs-12 col-sm-5">
-    		<form>
-                <div class="input-group">
-                    <input type="text" class="key form-control">
-
-                    <div class="input-group-addon">
-                        <div>
-                            <button class="filter btn btn-default" type="submit" title="<?= lang('filter') ?>">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                            <button class="clear btn btn-default" type="button" title="<?= lang('clear') ?>">
-                                <span class="glyphicon glyphicon-repeat"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-    		</form>
-
-            <h3><?= lang('customers') ?></h3>
-            <div class="results"></div>
-    	</div>
-
-    	<div class="record-details col-xs-12 col-sm-7">
-            <div class="btn-toolbar">
-                <div id="add-edit-delete-group" class="btn-group">
-                    <?php if ($privileges[PRIV_CUSTOMERS]['add'] === TRUE): ?>
-                    <button id="add-customer" class="btn btn-primary">
-                        <span class="glyphicon glyphicon-plus"></span>
-                        <?= lang('add') ?>
-                    </button>
-                    <?php endif ?>
-
-                    <?php if ($privileges[PRIV_CUSTOMERS]['edit'] === TRUE): ?>
-                    <button id="edit-customer" class="btn btn-default" disabled="disabled">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                        <?= lang('edit') ?>
-                    </button>
-                    <?php endif ?>
-
-                    <?php if ($privileges[PRIV_CUSTOMERS]['delete'] === TRUE): ?>
-                    <button id="delete-customer" class="btn btn-default" disabled="disabled">
-                        <span class="glyphicon glyphicon-remove"></span>
-                        <?= lang('delete') ?>
-                    </button>
-                    <?php endif ?>
-                </div>
-
-                <div id="save-cancel-group" class="btn-group" style="display:none;">
-                    <button id="save-customer" class="btn btn-primary">
-                        <span class="glyphicon glyphicon-ok"></span>
-                        <?= lang('save') ?>
-                    </button>
-                    <button id="cancel-customer" class="btn btn-default">
-                        <i class="glyphicon glyphicon-ban-circle"></i>
-                        <?= lang('cancel') ?>
-                    </button>
-                </div>
-            </div>
-
-            <input id="customer-id" type="hidden">
-
-            <div class="row">
-                <div class="col-xs-12 col-sm-6" style="margin-left: 0;">
-                    <h3><?= lang('details') ?></h3>
-
-                    <div id="form-message" class="alert" style="display:none;"></div>
-
-                    <div class="form-group">
-                        <label class="control-label" for="first-name"><?= lang('first_name') ?> *</label>
-                        <input id="first-name" class="form-control required">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label" for="last-name"><?= lang('last_name') ?> *</label>
-                        <input id="last-name" class="form-control required">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label" for="email"><?= lang('email') ?> *</label>
-                        <input id="email" class="form-control required">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label" for="phone-number"><?= lang('phone_number') ?> *</label>
-                        <input id="phone-number" class="form-control required">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label" for="address"><?= lang('address') ?></label>
-                        <input id="address" class="form-control">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label" for="city"><?= lang('city') ?></label>
-                        <input id="city" class="form-control">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label" for="zip-code"><?= lang('zip_code') ?></label>
-                        <input id="zip-code" class="form-control">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label" for="notes"><?= lang('notes') ?></label>
-                        <textarea id="notes" rows="4" class="form-control"></textarea>
-                    </div>
-
-                    <p class="text-center">
-                        <em id="form-message" class="text-danger"><?= lang('fields_are_required') ?></em>
-                    </p>
-                </div>
-
-                <div class="col-xs-12 col-sm-6">
-                    <h3><?= lang('appointments') ?></h3>
-                    <div id="customer-appointments" class="well"></div>
-                    <div id="appointment-details" class="well hidden"></div>
-                </div>
-            </div>
-    	</div>
-    </div>
-</div>

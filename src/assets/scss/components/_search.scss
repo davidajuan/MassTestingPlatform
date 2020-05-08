@@ -1,0 +1,107 @@
+.search {
+  padding: $search-padding;
+  margin: $search-margin;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  @media all and (min-width: $search-md-breakpoint) {
+    flex-direction: row;
+  }
+
+  @media all and (min-width: $search-lg-breakpoint) {
+    justify-content: center;
+  }
+}
+
+.search--is-shown {
+  @media all and (min-width: $search-md-breakpoint) {
+    height: $search-active-height-at-wide;
+  }
+}
+
+.search__inputContainer {
+  border-bottom: $search-input-container-border-bottom-width solid $search-input-container-border-bottom-color;
+
+  @media all and (min-width: $search-md-breakpoint) {
+    width: $search-input-container-width-at-wide;
+  }
+}
+
+.search__input {
+  background: $search-input-bg-color;
+  font-size: $search-input-font-size;
+  height: $search-input-height;
+  border: $search-input-border;
+}
+
+.searchResults--is-shown {
+  border: $search-results-border-width solid $search-results-border-color;
+  margin-bottom: $search-results-margin-bottom;
+  border-top: 0;
+  background:$search-results-bg-color;
+  z-index: 1;
+
+  @media all and (min-width: $search-md-breakpoint) {
+    position: absolute;
+    width: $search-results-width-at-wide;
+  }
+}
+
+// Result items container
+.searchResults__items {
+  max-height: $search-results-item-max-height;
+  outline: none;
+  overflow-y: auto;
+}
+
+// Result appointment details
+.searchResults__detailsHeading {
+  color: $search-results-details-heading-color;
+
+  @media all and (min-width: $search-md-breakpoint) {
+    padding: $search-results-details-heading-padding-at-wide;
+  }
+}
+
+.searchResults__details {
+  max-height: $search-results-details-max-height;
+  overflow-y: auto;
+  height: $search-results-details-height;
+  position: relative;
+
+  @media all and (min-width: $search-md-breakpoint) {
+    top: $search-results-details-top-at-wide;
+    width: $search-results-details-width-at-wide;
+  }
+}
+
+.searchResults__detail {
+  border-bottom: $search-results-detail-border-bottom-width solid $search-results-detail-border-bottom-color;
+  margin-bottom: $search-results-detail-margin-bottom;
+  padding-bottom: $search-results-detail-padding-bottom;
+
+  &:last-child {
+    border-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  @media all and (min-width: $search-md-breakpoint) {
+    margin: $search-results-detail-margin-at-wide;
+    top: $search-results-detail-top-at-wide;
+  }
+}
+
+// Actual result item
+.searchResults__item {
+  cursor: pointer;
+  padding: $search-results-item-padding;
+
+  &:hover {
+    background-color: $search-results-item-hover-bg-color;
+  }
+}
+
+.searchResults__item.selected {
+  background-color: $search-results-item-selected-bg-color;
+}

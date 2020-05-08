@@ -1,0 +1,12 @@
+{
+    "Subject": {
+        "Data": "Business File Update Notification",
+        "Charset": "UTF-8"
+    },
+    "Body": {
+        "Text": {
+            "Data": "The Business File ${fileName} was successfully uploaded",
+            "Charset": "UTF-8"
+        }
+    }
+ }

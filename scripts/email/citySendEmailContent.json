@@ -1,0 +1,12 @@
+{
+    "Subject": {
+        "Data": "Business File review Notification",
+        "Charset": "UTF-8"
+    },
+    "Body": {
+        "Text": {
+            "Data": "A new business file is available for your review",
+            "Charset": "UTF-8"
+        }
+    }
+ }

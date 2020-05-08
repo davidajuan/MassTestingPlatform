@@ -26,6 +26,9 @@ class Services_Model extends CI_Model {
      */
     public function add($service)
     {
+        // Sanitize Data
+        $service = $this->security->xss_clean($service);
+
         $this->validate($service);
 
         if ( ! isset($service['id']))
@@ -163,7 +166,7 @@ class Services_Model extends CI_Model {
             }
         }
 
-        // Availabilities type must have the correct value. 
+        // Availabilities type must have the correct value.
         if ($service['availabilities_type'] !== NULL && $service['availabilities_type'] !== AVAILABILITIES_TYPE_FLEXIBLE
             && $service['availabilities_type'] !== AVAILABILITIES_TYPE_FIXED)
         {
@@ -229,7 +232,7 @@ class Services_Model extends CI_Model {
     {
         if ( ! is_numeric($service_id))
         {
-            throw new Exception('Invalid argument type $service_id (value:"' . $service_id . '"');
+            throw new Exception('Invalid value in service_id');
         }
 
         $num_rows = $this->db->get_where('ea_services', ['id' => $service_id])->num_rows();
@@ -255,7 +258,7 @@ class Services_Model extends CI_Model {
     {
         if ( ! is_numeric($service_id))
         {
-            throw new Exception('$service_id argument is not an numeric (value: "' . $service_id . '")');
+            throw new Exception('Invalid value in service_id');
         }
         return $this->db->get_where('ea_services', ['id' => $service_id])->row_array();
     }
@@ -278,12 +281,12 @@ class Services_Model extends CI_Model {
     {
         if ( ! is_numeric($service_id))
         {
-            throw new Exception('Invalid argument provided as $service_id: ' . $service_id);
+            throw new Exception('Invalid value in service_id');
         }
 
         if ( ! is_string($field_name))
         {
-            throw new Exception('$field_name argument is not a string: ' . $field_name);
+            throw new Exception('Invalid value in field_name');
         }
 
         if ($this->db->get_where('ea_services', ['id' => $service_id])->num_rows() == 0)
@@ -306,16 +309,22 @@ class Services_Model extends CI_Model {
      *
      * @example $this->Model->getBatch('id = ' . $recordId);
      *
-     * @param string $whereClause (OPTIONAL) The WHERE clause of
+     * @param null $where_clause
+     * @param array $search
+     * @return array Returns the rows from the database.
+     * @internal param string $whereClause (OPTIONAL) The WHERE clause of
      * the query to be executed. DO NOT INCLUDE 'WHERE' KEYWORD.
      *
-     * @return array Returns the rows from the database.
      */
-    public function get_batch($where_clause = NULL)
+    public function get_batch($where_clause = NULL, $search = [])
     {
         if ($where_clause != NULL)
         {
             $this->db->where($where_clause);
+        }
+
+        if (!empty($search)) {
+            $this->db->group_start()->or_like($search)->group_end();
         }
 
         return $this->db->get('ea_services')->result_array();
@@ -411,7 +420,7 @@ class Services_Model extends CI_Model {
     {
         if ( ! is_numeric($category_id))
         {
-            throw new Exception('Invalid argument type given $category_id: ' . $category_id);
+            throw new Exception('Invalid value in category_id');
         }
 
         $result = $this->db->get_where('ea_service_categories', ['id' => $category_id]);

@@ -1,0 +1,3 @@
+﻿appt_date,appt_time,first_name,last_name,email,mobile_number,address,apt,city,state,zip_code,first_responder,gender,DOB,Email Consent,Text Message Consent,doctor_first_name,doctor_last_name,doctor_npi,doctor_address,doctor_city,doctor_state,doctor_zip_code,doctor_phone_number,rx_date,rx_time
+4/3/2020,9:00 AM,Person1,Doe,test@test.com,313-333-3333,1050 Woodward Ave,,Detroit,MI,48226,N,M,3/3/1933,Y,Y,Phillip,McGraw,12345678,"123 fake st.",Detroit,MI,48220,248-123-1234,3/30/2020,12:48 PM
+4/3/2020,6:00 PM,Person2,Doe,test@test.com,313-333-3333,1050 Woodward Ave,,Detroit,MI,48226,N,M,3/3/1933,Y,Y,Phillip,McGraw,12345678,"123 fake st.",Detroit,MI,48220,248-123-1234,3/30/2020,12:48 PM

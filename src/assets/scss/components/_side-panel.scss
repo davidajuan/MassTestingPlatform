@@ -1,0 +1,87 @@
+// Container around the side panel
+.sidePanel {
+  padding: $side-panel-padding;
+
+  @media all and (min-width: $md-breakpoint) {
+    background: $side-panel-bg-color;
+    box-shadow: $side-panel-box-shadow;
+    color: $side-panel-color;
+    height: 100%;
+    min-height: 100%;
+    position: absolute;
+    right: -307px;
+    top: 0;
+    transition-duration: 0.2s;
+    width: 305px;
+  }
+
+  @media all and (min-width: $four-col-breakpoint) {
+    right: 0;
+  }
+}
+
+// Content inside the side panel
+.sidePanelTrigger__content {
+  text-align: center;
+  position: relative;
+  right: 70px;
+  top: 90px;
+  transform: rotate(270deg);
+  width: 180px;
+  writing-mode: lr-tb;
+}
+
+// Once you scroll past the header, position fixed the side panel content
+.sidePanel__content.is-fixed {
+  @media all and (min-width: $md-breakpoint) {
+    position: fixed;
+    top: 1rem;
+    width: 273px;
+  }
+}
+
+// Once you click the side panel trigger, open the side panel all the way
+.sidePanel.is-opened {
+  right: 0;
+}
+
+// Trigger on tablet/medium screens to open side panel
+.sidePanelTrigger {
+  display: none;
+
+  @media all and (min-width: $md-breakpoint) {
+    color: $side-panel-trigger-color;
+    cursor: pointer;
+    display: block;
+    position: absolute;
+    top: 0;
+    transition-duration: 0.2s;
+    margin-top: 4rem;
+    min-height: 13rem;
+    left: -43px;
+    height: 13rem;
+    width: 2.5rem;
+    box-shadow: $side-panel-trigger-box-shadow;
+    background: $side-panel-trigger-bg-color;
+    border-radius: $side-panel-trigger-border-radius;
+  }
+
+  @media all and (min-width: $four-col-breakpoint) {
+    display: none;
+  }
+}
+
+// Once you scroll past the header, position fixed the trigger
+.sidePanelTrigger.is-fixed {
+  position: fixed;
+  right: 0;
+  left: auto;
+}
+
+// Once you click the side panel trigger, change some styles to the trigger itself
+.sidePanelTrigger.is-active {
+  background-color: $side-panel-trigger-active-bg-color;
+  box-shadow: $side-panel-trigger-active-box-shadow;
+  left: auto;
+  right: 305px;
+} 

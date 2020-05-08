@@ -1,0 +1,38 @@
+// Font Awesome
+$fa-font-path: '../css/webfonts' !default;
+@import 'fontawesome/solid.scss';
+@import 'fontawesome/regular.scss';
+@import 'fontawesome/fontawesome.scss';
+
+@import 'settings/colors';
+@import 'settings/breakpoints';
+
+// Variables that will override stiles in the components
+// and pages below.
+@import 'variable-overrides';
+
+@import 'components/alert';
+@import 'components/buttons';
+@import 'components/calendar';
+@import 'components/card';
+@import 'components/form';
+@import 'components/header';
+@import 'components/modal';
+@import 'components/nav';
+@import 'components/nav-pills';
+@import 'components/pagination';
+@import 'components/records';
+@import 'components/search';
+@import 'components/spinner';
+@import 'components/side-panel';
+@import 'components/table';
+@import 'components/upload';
+
+@import 'pages/book';
+@import 'pages/customer';
+@import 'vendor/ui-dialog';
+@import 'vendor/ui-datepicker';
+
+@import 'tools/animations';
+
+@import 'utilities/utilities';

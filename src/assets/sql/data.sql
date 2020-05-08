@@ -23,5 +23,3 @@ VALUES
     ('terms_and_conditions_content', 'Terms and conditions content.'),
     ('display_privacy_policy', '0'),
     ('privacy_policy_content', 'Privacy policy content.');
-
-INSERT INTO `ea_migrations` VALUES ('12');
