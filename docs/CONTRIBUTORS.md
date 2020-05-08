@@ -9,7 +9,7 @@ The Mass Testing Platform Open Source project was a collaboration between [Rocke
 
 A special thanks goes to these core contributors:
 
-- [Abhishek Singh]()
+- [Abhishek Singh](https://github.com/abhishekmit1982)
 - [Brian Wilson]()
 - [Chris Raheb]()
 - [Dave Fisher]()
