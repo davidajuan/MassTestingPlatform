@@ -18,7 +18,7 @@ Software that is needed to get started:
 #### Initial Steps
 
 1) Clone the repository to your local machine
-    * `git clone https://git.rockfin.com/marketing-web/mass-testing-platform`
+    * `git clone https://github.com/QuickenLoans/MassTestingPlatform`
 2) Enter the newly created directory
     * `cd mass-testing-platform`
 3) Setup environment file
