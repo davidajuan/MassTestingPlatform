@@ -5,7 +5,7 @@ description: Overview of the Drive Through Testing Site logistics
 permalink: /testing-runbook
 ---
 
-The Testing Runbook walks you through the Drive Through Testing site logisitcs, broken down by the two main checkpoints.  The roles required for each checkpoint are provided, and a more comprehensive staffing plan can be found [here](../site-staffing-plan)
+The Testing Runbook walks you through the Drive Through Testing site logisitcs, broken down by the two main checkpoints.  The roles required for each checkpoint are provided, and a more comprehensive staffing plan can be found [here](./site-staffing-plan)
 
 ## Checkpoint 1 Roles: 
 
