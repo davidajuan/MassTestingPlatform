@@ -16,7 +16,7 @@ There are four key components to the drive-through testing process that we desig
 
 ## Scheduling
 
-The scheduling process consists of an Interactive Voice Response (IVR) system, call center and scheduling application. The scheduling application was a fork of the [Easy!Appointments](https://easyappointments.org/) open-sourced project, which we extended to meet the needs of drive-through testing. Care providers, individuals, employers and employees all contact the call center directly to schedule or register. A separate landing page and web form was also created to facilitate online self-scheduling. Use the [IVR script](../call-scripts/IVR) to record and configure the necessary prompts for the call center. If a person calls into the call center with a general question, use the [General Call Script](../call-scripts/general).  You can find detailed information on the administration of the scheduling tool in the [Scheduling Runbook](../scheduling-runbook).
+The scheduling process consists of an Interactive Voice Response (IVR) system, call center and scheduling application. The scheduling application was a fork of the [Easy!Appointments](https://easyappointments.org/) open-sourced project, which we extended to meet the needs of drive-through testing. Care providers, individuals, employers and employees all contact the call center directly to schedule or register. A separate landing page and web form was also created to facilitate online self-scheduling. Use the [IVR script](./call-scripts/IVR) to record and configure the necessary prompts for the call center. If a person calls into the call center with a general question, use the [General Call Script](./call-scripts/general).  You can find detailed information on the administration of the scheduling tool in the [Scheduling Runbook](./scheduling-runbook).
 
 ### Care Providers
 
@@ -24,23 +24,23 @@ Care providers may call the call center to schedule appointments on a patient's 
 
 ### Individuals
 
-After receiving a doctor’s order or prescription, patients contact the call center to schedule an appointment. Call center representatives will leverage the  [Individual Call Script](../call-scripts/individual) in this flow. This flow is similar to the care providers flow above but call center representatives should collect additional information regarding the primary care physician.
+After receiving a doctor’s order or prescription, patients contact the call center to schedule an appointment. Call center representatives will leverage the  [Individual Call Script](./call-scripts/individual) in this flow. This flow is similar to the care providers flow above but call center representatives should collect additional information regarding the primary care physician.
 
 ### Employers
 
-Employers that wish to have essential employees tested can contact the call center to receive an allotment of testing capacity. Call center representatives will leverage the [Employer Call Script](../call-scripts/employer) in this flow. They’ll gather employer information, along with the number of tests they wish to have allocated to their company. Employers that have requested testing are reviewed on a periodic basis by the approving authority (in our case, this was a team of business liaisons from the city government), and on approval will receive a unique code to provide to their employees to individually schedule appointments.
+Employers that wish to have essential employees tested can contact the call center to receive an allotment of testing capacity. Call center representatives will leverage the [Employer Call Script](./call-scripts/employer) in this flow. They’ll gather employer information, along with the number of tests they wish to have allocated to their company. Employers that have requested testing are reviewed on a periodic basis by the approving authority (in our case, this was a team of business liaisons from the city government), and on approval will receive a unique code to provide to their employees to individually schedule appointments.
 
 ### Employees
 
-After an employer is approved, and the unique code provided to them is activated, an employee may contact the call center to request testing. To schedule an appointment without a prescription, the employee must have a unique code with available appointments associated to it. Call center representatives will leverage the [Employee Call Script](../call-scripts/employee) in this flow.
+After an employer is approved, and the unique code provided to them is activated, an employee may contact the call center to request testing. To schedule an appointment without a prescription, the employee must have a unique code with available appointments associated to it. Call center representatives will leverage the [Employee Call Script](./call-scripts/employee) in this flow.
 
 ## Data Orchestration
 
-The flow and orchestration of patient, employer, scheduling and results information is key to the drive-through testing process. The key files that are output to various entities on a regular basis are covered in this section. In our implementation, we integrated with HIPAA compliant box.com, SSH File Transfer Protocol and Direct Secure Messaging. You can find full details in the [Data Orchestration Runbook](../data-runbook).
+The flow and orchestration of patient, employer, scheduling and results information is key to the drive-through testing process. The key files that are output to various entities on a regular basis are covered in this section. In our implementation, we integrated with HIPAA compliant box.com, SSH File Transfer Protocol and Direct Secure Messaging. You can find full details in the [Data Orchestration Runbook](./data-runbook).
 
 ### Daily Print File
 
-This file goes to a printing company on a nightly basis. It contains the information needed to print several copies of a master schedule to be used at the testing site the following day, as well as a Patient Requisition form for each scheduled test.  [The Patient Requisition form](../docs/sample_files/Patient_Req_157980DJ.pdf) has a unique barcode on it, along with two integrated labels, which are used to attach patient information to the testing kit bag and vial.
+This file goes to a printing company on a nightly basis. It contains the information needed to print several copies of a master schedule to be used at the testing site the following day, as well as a Patient Requisition form for each scheduled test.  [The Patient Requisition form](./docs/sample_files/Patient_Req_157980DJ.pdf) has a unique barcode on it, along with two integrated labels, which are used to attach patient information to the testing kit bag and vial.
 
 ### Daily Patient Information File
 
@@ -52,7 +52,7 @@ This file contains the employers that have requested test allocation for their e
 
 ## Onsite Testing
 
-This section covers the three primary stations at the drive-through testing site. You can find full details about the logistics and operations of the drive-through testing site in the  [Testing Site Runbook](../testing-runbook).
+This section covers the three primary stations at the drive-through testing site. You can find full details about the logistics and operations of the drive-through testing site in the  [Testing Site Runbook](./testing-runbook).
 
 ### Station 1: Check-In
 
