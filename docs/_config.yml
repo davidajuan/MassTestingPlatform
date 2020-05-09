@@ -21,7 +21,7 @@
 title: Mass Testing Platform
 email: masstestingplatform@quickenloans.com
 description: An open source platform for mass drive through pandemic testing. # this means to ignore newlines until "baseurl:"
-baseurl: "/MassTestingPlatform" # the subpath of your site, e.g. /blog
+baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://www.masstestingplatform.com" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: QLTechnology
 github_username:  QuickenLoans
