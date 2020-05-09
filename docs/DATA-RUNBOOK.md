@@ -7,22 +7,22 @@ permalink: /data-runbook
 Data Orchestration is composed of the following processes to exchange data to and from the system
 
 1) **Printer Files**
-   These are files created for a printing company to use and generate the [patient requistion form](../docs/sample_files/patient_requisition_sample.pdf) and [patient scheduling form](../docs/sample_files/patient_appointments-sample.pdf) by a printing company.
+   These are files created for a printing company to use and generate the [patient requistion form](./sample_files/patient_requisition_sample.pdf) and [patient scheduling form](./sample_files/patient_appointments-sample.pdf) by a printing company.
    The sample files generated are listed below
-   a) [patient_appointments.csv](../docs/sample_files/patient_appointments.csv)
-   b) [patients_form_print.csv](../docs/sample_files/patients_form_print.csv)
+   a) [patient_appointments.csv](./sample_files/patient_appointments.csv)
+   b) [patients_form_print.csv](./sample_files/patients_form_print.csv)
    
 2) **Master Patient Files**
    This file contains a master data export for all appointments scheduled during a given day. This data can be shared with State and City Health Departments via a secure channel i.e PHI compliant box account, secure email, etc.
-   [patient_appointments_master.csv](../docs/sample_files/patient_appointments_master.csv)
+   [patient_appointments_master.csv](.sample_files/patient_appointments_master.csv)
 
 3) **Business Requisition Outbound**
    This file contains Business requests including the number of appointments requested to help facilitate mass testing efforts. The file is used as an input by business liasons of the city/local government to approve/deny testing requests from local businesses.
-   [Business_Request_Template.csv](../docs/sample_files/Business_Request_Template.csv)
+   [Business_Request_Template.csv](./sample_files/Business_Request_Template.csv)
 
 4) **Business Requistion Inbound**
    The file contains the Business Requests with number of slots approved by business liasons of the city/local government. It allows the system to ingest approvals and enable businesses to schedule appointments for their employees.
-   [Business_Request_Template.csv](../docs/sample_files/Business_Request_Template.csv)
+   [Business_Request_Template.csv](./sample_files/Business_Request_Template.csv)
 
 ### Integrations
 
