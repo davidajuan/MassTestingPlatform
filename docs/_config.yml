@@ -31,7 +31,6 @@ header_pages:
   - SCHEDULING-RUNBOOK.md
   - TESTING-RUNBOOK.md
   - DATA-RUNBOOK.md
-  - RESULTS-RUNBOOK.md
 
 # Build settings
 theme: minima

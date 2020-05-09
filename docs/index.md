@@ -16,6 +16,5 @@ Documentation on this site consists of:
 - [Scheduling Administration](./scheduling-runbook) to help you set up your scheduling technology
 - [Testing Process](./testing-runbook) to walk you through the logistics of setting up and running a testing location
 - [Data Orchestration](./data-runbook) to distribute the patient and scheduling data to everyone that needs it
-- [Results process](./results-runbook) to help you setup a process to deliver results to patients
 
 This project would not have been possible without the contributions of [these individuals](./contributors).
