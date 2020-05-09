@@ -69,5 +69,3 @@ The prescription verification attendant will pull the patient requisition form, 
 ## Results
 
 When the test lab receives the samples, they will scan the barcode on the patient requisition form and either manually enter the data from the form or pull the data from the Health Information Network, which patient scheduling data is sent to each evening using the barcode as a key. After the test is complete, results can be transmitted back to the Health Department, and the Health Information Network can be leveraged to match the results to a patient record. The Health Department or the care provider can then call patients to notify them of their results.
-
-Find full details about the test result process in the [Test Results Runbook](../results-runbook)
