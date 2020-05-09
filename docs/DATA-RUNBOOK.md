@@ -14,7 +14,7 @@ Data Orchestration is composed of the following processes to exchange data to an
    
 2) **Master Patient Files**
    This file contains a master data export for all appointments scheduled during a given day. This data can be shared with State and City Health Departments via a secure channel i.e PHI compliant box account, secure email, etc.
-   [patient_appointments_master.csv](.sample_files/patient_appointments_master.csv)
+   [patient_appointments_master.csv](./sample_files/patient_appointments_master.csv)
 
 3) **Business Requisition Outbound**
    This file contains Business requests including the number of appointments requested to help facilitate mass testing efforts. The file is used as an input by business liasons of the city/local government to approve/deny testing requests from local businesses.
