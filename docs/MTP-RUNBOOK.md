@@ -20,7 +20,7 @@ The scheduling process consists of an Interactive Voice Response (IVR) system, c
 
 ### Care Providers
 
-Care providers may call the call center to schedule appointments on a patient's behalf. Call center representatives should leverage the [Care Provider Call Script](../call-scripts/provider) in this flow. They should gather patient, care provider and prescription information and select an appointment day and time. 
+Care providers may call the call center to schedule appointments on a patient's behalf. Call center representatives should leverage the [Care Provider Call Script](./call-scripts/provider) in this flow. They should gather patient, care provider and prescription information and select an appointment day and time. 
 
 ### Individuals
 
@@ -40,7 +40,7 @@ The flow and orchestration of patient, employer, scheduling and results informat
 
 ### Daily Print File
 
-This file goes to a printing company on a nightly basis. It contains the information needed to print several copies of a master schedule to be used at the testing site the following day, as well as a Patient Requisition form for each scheduled test.  [The Patient Requisition form](./docs/sample_files/Patient_Req_157980DJ.pdf) has a unique barcode on it, along with two integrated labels, which are used to attach patient information to the testing kit bag and vial.
+This file goes to a printing company on a nightly basis. It contains the information needed to print several copies of a master schedule to be used at the testing site the following day, as well as a Patient Requisition form for each scheduled test.  [The Patient Requisition form](./sample_files/Patient_Req_157980DJ.pdf) has a unique barcode on it, along with two integrated labels, which are used to attach patient information to the testing kit bag and vial.
 
 ### Daily Patient Information File
 

@@ -82,9 +82,9 @@ Registered business can be reviewed and approved through the Business Requests s
 Appointments and business approvals can be handled through bulk scheduling files that are either uploaded or ingested through an automated process. Importing appointments in this manner 
  will bypass the attendants number settings, so use with care to manage your location's testing capacity.
 
-- The [New Patient Sample File](../docs/sample_files/New_Appointment_Template.csv) is used for uploading new patients.  It can be uploaded from the Upload CSV screen.
-- The [Retest Sample File](../docs/sample_files/Retest_Template.csv)  is used for uploading rescheduled or subsequent tests for patients.  It can be uploaded from the Upload CSV screen.
-- The [Business Request Sample File](../docs/sample_files/Business_Request_Template.csv) is used for uploading business approval files.  This file is ingested through an automated process that is described in the Data Runbook.
+- The [New Patient Sample File](./sample_files/New_Appointment_Template.csv) is used for uploading new patients.  It can be uploaded from the Upload CSV screen.
+- The [Retest Sample File](./sample_files/Retest_Template.csv)  is used for uploading rescheduled or subsequent tests for patients.  It can be uploaded from the Upload CSV screen.
+- The [Business Request Sample File](./sample_files/Business_Request_Template.csv) is used for uploading business approval files.  This file is ingested through an automated process that is described in the Data Runbook.
 
 ## Reporting
 
