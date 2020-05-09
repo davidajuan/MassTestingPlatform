@@ -15,3 +15,4 @@ jobs:
           JEKYLL_PAT: ${{ secrets.JEKYLL_PAT }}
         with:
           jekyll_src: 'docs'
+          JEKYLL_DESTINATION: docs
