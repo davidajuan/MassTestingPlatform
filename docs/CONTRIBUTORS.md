@@ -17,7 +17,7 @@ A special thanks goes to these core contributors:
 - [David Negron]()
 - [Janina Phillips](https://github.com/janinavelasco9)
 - [Matt Mastej]()
-- [Tony Pagaduan]()
+- [Tony Pagaduan](https://github.com/Elte156)
 
 
 
