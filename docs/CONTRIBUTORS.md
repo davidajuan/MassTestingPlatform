@@ -11,7 +11,7 @@ A special thanks goes to these core contributors:
 
 - [Abhishek Singh](https://github.com/abhishekmit1982)
 - [Brian Wilson]()
-- [Chris Raheb]()
+- [Chris Raheb](https://github.com/craheb)
 - [Dave Fisher]()
 - [David Juan](https://www.davidjuan.com)
 - [David Negron]()
