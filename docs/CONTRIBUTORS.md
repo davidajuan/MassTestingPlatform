@@ -10,13 +10,13 @@ The Mass Testing Platform Open Source project was a collaboration between [Rocke
 A special thanks goes to these core contributors:
 
 - [Abhishek Singh](https://github.com/abhishekmit1982)
-- [Brian Wilson]()
+- [Brian Wilson](https://github.com/Juvenall/)
 - [Chris Raheb](https://github.com/craheb)
-- [Dave Fisher]()
-- [David Juan](https://www.davidjuan.com)
-- [David Negron]()
+- [Dave Fisher](https://www.linkedin.com/in/fisherdave/)
+- [David Juan](https://github.com/davidajuan)
+- [David Negron](https://github.com/onelight)
 - [Janina Phillips](https://github.com/janinavelasco9)
-- [Matt Mastej]()
+- [Matt Mastej](https://github.com/MataoDesigns)
 - [Tony Pagaduan](https://github.com/Elte156)
 
 
