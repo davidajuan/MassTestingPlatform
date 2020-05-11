@@ -7,7 +7,7 @@ description: Open sourced scheduling and logistics technology for Drive Through 
 
 Mass Testing Platform is a scheduling, logistics and data orchestration application that was designed in collaboration between Rocket Mortgage, Rock Connections, and the City of Detroit to facilitate drive-through testing during the COVID-19 pandemic.
 
-The Mass Testing Platform Github Repo is located [here](https://github.com/QuickenLoans/MassTestingPlatform).
+Download the Source Code [here](https://github.com/QuickenLoans/MassTestingPlatform).
 
 The documentation on this site will give you a high-level overview of the drive-through testing process, from end-to-end. Please note, this process was designed around the regulations in effect in Detroit, Michigan, during the COVID-19 pandemic. As such, you may need to make adjustments to the process and technology in order to meet the current regulations in your area.
 
