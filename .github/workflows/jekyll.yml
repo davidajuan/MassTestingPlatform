@@ -17,4 +17,4 @@ jobs:
       run: |
         docker run \
         -v ${{ github.workspace }}/docs:/srv/jekyll -v ${{ github.workspace }}/docs/_site:/srv/jekyll/_site \
-        jekyll/builder:latest /bin/bash -c "set -ex && apk --no-cache add sudo && chmod 777 /srv/jekyll && sudo jekyll build --future"
+        jekyll/builder:latest /bin/bash -c "set -ex && apk --no-cache add sudo && echo "Set disable_coredump false" >> /etc/sudo.conf && chmod 777 /srv/jekyll && sudo jekyll build --future"
