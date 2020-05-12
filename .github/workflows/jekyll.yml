@@ -16,6 +16,7 @@ jobs:
       - name: Install Jekyll
         run: |
           sudo gem install bundler jekyll
+          bundle config --global silence_root_warning 1
           sudo bundle install
       - name: 🔨 Build site
         run: bundle exec jekyll build -d docs
