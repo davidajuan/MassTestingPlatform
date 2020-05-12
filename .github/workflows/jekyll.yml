@@ -20,7 +20,7 @@ jobs:
           jekyll/builder:latest /bin/bash -c "set -ex && apk add --update && chmod 777 /srv/jekyll && bundle config set path 'vendor/cache' && bundle install --path vendor/cache && jekyll build --future"
       - name: 🧪 Deploy build
         run: |
-          cd build
+          cd ${{ github.workspace }}/docs
           remote_repo="https://${JEKYLL_PAT}@github.com/${GITHUB_REPOSITORY}.git"
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
