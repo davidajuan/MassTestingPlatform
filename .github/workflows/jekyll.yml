@@ -6,15 +6,13 @@ on:
     - master
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  github-pages:
+    runs-on: ubuntu-16.04
     steps:
-      - name: Check out master
-        uses: actions/checkout@master
+      - uses: actions/checkout@v2
+      - uses: helaili/jekyll-action@2.0.1
+        env:
+          JEKYLL_PAT: ${{ secrets.JEKYLL_PAT }}
+          INPUT_GEM_SRC: 'docs'
         with:
-          fetch-depth: 1
-      - name: Build the site in the jekyll/builder container
-        run: |
-          docker run \
-          -v ${{ github.workspace }}/docs:/srv/jekyll -v ${{ github.workspace }}/docs/_site:/srv/jekyll/_site \
-          jekyll/builder:latest /bin/bash -c "set -ex && apk add --update && chmod 777 /srv/jekyll && bundle config set path 'vendor/cache' && bundle install --path vendor/cache && jekyll build --future"
+          entrypoint: ${{ github.workspace }}/docs/entrypoint.sh
