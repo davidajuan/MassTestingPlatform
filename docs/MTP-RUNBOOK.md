@@ -36,7 +36,7 @@ After an employer is approved, and the unique code provided to them is activated
 
 ## Data Orchestration
 
-The flow and orchestration of patient, employer, scheduling and results information is key to the drive-through testing process. The key files that are output to various entities on a regular basis are covered in this section. In our implementation, we integrated with HIPAA compliant Box, SSH File Transfer Protocol and Direct Secure Messaging. You can find full details in the [Data Orchestration Runbook](./data-runbook).
+The flow and orchestration of patient, employer, scheduling and results information is key to the drive-through testing process. The key files that are output to various entities on a regular basis are covered in this section. In our implementation, we integrated with HIPAA compliant [Box](https://www.box.com), SSH File Transfer Protocol and Direct Secure Messaging. You can find full details in the [Data Orchestration Runbook](./data-runbook).
 
 ### Daily Print File
 
