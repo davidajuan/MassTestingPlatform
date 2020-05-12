@@ -15,4 +15,4 @@ jobs:
           JEKYLL_PAT: ${{ secrets.JEKYLL_PAT }}
           INPUT_GEM_SRC: 'docs'
         with:
-          entrypoint: ${{ github.workspace }}/docs/entrypoint.sh
+          entrypoint: docs/entrypoint.sh
