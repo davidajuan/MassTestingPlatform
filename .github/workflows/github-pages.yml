@@ -15,5 +15,5 @@ jobs:
           JEKYLL_PAT: ${{ secrets.JEKYLL_PAT }}
           working-directory: ./docs
         with:
-          jekyll_src: 'docs'
+          jekyll_src: '.'
           
