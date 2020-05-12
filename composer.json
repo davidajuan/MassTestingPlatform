@@ -1,6 +1,6 @@
 {
-    "name": "alextselegidis/easyappointments",
-    "description": "Open Source Web Scheduler",
+    "name": "quickenloans/masstestingplatform",
+    "description": "Healthcare Appointment & Scheduling Web Application",
     "keywords": [
         "calendar",
         "scheduler",
@@ -8,15 +8,17 @@
         "events",
         "dates",
         "google",
-        "services"
+        "services",
+        "covid19",
+        "covid-19"
     ],
     "type": "project",
-    "homepage": "http://easyappointments.org",
+    "homepage": "https://www.masstestingplatform.com/",
     "license": "GPL-3.0",
     "authors": [
         {
-            "name": "Alex Tselegidis",
-            "email": "alextselegidis@gmail.com"
+            "name": "Quicken Loans",
+            "email": "masstestingplatform@quickenloans.com"
         }
     ],
     "scripts": {
@@ -30,10 +32,9 @@
         "test:standard": "vendor/bin/phpcs --standard=PSR2 src"
     },
     "support": {
-        "issues": "https://github.com/alextselegidis/easyappointments/issues",
-        "forum": "https://groups.google.com/forum/#!forum/easy-appointments",
-        "wiki": "http://easyappointments.org/docs.html#1.2.1/readme.md",
-        "source": "https://github.com/alextselegidis/easyappointments"
+        "issues": "https://github.com/QuickenLoans/MassTestingPlatform/issues",
+        "wiki": "https://www.masstestingplatform.com/",
+        "source": "https://github.com/QuickenLoans/MassTestingPlatform"
     },
     "minimum-stability": "stable",
     "require-dev": {
