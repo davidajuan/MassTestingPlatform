@@ -20,8 +20,10 @@ jobs:
           jekyll/builder:latest /bin/bash -c "set -ex && apk add --update && chmod 777 /srv/jekyll && bundle config set path 'vendor/cache' && bundle install --path vendor/cache && jekyll build --future"
       - name: 🧪 Deploy build
         run: |
+          cd build
+          remote_repo="https://${JEKYLL_PAT}@github.com/${GITHUB_REPOSITORY}.git"
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git add .
-          git commit -am "🧪 Deploy with ${GITHUB_WORKFLOW}"
-          git push --all -f https://${{ secrets.JEKYLL_PAT }}@github.com/${GITHUB_REPOSITORY}.git
+          git commit -m "jekyll build from Action ${GITHUB_SHA}"
+          git push --force $remote_repo master:master
