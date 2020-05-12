@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="{{ page.lang | default: site.lang | default: "en" }}">
-
   {%- include head.html -%}
+  {%- include svg-icons.html -%}
   <body>
 
     {%- include header.html -%}
 
-    <main class="page-content k" aria-label="Content">
-      <div class="wrapper">
+    <main class="{% if page.url != '/' %}page-content{% endif %}" aria-label="Content">
+      <div class="{% if page.url != '/' %}wrapper{% endif %}">
         {{ content }}
       </div>
     </main>
@@ -15,5 +15,4 @@
     {%- include footer.html -%}
 
   </body>
-
 </html>

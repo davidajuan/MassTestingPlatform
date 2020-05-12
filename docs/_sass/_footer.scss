@@ -3,6 +3,7 @@ $footer-breakpoint: 900px;
 .footer {
   display: flex;
   flex-direction: column;
+  padding: 0 2rem;
 
   @media screen and (min-width: $footer-breakpoint) {
     flex-direction: row;
@@ -62,5 +63,6 @@ $footer-breakpoint: 900px;
 }
 
 .site-footer {
-  border-top-width: 2px;
+  background-color: $gray-light;
+  border: 0;
 }

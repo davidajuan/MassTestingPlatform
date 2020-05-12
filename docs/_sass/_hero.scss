@@ -1,0 +1,130 @@
+.hero {
+  background-color: $gray-light;
+  padding: 3rem 2rem;
+
+  @media all and (min-width: 768px) {
+    min-height: 20rem;
+    padding-bottom: 0;
+  }
+
+  @media all and (min-width: 1055px) {
+    padding: 6rem 3rem;
+  }
+
+  @media all and (min-width: 1155px) {
+    min-height: 24rem;
+    top: -70px;
+  }
+}
+
+.hero__contentWrapper {
+  display: flex;
+  flex-direction: column;
+
+  @media all and (min-width: 1055px) {
+    flex-direction: row;
+  }
+}
+
+.hero__content {
+  flex: 40%;
+}
+
+.hero__actions {
+  flex: 60%;
+  position: relative;
+}
+
+.hero__heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 1.5rem;
+
+  @media all and (min-width: 1155px) {
+    font-size: 3.5rem;
+  }
+}
+
+.hero__subheading {
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+.hero__list {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: -2rem;
+  background: #F2F2F2;
+  border-radius: 10px;
+  border: 1px solid #d6ccd2;
+  left: -1rem;
+  list-style-type: none;
+  margin: 0;
+  text-align: center;
+}
+
+.hero__list li {
+  padding: 1rem;
+  border-bottom: 1px solid #d6ccd2;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.importantText {
+  font-size: 1.4rem;
+}
+
+.hero__button {
+  display: block;
+  font-size: 1.1em;
+  padding: 0.75rem 1.5rem;
+  white-space: nowrap;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 5px;
+  color: $white;
+  background-color: $blue-gray;
+
+  &:visited,
+  &:hover {
+    color: $white;
+  }
+}
+
+.hero__inlineButtons {
+  display: flex;
+
+  .hero__button {
+    margin-right: 1rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.hero__image {
+  display: none;
+
+  @media all and (min-width: 768px) {
+    display: block;
+    position: relative;
+    left: -48px;
+  }
+
+  @media all and (min-width: 1055px) {
+    position: absolute;
+    top: -25px;
+    left: 0;
+  }
+
+  @media all and (min-width: 1155px) {
+    top: -70px;
+  }
+}
