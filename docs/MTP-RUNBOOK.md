@@ -1,11 +1,11 @@
 ---
-layout: default
+layout: page
 title: Platform Runbook
 description: Overview of Drive Through Testing Process
 permalink: /mtp-runbook
 ---
 
-Mass Testing Platform is a scheduling, logistics and data orchestration application designed to facilitate drive-through testing during the COVID-19 pandemic. This runbook will give you a high-level overview of the drive-through testing process, end-to-end. Please note, this process was designed around the regulations in effect in Detroit, Michigan, during the COVID-19 pandemic. As such, you may need to make adjustments to the process and technology in order to meet the current regulations in your area.
+Mass Testing Platform is a scheduling, logistics and data orchestration application designed to facilitate drive-through testing during the COVID-19 pandemic. This runbook will give you a high-level overview of the drive-through testing process, from end to end. Please note, this process was designed around the regulations in effect in Detroit, Michigan, during the COVID-19 pandemic. As such, you may need to make adjustments to the process and technology to meet the current regulations in your area.
 
 There are four key components to the drive-through testing process that we designed:
 
@@ -36,7 +36,7 @@ After an employer is approved, and the unique code provided to them is activated
 
 ## Data Orchestration
 
-The flow and orchestration of patient, employer, scheduling and results information is key to the drive-through testing process. The key files that are output to various entities on a regular basis are covered in this section. In our implementation, we integrated with HIPAA compliant box.com, SSH File Transfer Protocol and Direct Secure Messaging. You can find full details in the [Data Orchestration Runbook](./data-runbook).
+The flow and orchestration of patient, employer, scheduling and results information is key to the drive-through testing process. The key files that are output to various entities on a regular basis are covered in this section. In our implementation, we integrated with HIPAA compliant [Box](https://www.box.com), SSH File Transfer Protocol and Direct Secure Messaging. You can find full details in the [Data Orchestration Runbook](./data-runbook).
 
 ### Daily Print File
 
