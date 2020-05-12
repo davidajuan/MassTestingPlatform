@@ -13,13 +13,11 @@ jobs:
         uses: actions/checkout@master
         with:
           fetch-depth: 1
-      - name: Install Jekyll
+      - name: Build the site in the jekyll/builder container
         run: |
-          sudo gem install bundler jekyll
-          bundle config --global silence_root_warning 1
-          sudo bundle install
-      - name: 🔨 Build site
-        run: bundle exec jekyll build -d docs
+          docker run \
+          -v ${{ github.workspace }}/docs:/srv/jekyll -v ${{ github.workspace }}/docs/_site:/srv/jekyll/_site \
+          jekyll/builder:latest /bin/bash -c "set -ex && apk add --update && chmod 777 /srv/jekyll && bundle config set path 'vendor/cache' && bundle install --path vendor/cache && jekyll build --future"
       - name: 🧪 Deploy build
         run: |
           git config user.name "${GITHUB_ACTOR}"
