@@ -9,7 +9,6 @@ function animateSections() {
   for (let i = 0; i < animationSection.length; i++) {
     // Get element bounding box
     const elementRect = animationSection[i].getBoundingClientRect();
-    console.log(animationSection[i])
    
     // Checks if element is on screen
     if (elementRect.top <= windowBottom) {
