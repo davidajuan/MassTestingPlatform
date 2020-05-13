@@ -7,6 +7,15 @@ permalink: /testing-runbook
 
 The Testing Runbook walks you through the Drive Through Testing site logisitcs, broken down by the two main checkpoints.  The roles required for each checkpoint are provided, and a more comprehensive staffing plan can be found [here](./site-staffing-plan)
 
+## Employee Entrance Screening Tent
+
+This station is staffed by 2 nurses or nurse assistant.  Their role is to take every person's temperature coming in through the employee entrance (full time staff, volunteers, medical staff, deliveries, media, maintenance and police / EMS) 
+
+- The nurse/nurse assistant takes each person's temperature as they come through the checkpoint. Your temperature must be under 100.1 to be allowed entrance.  A color coded sticker with the current date is provided to each person that passes the temperature check.
+- If someone is at 100.1 or over, the nurses are required to call the project manager and report it.  The project manager then calls the employee's supervisor and notifies them that their employee has a temperature. 
+- The staff for this tent arrive two hours before the testing site opens to the public.  
+- PPE: Mask, gloves, goggles, and touch free thermometers are required.
+
 ## Checkpoint 1 Roles: 
 
 Role | Description
