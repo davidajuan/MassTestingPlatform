@@ -5,7 +5,7 @@ description: Primary contributors to the Mass Testing Platform Open Source Proje
 permalink: /contributors
 ---
 
-The Mass Testing Platform Open Source project was a collaboration between [Rocket Technology](https://medium.com/@rockettechnology), [Rock Connections](https://rockconnections.com/), and [The City of Detroit](https://detroitmi.gov/).
+The Mass Testing Platform Open Source project was a collaboration between [Rocket Mortgage Technology](https://medium.com/@rockettechnology), [Rock Connections](https://rockconnections.com/), and [The City of Detroit](https://detroitmi.gov/).
 
 A special thanks goes to these core contributors:
 
