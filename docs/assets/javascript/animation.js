@@ -22,6 +22,6 @@ if (animationSection) {
   animateSections();
 }
 
-window.addEventListener('scroll', () => {
+window.addEventListener('scroll', function() {
   animateSections();
-})
+});
