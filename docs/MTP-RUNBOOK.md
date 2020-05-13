@@ -1,17 +1,18 @@
 ---
-layout: default
+layout: page
 title: Platform Runbook
 description: Overview of Drive Through Testing Process
 permalink: /mtp-runbook
 ---
 
-Mass Testing Platform is a scheduling, logistics and data orchestration application designed to facilitate drive-through testing during the COVID-19 pandemic. This runbook will give you a high-level overview of the drive-through testing process, end-to-end. Please note, this process was designed around the regulations in effect in Detroit, Michigan, during the COVID-19 pandemic. As such, you may need to make adjustments to the process and technology in order to meet the current regulations in your area.
+Mass Testing Platform is a scheduling, logistics and data orchestration application designed to facilitate drive-through testing during the COVID-19 pandemic. This runbook will give you a high-level overview of the drive-through testing process, from end to end. Please note, this process was designed around the regulations in effect in Detroit, Michigan, during the COVID-19 pandemic. As such, you may need to make adjustments to the process and technology to meet the current regulations in your area.
 
 There are four key components to the drive-through testing process that we designed:
 
 - [**Scheduling**](#scheduling) -  A call center handles inbound calls from patients, care providers and businesses to schedule a test. Operating days and hours for a drive-through testing site must be established, along with hourly testing capacity.
 - [**Data Orchestration**](#data-orchestration) -  Patient and appointment data from the call center is routed to a printing company for onsite drive-through testing materials, to the testing lab and to a Health Information Network or government agency.
 - [**Onsite Testing**](#onsite-testing) - Field agents and medical workers use the onsite drive-through testing materials to verify appointments, confirm eligibility, facilitate the test and prepare the sample to be sent to a lab.
+- [**Transportation**](#transportation) - A Transportation service provides access to the testing site for those without a vehicle.
 - [**Results**](#results) - Health Department staff and care providers receive test results and notify patients.
 
 ## Scheduling
@@ -36,7 +37,7 @@ After an employer is approved, and the unique code provided to them is activated
 
 ## Data Orchestration
 
-The flow and orchestration of patient, employer, scheduling and results information is key to the drive-through testing process. The key files that are output to various entities on a regular basis are covered in this section. In our implementation, we integrated with HIPAA compliant box.com, SSH File Transfer Protocol and Direct Secure Messaging. You can find full details in the [Data Orchestration Runbook](./data-runbook).
+The flow and orchestration of patient, employer, scheduling and results information is key to the drive-through testing process. The key files that are output to various entities on a regular basis are covered in this section. In our implementation, we integrated with HIPAA compliant [Box](https://www.box.com), SSH File Transfer Protocol and Direct Secure Messaging. You can find full details in the [Data Orchestration Runbook](./data-runbook).
 
 ### Daily Print File
 
@@ -65,6 +66,10 @@ The prescription verification attendant will pull the patient requisition form, 
 ### Station 3:  Testing
 
  The testing station is staffed by a medical worker who will collect the patient requisition form from the windshield, confirm the patient’s identity and conduct the test. After the test has been completed, the medical worker will remove two labels from the patient requisition form and apply them to the test vile and specimen bag. Then, they will fold the patient requisition form and place it in the bag along with the test tube. These bags will be stored onsite in a cooler and transported to the lab within the time frame specified by the lab.
+
+## Transportation
+
+To make Drive Through testing accessible to all, a transportation service will need to be established for people without access to a vehicle to drive through the testing site.  Details on how the City of Detroit Office of Mobility Innovation accomplished this can be found in the [Transportation Runbook](./transportation).
 
 ## Results
 
