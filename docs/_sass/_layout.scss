@@ -7,3 +7,37 @@
 .wrapper--l {
   max-width: 95rem;
 }
+
+// Flexbox Styles
+.flex\@sm {
+  display: flex;
+  flex-direction: column;
+
+  .flex__item {
+    margin-bottom: 2rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  @media all and (min-width: $sm-breakpoint) {
+    flex-direction: row;
+
+    .flex__item {
+      margin-bottom: 0;
+      margin-right: 2rem;
+  
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    .flex__item--40 {
+      flex: 40%;
+    }
+
+    .flex__item--60 {
+      flex: 60%;
+    }
+  }
+}

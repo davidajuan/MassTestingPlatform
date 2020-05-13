@@ -1,21 +1,11 @@
-.features {
-  background-color: #35363e;
-  color: $white;
-  padding: 6rem 3rem;
-}
-
-.features__heading {
-  font-size: 2rem;
-}
-
 .featureList {
   list-style-type: none;
   padding: 0;
   margin: 3rem 0 0;
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: $sm-breakpoint) {
     display: grid;
-    grid-gap: 2rem 1rem;
+    grid-gap: 2rem;
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -24,7 +14,11 @@
   display: flex;
   margin-bottom: 2rem;
 
-  @media all and (min-width: 768px) {
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media all and (min-width: $sm-breakpoint) {
     margin-bottom: 1rem;
   }
 }
