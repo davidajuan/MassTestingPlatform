@@ -1,0 +1,57 @@
+.button {
+  display: inline-block;
+  font-size: 1.1em;
+  padding: 0.75rem 1.5rem;
+  white-space: nowrap;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 5px;
+  color: $white;
+  background-color: $purple-gray;
+  text-decoration: none;
+
+  &:hover, 
+  &:visited:hover {
+    background-color: darken($purple-gray, 10%);
+    text-decoration: none;
+    color: $white;
+  }
+
+  &:visited {
+    text-decoration: none;
+    color: $white;
+  }
+}
+
+.inlineButtons {
+  display: flex;
+
+  .button {
+    margin-right: 1rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.button--secondary {
+  background-color: $white;
+  color: $purple-gray;
+
+  &:hover, 
+  &:visited:hover {
+    color: $white;
+  }
+
+  &:visited {
+    color: $purple-gray;
+  }
+}
+
+.button--large {
+  font-size: 1.25rem;
+  font-weight: bold;
+}

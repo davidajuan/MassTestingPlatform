@@ -1,0 +1,48 @@
+.spotlight {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4rem;
+  align-items: center;
+
+  @media all and (min-width: $md-breakpoint) {
+    flex-direction: row;
+    margin-bottom: 8rem;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.spotlight:nth-child(even) {
+  flex-direction: column;
+
+  @media all and (min-width: $md-breakpoint) {
+    flex-direction: row-reverse;
+
+    .spotlight__content {
+      padding-right: 0;
+      padding-left: 2rem;
+    }
+  }
+}
+
+.spotlight__content {
+  margin-bottom: 1.5rem;
+
+  @media all and (min-width: $md-breakpoint) {
+    flex: 40%;
+    padding-right: 2rem;
+    margin-bottom: 0;
+  }
+}
+
+.spotlight__figure {
+  @media all and (min-width: $md-breakpoint) {
+    flex: 60%;
+  }
+}
+
+.spotlight__image {
+  border-radius: 5px;
+}

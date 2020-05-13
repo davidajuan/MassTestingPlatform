@@ -1,0 +1,46 @@
+.section__heading {
+  font-size: 1.5rem;
+  font-weight: bold;
+
+  @media all and (min-width: $md-breakpoint) {
+    font-size: 2rem;
+  }
+}
+
+.section__subheading {
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.section__copy {
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
+.section {
+  padding: 3rem 2rem;
+
+  @media all and (min-width: $md-breakpoint) {
+    padding: 8rem 3rem;
+  }
+}
+
+.section--gray-dark {
+  background-color: $gray-dark;
+  color: $white;
+}
+
+.section--blue-gray {
+  background-color: $blue-gray;
+  color: $white;
+}
+
+.section--gray-medium {
+  background-color: $gray-medium;
+  color: $white;
+}
+
+.section--gray-light {
+  background-color: $gray-light;
+}

@@ -3,7 +3,17 @@
 # only Main files contain this front matter, not partials.
 ---
 
+@import "breakpoints";
 @import "colors";
+@import "layout";
+@import "buttons";
+@import "links";
+
+@import "animations";
+@import "features";
 @import "footer";
 @import "header";
-@import "layout";
+@import "hero";
+@import "icons";
+@import "section";
+@import "spotlight";

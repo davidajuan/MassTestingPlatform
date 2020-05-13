@@ -1,0 +1,28 @@
+.featureList {
+  list-style-type: none;
+  padding: 0;
+  margin: 3rem 0 0;
+
+  @media all and (min-width: $sm-breakpoint) {
+    display: grid;
+    grid-gap: 2rem;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.feature {
+  display: flex;
+  margin-bottom: 2rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media all and (min-width: $sm-breakpoint) {
+    margin-bottom: 1rem;
+  }
+}
+
+.feature__icon {
+  margin-right: 1rem;
+}

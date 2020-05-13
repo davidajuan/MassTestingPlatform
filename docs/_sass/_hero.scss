@@ -1,0 +1,72 @@
+.hero {
+  background-color: $gray-light;
+  padding: 3rem 2rem;
+
+  @media all and (min-width: $sm-breakpoint) {
+    min-height: 20rem;
+    padding-bottom: 0;
+  }
+
+  @media all and (min-width: $lg-breakpoint) {
+    padding: 6rem 3rem;
+  }
+
+  @media all and (min-width: $xl-breakpoint) {
+    min-height: 24rem;
+    top: -70px;
+  }
+}
+
+.hero__contentWrapper {
+  display: flex;
+  flex-direction: column;
+
+  @media all and (min-width: $lg-breakpoint) {
+    flex-direction: row;
+  }
+}
+
+.hero__content {
+  flex: 40%;
+}
+
+.hero__actions {
+  flex: 60%;
+  position: relative;
+}
+
+.hero__heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 1.5rem;
+
+  @media all and (min-width: $xl-breakpoint) {
+    font-size: 3.5rem;
+  }
+}
+
+.hero__subheading {
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+.hero__image {
+  display: none;
+
+  @media all and (min-width: $sm-breakpoint) {
+    display: block;
+    position: relative;
+    left: -48px;
+  }
+
+  @media all and (min-width: $lg-breakpoint) {
+    position: absolute;
+    top: -25px;
+    left: 0;
+  }
+
+  @media all and (min-width: $xl-breakpoint) {
+    top: -70px;
+  }
+}

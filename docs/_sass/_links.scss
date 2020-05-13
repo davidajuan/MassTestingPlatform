@@ -1,0 +1,17 @@
+.link {
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.link--inverse {
+  color: $white;
+  
+  &:hover,
+  &:visited,
+  &:focus {
+    color: $gray-light;
+  }
+}
