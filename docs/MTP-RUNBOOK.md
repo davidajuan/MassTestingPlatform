@@ -12,6 +12,7 @@ There are four key components to the drive-through testing process that we desig
 - [**Scheduling**](#scheduling) -  A call center handles inbound calls from patients, care providers and businesses to schedule a test. Operating days and hours for a drive-through testing site must be established, along with hourly testing capacity.
 - [**Data Orchestration**](#data-orchestration) -  Patient and appointment data from the call center is routed to a printing company for onsite drive-through testing materials, to the testing lab and to a Health Information Network or government agency.
 - [**Onsite Testing**](#onsite-testing) - Field agents and medical workers use the onsite drive-through testing materials to verify appointments, confirm eligibility, facilitate the test and prepare the sample to be sent to a lab.
+- [**Transportation**](#transportation) - A Transportation service provides access to the testing site for those without a vehicle.
 - [**Results**](#results) - Health Department staff and care providers receive test results and notify patients.
 
 ## Scheduling
@@ -65,6 +66,10 @@ The prescription verification attendant will pull the patient requisition form, 
 ### Station 3:  Testing
 
  The testing station is staffed by a medical worker who will collect the patient requisition form from the windshield, confirm the patient’s identity and conduct the test. After the test has been completed, the medical worker will remove two labels from the patient requisition form and apply them to the test vile and specimen bag. Then, they will fold the patient requisition form and place it in the bag along with the test tube. These bags will be stored onsite in a cooler and transported to the lab within the time frame specified by the lab.
+
+## Transportation
+
+To make Drive Through testing accessible to all, a transportation service will need to be established for people without access to a vehicle to drive through the testing site.  Details on how the City of Detroit Office of Mobility Innovation accomplished this can be found in the [Transportation Runbook](./transportation).
 
 ## Results
 
