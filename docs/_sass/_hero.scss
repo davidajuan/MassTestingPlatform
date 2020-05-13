@@ -69,4 +69,9 @@
   @media all and (min-width: $xl-breakpoint) {
     top: -70px;
   }
+
+  @media all and (min-width: $hg-breakpoint) {
+    width: 90%;
+    left: 45px;
+  }
 }
