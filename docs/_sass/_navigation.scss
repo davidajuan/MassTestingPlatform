@@ -1,0 +1,179 @@
+.navigation {
+  background: $gray-light;
+  display: none;
+  position: absolute;
+  height: 100vh;
+  left: 0;
+  top: 52px;
+  width: 100%;
+
+  @media all and (min-width: $navigation-breakpoint) {
+    background: transparent;
+    display: block;
+    height: auto;
+    position: relative;
+    top: 0;
+    width: auto;
+  }
+}
+
+.navigation--is-open {
+  display: block;
+}
+
+.navigation__menu {
+  display: flex;
+  flex-direction: column;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  @media all and (min-width: $navigation-breakpoint) {
+    flex-direction: row;
+  }
+}
+
+.navigation__menu-item {
+  @media all and (min-width: $navigation-breakpoint) {
+    margin-right: 1.25rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.navigation__menu-link {
+  color: $black;
+  font-weight: 300;
+  font-size: 1.25rem;
+  display: block;
+  position: relative;
+  padding: 1rem;
+
+  &:visited {
+    color: $black;
+  }
+
+  &:hover {
+    color: $purple-gray;
+    text-decoration: none;
+  }
+
+  @media screen and (min-width: $navigation-breakpoint) {
+    font-size: 1rem;
+    font-weight: 400;
+    color: $white;
+    padding: 0;
+
+    &:after {
+      content: '';
+      position: absolute;
+      width: 0; 
+      height: 3px;
+      display: block;
+      margin-top: 5px;
+      right: 0;
+      background: transparent;
+      transition: width .2s ease;
+    }
+
+    &:hover {
+      color: $white;
+      text-decoration: none;
+    }
+    
+    &:hover:after {
+      width: 100%;
+      left: 0;
+      background: $white;
+    }
+
+    &:visited {
+      color: $white;
+    }
+  }
+}
+
+// Mobile menu trigger
+.menuOpen {
+  overflow: hidden;
+}
+
+.menu {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: inline-block;
+  height: 2rem;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  width: 2rem;
+
+  @media all and (min-width: $navigation-breakpoint) {
+    display: none;
+  }
+}
+
+// Center menu icon
+.menu__icon {
+  margin: 0 auto;
+  position: relative;
+  top: 0;
+  transition-duration: 0s;
+  transition-delay: 0.2s;
+}
+
+// Top and bottom menu icon
+.menu__icon:before,
+.menu__icon:after {
+  position: absolute;
+  content: '';
+}
+
+// Menu icon line
+.menu__icon,
+.menu__icon:before,
+.menu__icon:after {
+  background-color: $gray-light;
+  display: block;
+  height: 3px;
+  width: 2rem;
+}
+
+// Position the top and bottom icon
+.menu__icon:before {
+  margin-top: -12px;
+  transition-property: margin, transform;
+  transition-duration: 0.2s;
+  transition-delay: 0.2s, 0s;
+}
+
+.menu__icon:after {
+  margin-top: 12px;
+  transition-property: margin, transform;
+  transition-duration: 0.2s;
+  transition-delay: 0.2s, 0s;
+}
+
+// When menu is clicked, transform the lines into an 'X'
+.menu.is-open {
+  .menu__icon {
+    background-color: transparent;
+    transition-delay: 0.2s;
+  }
+
+  .menu__icon:before {
+    margin-top: 0;
+    transform: rotate(45deg);
+    transition-delay: 0s, 0.2s;
+  }
+
+  .menu__icon:after {
+    margin-top: 0;
+    transform: rotate(-45deg);
+    transition-delay: 0s, 0.2s;
+  }
+}
