@@ -21,7 +21,7 @@ The following sections will be covered:
 
 ## Initial Setup
 
-Follow the steps in the [Installation Guide]().  To complete the remaining steps, use the admin account account created during installation.
+Follow the steps in the [Installation Guide](https://github.com/QuickenLoans/MassTestingPlatform#getting-started){:target="_blank"}.  To complete the remaining steps, use the admin account account created during installation.
 
 ## Creating a Testing Site
 
