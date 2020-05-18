@@ -1,121 +1,36 @@
 .header {
+  align-items: center;
   background-color: $blue;
   border: 0;
-  padding: 0.25rem 1rem;
+  display: flex;
+  min-height: 55.95px;
+  padding: 0.25rem 0;
   position: sticky;
   top: 0;
-  display: flex;
-  align-items: center;
   z-index: 1;
 }
 
 .header__content {
+  align-items: center;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   max-width: 90rem;
   margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
   width: 100%;
 }
 
 .header__title {
-  font-size: 26px;
   color: $white;
+  font-size: 26px;
 
   &:visited {
     color: $white;
   }
 
   &:hover {
-    text-decoration: none;
     color: $white;
-  }
-}
-
-// Navigation
-.site-nav {
-  line-height: initial;
-}
-
-.site-nav .nav-link {
-  color: $black;
-  position: relative;
-
-  @media screen and (min-width: $navigation-breakpoint) {
-    color: $white;
-  }
-
-  &:after {
-    content: '';
-    position: absolute;
-    width: 0; 
-    height: 3px;
-    display: block;
-    margin-top: 5px;
-    right: 0;
-    background: transparent;
-    transition: width .2s ease;
-  }
-
-  &:hover {
     text-decoration: none;
-  }
-  
-  &:hover:after {
-    width: 100%;
-    left: 0;
-    background: $white;
-  }
-}
-
-// Override default themes styles at this breakpoint.
-@media screen and (max-width: $navigation-breakpoint) {
-  .site-nav input ~ .trigger {
-    clear: both;
-    display: none;
-  }
-
-  .site-nav input:checked ~ .trigger {
-    display: block;
-    padding-bottom: 5px;
-  }
-
-  .site-nav label[for="nav-trigger"] {
-    display: block;
-    float: right;
-    width: 36px;
-    height: 36px;
-    z-index: 2;
-    cursor: pointer;
-  }
-
-  .site-nav {
-    position: absolute;
-    top: 12px;
-    right: 15px;
-    background-color: $white;
-    border: 2px solid $gray;
-    border-radius: 5px;
-    text-align: left;
-  }
-
-  .site-nav .menu-icon {
-    display: block;
-    float: right;
-    width: 36px;
-    height: 26px;
-    line-height: 0;
-    padding-top: 10px;
-    text-align: center;
-  }
-
-  .site-nav .page-link {
-    display: block;
-    padding: 0.5rem 1rem;
-    margin: 0;
-  }
-
-  .site-nav .page-link:not(:last-child) {
-    margin-right: 0;
   }
 }
