@@ -7,7 +7,7 @@ permalink: /mtp-runbook
 
 Mass Testing Platform is a scheduling, logistics and data orchestration application designed to facilitate drive-through testing during the COVID-19 pandemic. This runbook will give you a high-level overview of the drive-through testing process, from end to end. Please note, this process was designed around the regulations in effect in Detroit, Michigan, during the COVID-19 pandemic. As such, you may need to make adjustments to the process and technology to meet the current regulations in your area.
 
-There are four key components to the drive-through testing process that we designed:
+There are five key components to the drive-through testing process that we designed:
 
 - [**Scheduling**](#scheduling) -  A call center handles inbound calls from patients, care providers and businesses to schedule a test. Operating days and hours for a drive-through testing site must be established, along with hourly testing capacity.
 - [**Data Orchestration**](#data-orchestration) -  Patient and appointment data from the call center is routed to a printing company for onsite drive-through testing materials, to the testing lab and to a Health Information Network or government agency.
